@@ -23,49 +23,58 @@
         android:background="#333333"
         android:textColor="#ffffff"
         />
+    <ScrollView
+        android:id="@+id/lab_scroll"
+        android:layout_width="fill_parent"
+        android:layout_height="373dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/record"
-            android:layout_width="fill_parent"
-            android:layout_height="379dp"
-            android:padding="10dp"
-            android:textSize="20sp" />
-        <LinearLayout
-            android:layout_width="fill_parent"
+            <TextView
+                android:id="@+id/record"
+                android:layout_width="fill_parent"
+                android:layout_height="379dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:focusable="false" />
+        </RelativeLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true">
+
+        <Button
+            android:id="@+id/btn_start"
+            android:layout_width="0px"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true">
+            android:layout_weight="1"
+            android:onClick="myOnClick"
+            android:text="시작" />
 
-            <Button
-                android:id="@+id/btn_start"
-                android:layout_width="0px"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:onClick="myOnClick"
-                android:text="시작" />
+        <Button
+            android:id="@+id/btn_rec"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:enabled="false"
+            android:onClick="myOnClick"
+            android:text="기록" />
 
-            <Button
-                android:id="@+id/btn_rec"
-                android:layout_width="0px"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:enabled="false"
-                android:onClick="myOnClick"
-                android:text="기록" />
+        <Button
+            android:id="@+id/btn_end"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:enabled="false"
+            android:onClick="myOnClick"
+            android:text="풀이 끝" />
 
-            <Button
-                android:id="@+id/btn_end"
-                android:layout_width="0px"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:enabled="false"
-                android:onClick="myOnClick"
-                android:text="풀이 끝"/>
-
-        </LinearLayout>
-    </RelativeLayout>
+    </LinearLayout>
 </LinearLayout>

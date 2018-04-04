@@ -41,6 +41,36 @@ public class LabActivity extends AppCompatActivity {
         myBtnStart = (Button) findViewById(R.id.btn_start);
         myBtnRec = (Button) findViewById(R.id.btn_rec);
         myBtnEnd = (Button) findViewById(R.id.btn_end);
+        myRec.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if(motionEvent.getAction() == MotionEvent.ACTION_DOWN)
+                {
+                    switch(cur_Status){
+                        case Run:
+                            String str = myRec.getText().toString();
+                            str +=  String.format("%d. %s\n",myCount,getLabTimeout());
+                            myRec.setText(str);
+                            myCount++; //카운트 증가
+                            break;
+                        case Pause:
+                            //핸들러를 멈춤
+                            myTimer.removeMessages(0);
+
+                            myBtnStart.setText("시작");
+                            myBtnRec.setText("기록");
+                            myOutput.setText("00:00:00");
+
+                            cur_Status = Init;
+                            myCount = 1;
+                            myRec.setText("");
+                            myBtnRec.setEnabled(false);
+                            break;
+                    }
+                }
+                return true;
+            }
+        });
     }
     @Override
     protected void onDestroy() {
@@ -133,50 +163,5 @@ public class LabActivity extends AppCompatActivity {
             String lap_outTime = String.format("%02d:%02d:%02d", outTime/1000 / 60, (outTime/1000)%60,(outTime%1000)/10);
             return lap_outTime;
         }
-    }
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        final int action = event.getAction();
-        switch(action) {
-            case MotionEvent.ACTION_DOWN:
-                // 처음 터치가 눌러졌을 때
-                x = event.getX();
-                y = event.getY();
-                switch(cur_Status){
-                    case Run:
-                        String str = myRec.getText().toString();
-                        str +=  String.format("%d. %s\n",myCount,getLabTimeout());
-                        myRec.setText(str);
-                        myCount++; //카운트 증가
-                        break;
-                    case Pause:
-                        //핸들러를 멈춤
-                        myTimer.removeMessages(0);
-
-                        myBtnStart.setText("시작");
-                        myBtnRec.setText("기록");
-                        myOutput.setText("00:00:00");
-
-                        cur_Status = Init;
-                        myCount = 1;
-                        myRec.setText("");
-                        myBtnRec.setEnabled(false);
-                        break;
-                }
-                break;
-            case MotionEvent.ACTION_MOVE:
-                // 터치가 눌린 상태에서 움직일 때
-                x = event.getX();
-                y = event.getY();
-                break;
-            case MotionEvent.ACTION_UP:
-                // 터치가 떼어졌을 때
-                x = event.getX();
-                y = event.getY();
-                break;
-            default :
-                break;
-        }
-        return true;
     }
 }
