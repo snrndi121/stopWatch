@@ -1,16 +1,21 @@
 package com.uki121.pooni;
 
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
-import com.afollestad.materialdialogs.MaterialDialog;
 
 /**
  * Created by uki121 on 2018-04-03.
@@ -49,18 +54,23 @@ public class LabActivity extends AppCompatActivity {
                     switch(cur_Status){
                         case Run:
                             String str = myRec.getText().toString();
-                            str +=  String.format("%d. %s\n",myCount,getLabTimeout());
-                            myRec.setText(str);
+                            str = String.format("%d. %s\n", myCount, getLabTimeout());
+                            //분기점(5)마다 텍스트를 다른색으로 적용
+                            if(myCount % 5 != 0) {
+                                myRec.append(str);
+                            }
+                            else {
+                                setColorInPartitial(str, "","#FF1493",myRec);
+                            }
                             myCount++; //카운트 증가
                             break;
                         case Pause:
                             //핸들러를 멈춤
                             myTimer.removeMessages(0);
-
+                            //버튼 및 레코드값 초기화
                             myBtnStart.setText("시작");
                             myBtnRec.setText("기록");
                             myOutput.setText("00:00:00");
-
                             cur_Status = Init;
                             myCount = 1;
                             myRec.setText("");
@@ -77,7 +87,6 @@ public class LabActivity extends AppCompatActivity {
         // TODO Auto-generated method stub
         super.onDestroy();
     }
-
     public void myOnClick(View v){
         switch(v.getId()){
             case R.id.btn_start: //시작버튼을 클릭했을때 현재 상태값에 따라 다른 동작을 할수있게끔 구현.
@@ -133,25 +142,30 @@ public class LabActivity extends AppCompatActivity {
                         break;
                 }
                 break;
-
         }
     }
     Handler myTimer = new Handler(){
         public void handleMessage(Message msg){
-            myOutput.setText(getTimeOut());
-
-            //sendEmptyMessage 는 비어있는 메세지를 Handler 에게 전송하는겁니다.
-            myTimer.sendEmptyMessage(0);
+            myOutput.setText(getHour_MinTime());    //최상단 output 구간에 현재 시간값을 출력
+            myTimer.sendEmptyMessage(0);    //sendEmptyMessage 는 비어있는 메세지를 Handler 에게 전송하는겁니다.
         }
     };
-    //현재시간을 계속 구해서 출력하는 메소드
-    String getTimeOut(){
+    String getTimeOut()
+    {   //분 : 초 : 밀리초 단위로 문자열값 출력
         long now = SystemClock.elapsedRealtime(); //애플리케이션이 실행되고나서 실제로 경과된 시간;
         long outTime = now - myBaseTime;
         String easy_outTime = String.format("%02d:%02d:%02d", outTime/1000 / 60, (outTime/1000)%60,(outTime%1000)/10);
         return easy_outTime;
     }
-    String getLabTimeout(){
+    String getHour_MinTime()
+    {   //시간 : 분 : 초 단위로 문자열값 출력
+        long now = SystemClock.elapsedRealtime();
+        long outTime = now - myBaseTime;
+        String hm_outTime = String.format("%02d:%02d:%02d", outTime/1000 /60 / 60, outTime/1000 / 60, (outTime/1000)%60);
+        return hm_outTime;
+    }
+    String getLabTimeout()
+    {   //lab time을 계산하여 반환
         if(myCount <= 1 ) {
             beforeLapTime = SystemClock.elapsedRealtime();
             return getTimeOut();
@@ -163,5 +177,12 @@ public class LabActivity extends AppCompatActivity {
             String lap_outTime = String.format("%02d:%02d:%02d", outTime/1000 / 60, (outTime/1000)%60,(outTime%1000)/10);
             return lap_outTime;
         }
+    }
+    private TextView setColorInPartitial(String pre_string, String string, String color, TextView textView)
+    {   //지정된 단어 길이만큼 색을 변경하여 텍스트뷰에 프린트
+        SpannableStringBuilder builder = new SpannableStringBuilder(pre_string + string);
+        builder.setSpan(new ForegroundColorSpan(Color.parseColor(color)), 0, pre_string.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textView.append(builder);
+        return textView;
     }
 }

@@ -1,51 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical" >
 
     <TextView
         android:id="@+id/time_out"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="40sp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:background="#cccccc"
+        android:gravity="center"
+        android:text="@string/lab_init"
         android:textColor="#777777"
-        android:text="00:00:00" />
+        android:textSize="40sp" />
 
     <TextView
-        android:layout_width="fill_parent"
+        android:id="@+id/record_title"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="25sp"
-        android:text="기록"
-        android:gravity="center"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/time_out"
         android:background="#333333"
+        android:gravity="center"
+        android:text="@string/lab_title"
         android:textColor="#ffffff"
-        />
+        android:textSize="25sp" />
+
     <ScrollView
         android:id="@+id/lab_scroll"
-        android:layout_width="fill_parent"
-        android:layout_height="373dp"
+        android:layout_width="match_parent"
+        android:layout_height="366dp"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true">
+        android:layout_below="@+id/record_title">
 
-        <RelativeLayout
+        <TextView
+            android:id="@+id/record"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:focusable="false" />
 
-            <TextView
-                android:id="@+id/record"
-                android:layout_width="fill_parent"
-                android:layout_height="379dp"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:focusable="false" />
-        </RelativeLayout>
     </ScrollView>
 
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true">
@@ -56,7 +55,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="myOnClick"
-            android:text="시작" />
+            android:text="@string/lab_start"
+            style="?android:attr/borderlessButtonStyle" />
 
         <Button
             android:id="@+id/btn_rec"
@@ -65,7 +65,8 @@
             android:layout_weight="1"
             android:enabled="false"
             android:onClick="myOnClick"
-            android:text="기록" />
+            android:text="@string/lab_record"
+            style="?android:attr/borderlessButtonStyle"/>
 
         <Button
             android:id="@+id/btn_end"
@@ -74,7 +75,8 @@
             android:layout_weight="1"
             android:enabled="false"
             android:onClick="myOnClick"
-            android:text="풀이 끝" />
-
+            android:text="@string/lab_done"
+            style="?android:attr/borderlessButtonStyle"/>
     </LinearLayout>
+
 </LinearLayout>

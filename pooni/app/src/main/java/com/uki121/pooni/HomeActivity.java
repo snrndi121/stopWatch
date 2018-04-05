@@ -1,7 +1,6 @@
 package com.uki121.pooni;
 
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -15,7 +14,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
  * Created by uki121 on 2018-04-03.
  */
 
-public class HomeActivity extends AppCompatActivity{
+public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceStates) {
         super.onCreate(savedInstanceStates);
