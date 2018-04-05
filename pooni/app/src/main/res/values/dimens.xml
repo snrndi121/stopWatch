@@ -2,4 +2,6 @@
 <resources>
   <dimen name="activity_horizontal_margin">16dp</dimen>
   <dimen name="activity_vertical_margin">16dp</dimen>
+  <dimen name="activity_home_top">275dp</dimen>
+  <dimen name="activity_main_lottie">200dp</dimen>
 </resources>

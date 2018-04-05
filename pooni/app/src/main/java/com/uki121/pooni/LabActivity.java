@@ -15,6 +15,7 @@ import android.text.style.StyleSpan;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 /**

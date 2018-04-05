@@ -8,6 +8,11 @@ import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.JsonReader;
+
+import com.airbnb.lottie.LottieAnimationView;
+
+import java.io.StringReader;
 
 public class MainActivity extends AppCompatActivity {
   private static int WELCOME_TIMEOUT = 2000;
@@ -16,6 +21,12 @@ public class MainActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
+
+    /* to do : remove it
+    LottieAnimationView animationView = findViewById(R.id.animation_view);
+    animationView.setAnimation(R.raw.main_clock);
+    animationView.playAnimation();
+    */
 
     new Handler().postDelayed(new Runnable() {
       @Override

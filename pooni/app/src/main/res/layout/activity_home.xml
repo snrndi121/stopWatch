@@ -7,6 +7,17 @@ android:layout_width="match_parent"
 android:layout_height="match_parent"
 tools:context="com.uki121.pooni.MainActivity">
 
+    <ImageView
+        android:id="@+id/pooni_trans"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:background="#00000000"
+        android:contentDescription="@string/todo"
+        android:src="@drawable/pooni_trans" />
+
     <Button
         android:id="@+id/button_start"
         android:layout_width="128dp"
