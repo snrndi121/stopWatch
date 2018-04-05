@@ -1,17 +1,14 @@
 package com.uki121.pooni;
 
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
