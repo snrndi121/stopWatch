@@ -22,6 +22,7 @@
   <string name="lab_start">시작</string>
   <string name="lab_record">기록</string>
   <string name="lab_reset">리셋</string>
+  <string name="lab_del">삭제</string>
   <string name="lab_done">풀이 끝</string>
   <string name="todo">TODO</string>
 </resources>

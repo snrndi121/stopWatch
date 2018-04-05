@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/time_out"
@@ -17,16 +17,16 @@
         android:textSize="40sp" />
 
     <TextView
-        android:id="@+id/record_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/time_out"
-        android:background="#333333"
-        android:gravity="center"
-        android:text="@string/lab_title"
-        android:textColor="#ffffff"
-        android:textSize="25sp" />
+    android:id="@+id/record_title"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentStart="true"
+    android:layout_below="@+id/time_out"
+    android:background="#333333"
+    android:gravity="center"
+    android:text="@string/lab_title"
+    android:textColor="#ffffff"
+    android:textSize="25sp" />
 
     <ScrollView
         android:id="@+id/lab_scroll"
@@ -50,32 +50,39 @@
 
         <Button
             android:id="@+id/btn_start"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="0px"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="myOnClick"
-            android:text="@string/lab_start"
-            style="?android:attr/borderlessButtonStyle" />
+            android:text="@string/lab_start" />
 
         <Button
             android:id="@+id/btn_rec"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="0px"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:enabled="false"
             android:onClick="myOnClick"
-            android:text="@string/lab_record"
-            style="?android:attr/borderlessButtonStyle"/>
+            android:text="@string/lab_record" />
 
         <Button
-            android:id="@+id/btn_end"
+            android:id="@+id/btn_del"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="0px"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:enabled="false"
-            android:onClick="myOnClick"
-            android:text="@string/lab_done"
-            style="?android:attr/borderlessButtonStyle"/>
+            android:text="@string/lab_del" />
     </LinearLayout>
 
+    <Button
+        android:id="@+id/btn_end"
+        android:layout_width="0px"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        android:enabled="false"
+        android:onClick="myOnClick"
+        android:text="@string/lab_done" />
 </LinearLayout>

@@ -23,7 +23,7 @@ public class LabActivity extends AppCompatActivity {
 
     float x, y;
     TextView myOutput, myRec;
-    Button myBtnStart, myBtnRec, myBtnEnd;
+    Button myBtnStart, myBtnRec, myBtnEnd,myBtnDel;
 
     final static int Init =0;
     final static int Run =1;
@@ -44,6 +44,26 @@ public class LabActivity extends AppCompatActivity {
         myBtnStart = (Button) findViewById(R.id.btn_start);
         myBtnRec = (Button) findViewById(R.id.btn_rec);
         myBtnEnd = (Button) findViewById(R.id.btn_end);
+        myBtnDel = (Button) findViewById(R.id.btn_del);
+        myBtnDel.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                /* Todo : get rid of "//" */
+                if (myCount > 2)
+                {
+                    String targetIndex = String.valueOf(--myCount);
+                    String subStr = myRec.getText().toString();
+                    int cutIndex = subStr.indexOf(targetIndex+ ".");
+                    //System.out.println("\n targetIndex : " + targetIndex + ", cutString :" + subStr.subSequence(cutIndex, subStr.length()-1));
+                    subStr = subStr.substring(0, cutIndex-1);
+                    //System.out.println("\n subString :" + subStr);
+                    myRec.setText(subStr+"\n");
+                } else if (myCount == 2) {
+                    myRec.setText("");
+                    myCount--;
+                } else { /* do nothing */ }
+            }
+        });
         myRec.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -51,8 +71,8 @@ public class LabActivity extends AppCompatActivity {
                 {
                     switch(cur_Status){
                         case Run:
-                            String str = myRec.getText().toString();
-                            str = String.format("%d. %s\n", myCount, getLabTimeout());
+                            //String str = myRec.getText().toString();
+                            String str = String.format("%d. %s\n", myCount, getLabTimeout());
                             //분기점(5)마다 텍스트를 다른색으로 적용
                             if(myCount % 5 != 0) {
                                 myRec.append(str);
@@ -73,12 +93,14 @@ public class LabActivity extends AppCompatActivity {
                             myCount = 1;
                             myRec.setText("");
                             myBtnRec.setEnabled(false);
+                            myBtnDel.setEnabled(false);
                             break;
                     }
                 }
                 return true;
             }
         });
+
     }
     @Override
     protected void onDestroy() {
@@ -95,6 +117,7 @@ public class LabActivity extends AppCompatActivity {
                         myTimer.sendEmptyMessage(0);//myTimer 초기화
                         myBtnStart.setText("멈춤"); //버튼의 문자"시작"을 "멈춤"으로 변경
                         myBtnRec.setEnabled(true); //기록버튼 활성
+                        myBtnDel.setEnabled(true); //삭제버튼 활성
                         cur_Status = Run; //현재상태를 런상태로 변경
                         break;
                     case Run:
@@ -118,8 +141,8 @@ public class LabActivity extends AppCompatActivity {
             case R.id.btn_rec:
                 switch(cur_Status){
                     case Run:
-                        String str = myRec.getText().toString();
-                        str = String.format("%d. %s\n", myCount, getLabTimeout());
+                        //String str = myRec.getText().toString();
+                        String str = String.format("%d. %s\n", myCount, getLabTimeout());
                         //분기점(5)마다 텍스트를 다른색으로 적용
                         if(myCount % 5 != 0) {
                             myRec.append(str);
