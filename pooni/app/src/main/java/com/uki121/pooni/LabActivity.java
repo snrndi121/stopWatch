@@ -153,16 +153,18 @@ public class LabActivity extends AppCompatActivity {
     };
     String getTimeOut()
     {   //분 : 초 : 밀리초 단위로 문자열값 출력
-        long now = SystemClock.elapsedRealtime(); //애플리케이션이 실행되고나서 실제로 경과된 시간;
+        long now = SystemClock.elapsedRealtime(); //애플리케이션이 실행되고나서 실제로 경과된 시간(milli)
         long outTime = now - myBaseTime;
-        String easy_outTime = String.format("%02d:%02d:%02d", outTime/1000 / 60, (outTime/1000)%60,(outTime%1000)/10);
+        long millis = (outTime % 1000) /10, seconds = outTime/1000 % 60, mins = seconds / 60;
+        String easy_outTime = String.format("%02d:%02d:%02d", mins, seconds, millis);
         return easy_outTime;
     }
     String getHour_MinTime()
     {   //시간 : 분 : 초 단위로 문자열값 출력
         long now = SystemClock.elapsedRealtime();
         long outTime = now - myBaseTime;
-        String hm_outTime = String.format("%02d:%02d:%02d", outTime/1000 /60 / 60, outTime/1000 / 60, (outTime/1000)%60);
+        long seconds = outTime/1000, mins = seconds /60, hours = mins /60;
+        String hm_outTime = String.format("%02d:%02d:%02d", hours, mins % 60, seconds % 60);
         return hm_outTime;
     }
     String getLabTimeout()
