@@ -122,24 +122,27 @@ public class LabActivity extends AppCompatActivity {
                 switch(cur_Status){
                     case Run:
                         String str = myRec.getText().toString();
-                        str +=  String.format("%d. %s\n",myCount,getTimeOut());
-                        myRec.setText(str);
+                        str = String.format("%d. %s\n", myCount, getLabTimeout());
+                        //분기점(5)마다 텍스트를 다른색으로 적용
+                        if(myCount % 5 != 0) {
+                            myRec.append(str);
+                        }
+                        else {
+                            setColorInPartitial(str, "","#FF1493",myRec);
+                        }
                         myCount++; //카운트 증가
-
                         break;
                     case Pause:
                         //핸들러를 멈춤
                         myTimer.removeMessages(0);
-
+                        //버튼 및 레코드값 초기화
                         myBtnStart.setText("시작");
                         myBtnRec.setText("기록");
                         myOutput.setText("00:00:00");
-
                         cur_Status = Init;
                         myCount = 1;
                         myRec.setText("");
                         myBtnRec.setEnabled(false);
-                        myBtnEnd.setEnabled(false);
                         break;
                 }
                 break;

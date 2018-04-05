@@ -22,12 +22,6 @@ public class MainActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
-    /* to do : remove it
-    LottieAnimationView animationView = findViewById(R.id.animation_view);
-    animationView.setAnimation(R.raw.main_clock);
-    animationView.playAnimation();
-    */
-
     new Handler().postDelayed(new Runnable() {
       @Override
       public void run() {
