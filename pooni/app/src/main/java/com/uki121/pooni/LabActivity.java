@@ -155,8 +155,8 @@ public class LabActivity extends AppCompatActivity {
     {   //분 : 초 : 밀리초 단위로 문자열값 출력
         long now = SystemClock.elapsedRealtime(); //애플리케이션이 실행되고나서 실제로 경과된 시간(milli)
         long outTime = now - myBaseTime;
-        long millis = (outTime % 1000) /10, seconds = outTime/1000 % 60, mins = seconds / 60;
-        String easy_outTime = String.format("%02d:%02d:%02d", mins, seconds, millis);
+        long millis = (outTime % 1000) /10, seconds = outTime/1000 , mins = seconds / 60;
+        String easy_outTime = String.format("%02d:%02d:%02d", mins, seconds % 60, millis);
         return easy_outTime;
     }
     String getHour_MinTime()
