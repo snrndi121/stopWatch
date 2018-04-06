@@ -12,7 +12,7 @@
    
 **Features**
 - (1) standard start : you can set your problem's name, limitted time to solve problems and per problem, clock setting etc. Then start lap.
-- (2) quick start : It just ready to measure lap time now.
+- (2) quick start : It just ready to measure lap time right now.
 - (3) save & share : The result of lap can be saved and shared with friends.
 
 **Email**
