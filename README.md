@@ -2,7 +2,7 @@
  - It is specialized in lap. I want to know how long it takes to solve problems. This is between project and hobby, not homework.
 
 **Purpose**
- - There are many book with math, science, license test etc. If there will be limited testing time, you must distributed 
+ - There are many tests and problems with math, science, license test etc. If there will be limited testing time, you must distributed 
    the time well to solve all problems. You have to learn to solve problems within testing time. 
  - Therefore, I want to make stopwatch measuring time and to see how it develops.
  
