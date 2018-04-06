@@ -135,6 +135,7 @@ public class LabActivity extends AppCompatActivity {
                         myBtnStart.setText("멈춤");
                         myBtnRec.setText("기록");
                         cur_Status = Run;
+                        beforeLapTime = SystemClock.elapsedRealtime();
                         break;
                 }
                 break;
