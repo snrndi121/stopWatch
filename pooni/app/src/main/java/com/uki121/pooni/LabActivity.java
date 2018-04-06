@@ -107,6 +107,7 @@ public class LabActivity extends AppCompatActivity {
         // TODO Auto-generated method stub
         super.onDestroy();
     }
+    //a button listener for myBtnStart and myBtnRec
     public void myOnClick(View v){
         switch(v.getId()){
             case R.id.btn_start: //시작버튼을 클릭했을때 현재 상태값에 따라 다른 동작을 할수있게끔 구현.
@@ -114,13 +115,14 @@ public class LabActivity extends AppCompatActivity {
                     case Init:
                         myBaseTime = SystemClock.elapsedRealtime();
                         System.out.println(myBaseTime);
-                        myTimer.sendEmptyMessage(0);//myTimer 초기화
+                        myTimer.sendEmptyMessage(0);    //myTimer 초기화
                         myBtnStart.setText("멈춤"); //버튼의 문자"시작"을 "멈춤"으로 변경
                         myBtnRec.setEnabled(true); //기록버튼 활성
                         myBtnDel.setEnabled(true); //삭제버튼 활성
                         cur_Status = Run; //현재상태를 런상태로 변경
                         break;
                     case Run:
+                        adjustTimer();  //기록되지 않은 마지막 랩 타임을 총 시간에서 빼주기위하여
                         myTimer.removeMessages(0); //핸들러 메세지 제거
                         myPauseTime = SystemClock.elapsedRealtime();
                         myBtnStart.setText("시작");
@@ -169,12 +171,14 @@ public class LabActivity extends AppCompatActivity {
                 break;
         }
     }
+    //Handler for current time
     Handler myTimer = new Handler(){
         public void handleMessage(Message msg){
             myOutput.setText(getHour_MinTime());    //최상단 output 구간에 현재 시간값을 출력
             myTimer.sendEmptyMessage(0);    //sendEmptyMessage 는 비어있는 메세지를 Handler 에게 전송하는겁니다.
         }
     };
+    //Print the normal time by "hour:min:second"form
     String getTimeOut()
     {   //분 : 초 : 밀리초 단위로 문자열값 출력
         long now = SystemClock.elapsedRealtime(); //애플리케이션이 실행되고나서 실제로 경과된 시간(milli)
@@ -191,6 +195,15 @@ public class LabActivity extends AppCompatActivity {
         String hm_outTime = String.format("%02d:%02d:%02d", hours, mins % 60, seconds % 60);
         return hm_outTime;
     }
+    //To calculate the lab time
+    long setLabTimeout()
+    {
+            long curTime = SystemClock.elapsedRealtime();
+            long _curLabTime = curTime - beforeLapTime;
+            beforeLapTime = curTime;
+            return _curLabTime;
+    }
+    //Print the lap time by "min:second:milli" form.
     String getLabTimeout()
     {   //lab time을 계산하여 반환
         if(myCount <= 1 ) {
@@ -198,13 +211,18 @@ public class LabActivity extends AppCompatActivity {
             return getTimeOut();
         }
         else {
-            long curTime = SystemClock.elapsedRealtime();
-            long outTime = curTime - beforeLapTime;
-            beforeLapTime = curTime;
+            long outTime = setLabTimeout();
             String lap_outTime = String.format("%02d:%02d:%02d", outTime/1000 / 60, (outTime/1000)%60,(outTime%1000)/10);
             return lap_outTime;
         }
     }
+    //Get rid of the differces between the sum of lap and the total operating time.
+    void adjustTimer()
+    {
+            long ignored_last = setLabTimeout();
+            myBaseTime += ignored_last;
+    }
+    //To highlight the every 5th in the text view
     private TextView setColorInPartitial(String pre_string, String string, String color, TextView textView)
     {   //지정된 단어 길이만큼 색을 변경하여 텍스트뷰에 프린트
         SpannableStringBuilder builder = new SpannableStringBuilder(pre_string + string);
