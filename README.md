@@ -1,4 +1,4 @@
-# Stopwatch
+# **Stopwatch**
  - It is specialized in lap. I want to know how long it takes to solve problems. This is between project and hobby, not homework.
 
 # Purpose
