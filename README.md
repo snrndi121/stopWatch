@@ -4,7 +4,7 @@
 **Purpose**
  - There are many tests and problems with math, science, license test etc. If there will be limited testing time, you must distributed 
    the time well to solve all problems. You have to learn and pratice to solve problems within testing time. 
- - Therefore, I want to make stopwatch measuring time and to see how it develops.
+ - Therefore, I want to make stopwatch measuring time and to see how it is going.
  
 **My pleasure**
  - If someone want to help me a little or little, that's my pleasure regardless of how much you can help. I willing to share my project
