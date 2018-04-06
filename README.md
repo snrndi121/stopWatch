@@ -11,7 +11,7 @@
    while inviting [invision for myproject](https://invis.io/DPGNB45J8HV), 'Collaborative UI design site'.
    
 **Features**
-- (1) standard start : you can set your problem's name, limitted time to solve problems and per problem, clock setting etc. 
+- (1) standard start : you can set your problem's name, limitted time to solve problems and per problem, clock setting etc. Then start lap.
 - (2) quick start : It just ready to measure lap time now.
 - (3) save & share : The result of lap can be saved and shared with friends.
 
