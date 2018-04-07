@@ -217,6 +217,7 @@ public class LabActivity extends AppCompatActivity {
             return lap_outTime;
         }
     }
+    /* Todo : This fucntion is not used yet */
     long recordTolong(String _src, String _recordType)
     {
         int[] unit = new int[3];
