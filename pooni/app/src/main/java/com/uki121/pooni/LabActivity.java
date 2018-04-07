@@ -15,6 +15,8 @@ import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import java.util.StringTokenizer;
+
 /**
  * Created by uki121 on 2018-04-03.
  */
@@ -31,8 +33,8 @@ public class LabActivity extends AppCompatActivity {
 
     int cur_Status = Init; //현재의 상태를 저장할변수를 초기화함.
     int myCount=1;
-    long myBaseTime, myPauseTime;
-    long beforeLapTime;
+    long myBaseTime, myPauseTime, baseLapTime;
+    long systemTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,15 +50,14 @@ public class LabActivity extends AppCompatActivity {
         myBtnDel.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /* Todo : get rid of "//" */
                 if (myCount > 2)
                 {
-                    String targetIndex = String.valueOf(--myCount);
+                    String targetIndex = String.valueOf(--myCount);//integer to string
                     String subStr = myRec.getText().toString();
-                    int cutIndex = subStr.indexOf(targetIndex+ ".");
-                    //System.out.println("\n targetIndex : " + targetIndex + ", cutString :" + subStr.subSequence(cutIndex, subStr.length()-1));
+                    int cutIndex = subStr.indexOf(targetIndex+ ".");//find target in the string
+
+                    //ajdustTimer_delete(subStr.substring(cutIndex, subStr.length() - 1));
                     subStr = subStr.substring(0, cutIndex-1);
-                    //System.out.println("\n subString :" + subStr);
                     myRec.setText(subStr+"\n");
                 } else if (myCount == 2) {
                     myRec.setText("");
@@ -122,7 +123,7 @@ public class LabActivity extends AppCompatActivity {
                         cur_Status = Run; //현재상태를 런상태로 변경
                         break;
                     case Run:
-                        adjustTimer();  //기록되지 않은 마지막 랩 타임을 총 시간에서 빼주기위하여
+                        adjustTimer_pause();  //기록되지 않은 마지막 랩 타임을 총 시간에서 빼주기위하여
                         myTimer.removeMessages(0); //핸들러 메세지 제거
                         myPauseTime = SystemClock.elapsedRealtime();
                         myBtnStart.setText("시작");
@@ -137,7 +138,7 @@ public class LabActivity extends AppCompatActivity {
                         myBtnStart.setText("멈춤");
                         myBtnRec.setText("기록");
                         cur_Status = Run;
-                        beforeLapTime = SystemClock.elapsedRealtime();
+                        baseLapTime = SystemClock.elapsedRealtime();
                         break;
                 }
                 break;
@@ -198,16 +199,16 @@ public class LabActivity extends AppCompatActivity {
     //To calculate the lab time
     long setLabTimeout()
     {
-            long curTime = SystemClock.elapsedRealtime();
-            long _curLabTime = curTime - beforeLapTime;
-            beforeLapTime = curTime;
-            return _curLabTime;
+        long curTime = SystemClock.elapsedRealtime();
+        long _curLabTime = curTime - baseLapTime;
+        baseLapTime = curTime;
+        return _curLabTime;
     }
     //Print the lap time by "min:second:milli" form.
     String getLabTimeout()
     {   //lab time을 계산하여 반환
         if(myCount <= 1 ) {
-            beforeLapTime = SystemClock.elapsedRealtime();
+            baseLapTime = SystemClock.elapsedRealtime();
             return getTimeOut();
         }
         else {
@@ -216,15 +217,36 @@ public class LabActivity extends AppCompatActivity {
             return lap_outTime;
         }
     }
-    //Get rid of the differces between the sum of lap and the total operating time.
-    void adjustTimer()
+    long recordTolong(String _src, String _recordType)
     {
-            long ignored_last = setLabTimeout(), temptime;
-            myBaseTime += ignored_last;
-            temptime = SystemClock.elapsedRealtime() - myBaseTime;
-            long seconds = temptime/1000, mins = seconds /60, hours = mins /60;
-            String tempTime = String.format("%02d:%02d:%02d", hours, mins % 60, seconds % 60);
-            myOutput.setText(tempTime);
+        int[] unit = new int[3];
+        long res;
+        StringTokenizer str = new StringTokenizer(_src, ":");
+        int countTokens = str.countTokens();
+        //Get the token of lap typed string.
+        for (int i=0; i<countTokens; ++i) {
+            unit[i] = Integer.parseInt(str.nextToken());
+        }
+        //Summation of lap
+        if ( _recordType.equals("msms") ) {
+            return res = unit[0] * 60000 + unit[1] * 1000 + unit[2] * 10;//min : seconds : milli
+        } else if( _recordType.equals("hms") ) {
+            return res = unit[0] * 3600000 + unit[1] * 60000 + unit[2] * 1000;//hour : min : second
+        } else {
+            System.out.println(">> There's no type of record");
+            return 0;
+        }
+
+    }
+    //Get rid of the differces between the sum of lap and the total operating time.
+    void adjustTimer_pause()
+    {
+        long ignored_last = setLabTimeout(), temptime;
+        myBaseTime += ignored_last;
+        temptime = SystemClock.elapsedRealtime() - myBaseTime;
+        long seconds = temptime/1000, mins = seconds /60, hours = mins /60;
+        String tempTime = String.format("%02d:%02d:%02d", hours, mins % 60, seconds % 60);
+        myOutput.setText(tempTime);
     }
     //To highlight the every 5th in the text view
     private TextView setColorInPartitial(String pre_string, String string, String color, TextView textView)
