@@ -219,8 +219,12 @@ public class LabActivity extends AppCompatActivity {
     //Get rid of the differces between the sum of lap and the total operating time.
     void adjustTimer()
     {
-            long ignored_last = setLabTimeout();
+            long ignored_last = setLabTimeout(), temptime;
             myBaseTime += ignored_last;
+            temptime = SystemClock.elapsedRealtime() - myBaseTime;
+            long seconds = temptime/1000, mins = seconds /60, hours = mins /60;
+            String tempTime = String.format("%02d:%02d:%02d", hours, mins % 60, seconds % 60);
+            myOutput.setText(tempTime);
     }
     //To highlight the every 5th in the text view
     private TextView setColorInPartitial(String pre_string, String string, String color, TextView textView)
