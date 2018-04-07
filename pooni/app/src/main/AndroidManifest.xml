@@ -21,6 +21,7 @@
     <activity android:name=".HomeActivity"/>
     <activity android:name=".LabActivity"/>
     <activity android:name=".SaveNShareActivity"/>
+    <meta-data android:name="android.max_aspect" android:value="2.1" />
   </application>
 
 </manifest>

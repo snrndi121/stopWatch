@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical">
 
     <TextView
@@ -14,26 +16,26 @@
         android:gravity="center"
         android:text="@string/lab_init"
         android:textColor="#777777"
-        android:textSize="40sp" />
+        android:textSize="40sp"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-    android:id="@+id/record_title"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_alignParentStart="true"
-    android:layout_below="@+id/time_out"
-    android:background="#333333"
-    android:gravity="center"
-    android:text="@string/lab_title"
-    android:textColor="#ffffff"
-    android:textSize="25sp" />
+        android:id="@+id/record_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:background="#333333"
+        android:gravity="center"
+        android:text="@string/lab_title"
+        android:textColor="#ffffff"
+        android:textSize="25sp"
+        app:layout_constraintTop_toBottomOf="@+id/time_out" />
 
     <ScrollView
         android:id="@+id/lab_scroll"
         android:layout_width="match_parent"
         android:layout_height="366dp"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/record_title">
+        app:layout_constraintTop_toBottomOf="@+id/record_title">
 
         <TextView
             android:id="@+id/record"
@@ -42,47 +44,51 @@
             android:focusable="false" />
     </ScrollView>
     <!-- Todo : later some icons are here like alerts -->
-    <LinearLayout
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/btn_start"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true">
+        android:onClick="myOnClick"
+        android:text="@string/lab_start"
+        app:layout_constraintBottom_toTopOf="@+id/btn_end"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
-        <Button
-            android:id="@+id/btn_start"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="0px"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="myOnClick"
-            android:text="@string/lab_start" />
-
-        <Button
-            android:id="@+id/btn_rec"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="0px"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:enabled="false"
-            android:onClick="myOnClick"
-            android:text="@string/lab_record" />
-
-        <Button
-            android:id="@+id/btn_del"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="0px"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:enabled="false"
-            android:text="@string/lab_del" />
-    </LinearLayout>
+    <Button
+        android:id="@+id/btn_del"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="@string/lab_del"
+        app:layout_constraintBottom_toTopOf="@+id/btn_end"
+        app:layout_constraintRight_toRightOf="parent" />
 
     <Button
         android:id="@+id/btn_end"
-        android:layout_width="0px"
-        android:layout_height="match_parent"
-        android:layout_weight="3"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:enabled="false"
         android:onClick="myOnClick"
-        android:text="@string/lab_done" />
-</LinearLayout>
+        android:text="@string/lab_done"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.2" />
+
+    <Button
+        android:id="@+id/btn_rec"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:enabled="false"
+        android:onClick="myOnClick"
+        android:text="@string/lab_record"
+        app:layout_constraintBottom_toTopOf="@+id/btn_end"
+        app:layout_constraintEnd_toStartOf="@+id/btn_del"
+        app:layout_constraintLeft_toRightOf="@+id/btn_start"
+        app:layout_constraintRight_toLeftOf="@+id/btn_del"
+        app:layout_constraintStart_toEndOf="@+id/btn_start" />
+
+</android.support.constraint.ConstraintLayout>
