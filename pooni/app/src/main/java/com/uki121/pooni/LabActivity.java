@@ -1,5 +1,6 @@
 package com.uki121.pooni;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -63,6 +64,15 @@ public class LabActivity extends AppCompatActivity {
                     myRec.setText("");
                     myCount--;
                 } else { /* do nothing */ }
+            }
+        });
+        myBtnEnd.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Do something in response to button click
+                Intent op_quick = new Intent(LabActivity.this, SaveNShareActivity.class);
+                startActivity(op_quick);
+                finish();
             }
         });
         myRec.setOnTouchListener(new View.OnTouchListener() {
@@ -242,12 +252,16 @@ public class LabActivity extends AppCompatActivity {
     //Get rid of the differces between the sum of lap and the total operating time.
     void adjustTimer_pause()
     {
-        long ignored_last = setLabTimeout(), temptime;
-        myBaseTime += ignored_last;
-        temptime = SystemClock.elapsedRealtime() - myBaseTime;
-        long seconds = temptime/1000, mins = seconds /60, hours = mins /60;
-        String tempTime = String.format("%02d:%02d:%02d", hours, mins % 60, seconds % 60);
-        myOutput.setText(tempTime);
+        if ( myCount > 1) {
+            long ignored_last = setLabTimeout(), temptime;
+            myBaseTime += ignored_last;
+            temptime = SystemClock.elapsedRealtime() - myBaseTime;
+            long seconds = temptime / 1000, mins = seconds / 60, hours = mins / 60;
+            String tempTime = String.format("%02d:%02d:%02d", hours, mins % 60, seconds % 60);
+            myOutput.setText(tempTime);
+        } else if ( myCount == 1 ) {
+            myOutput.setText("00:00:00");
+        }
     }
     //To highlight the every 5th in the text view
     private TextView setColorInPartitial(String pre_string, String string, String color, TextView textView)
