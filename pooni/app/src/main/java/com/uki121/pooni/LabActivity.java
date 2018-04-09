@@ -2,6 +2,7 @@ package com.uki121.pooni;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -10,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -70,8 +72,9 @@ public class LabActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // Do something in response to button click
-                Intent op_quick = new Intent(LabActivity.this, SaveNShareActivity.class);
-                startActivity(op_quick);
+                Intent ssIntent = new Intent(LabActivity.this, SaveNShareActivity.class);
+                ssIntent.setData(Uri.parse(myRec.getText().toString()));
+                startActivityForResult(ssIntent, 0);
                 finish();
             }
         });
@@ -117,6 +120,17 @@ public class LabActivity extends AppCompatActivity {
     protected void onDestroy() {
         // TODO Auto-generated method stub
         super.onDestroy();
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==RESULT_OK) // 액티비티가 정상적으로 종료되었을 경우
+        {
+            if(requestCode==1) // requestCode==1 로 호출한 경우에만 처리합니다.
+            {
+                Log.d("Message", ""+data.getStringExtra("re"));
+            }
+        }
     }
     //a button listener for myBtnStart and myBtnRec
     public void myOnClick(View v){
