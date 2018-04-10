@@ -26,7 +26,7 @@
 - (2) [lottie-android](https://github.com/airbnb/lottie-android)
 ```
 	dependencies {
-  	compile 'com.airbnb.android:lottie:2.5.4'
+		implementation 'com.airbnb.android:lottie:2.5.4'
 	}
 ```
 - (3) [sweet-alert-dialog](https://jitpack.io/p/Leogiroux/sweet-alert-dialog)
@@ -36,7 +36,7 @@
 	}
 
 	dependencies {
-		compile 'com.github.f0ris.sweetalert:library:1.5.1'
+		implementation 'com.github.f0ris.sweetalert:library:1.5.1'
 	}
 ```
 **Email**
