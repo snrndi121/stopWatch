@@ -16,7 +16,7 @@
 - (3) save & share : The result of lap can be saved and shared with friends.
 
 **Dependencies** (_add build.gradle_)
-- (1) [Material-dialog](://github.com/afollestad/material-dialogs)
+- (1) [Material-dialog](https://github.com/afollestad/material-dialogs)
 ```
 	dependencies {
 	// ... other dependencies here
