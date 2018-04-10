@@ -15,12 +15,12 @@
 - (2) quick start : It just ready to measure lap time right now.
 - (3) save & share : The result of lap can be saved and shared with friends.
 
-**Dependencies** (_add build.gradle_)
+**Dependencies** (_add into build.gradle_)
 - (1) [Material-dialog](https://github.com/afollestad/material-dialogs)
 ```
 	dependencies {
 	// ... other dependencies here
-    implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
+    	implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
 	}	
 ```
 - (2) [lottie-android](https://github.com/airbnb/lottie-android)
