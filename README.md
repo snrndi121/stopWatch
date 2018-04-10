@@ -29,14 +29,14 @@
   	compile 'com.airbnb.android:lottie:2.5.4'
 	}
 ```
-- (3) [sweet-alert-dialog](https://github.com/pedant/sweet-alert-dialog)
+- (3) [sweet-alert-dialog](https://jitpack.io/p/Leogiroux/sweet-alert-dialog)
 ```
 	repositories {
 		mavenCentral()
 	}
 
 	dependencies {
-		compile 'cn.pedant.sweetalert:library:1.3'
+		compile 'com.github.f0ris.sweetalert:library:1.5.1'
 	}
 ```
 **Email**
