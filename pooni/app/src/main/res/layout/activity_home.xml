@@ -20,6 +20,7 @@ tools:context="com.uki121.pooni.MainActivity">
 
     <Button
         android:id="@+id/button_start"
+        android:text="@string/home_start"
         android:layout_width="128dp"
         android:layout_height="84dp"
         tools:layout_editor_absoluteY="156dp"
@@ -27,10 +28,11 @@ tools:context="com.uki121.pooni.MainActivity">
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="115dp"
-        android:text="@string/home_start"/>
+        />
 
     <Button
         android:id="@+id/button_quick"
+        android:text="@string/home_quick"
         android:layout_width="128dp"
         android:layout_height="84dp"
         tools:layout_editor_absoluteY="285dp"
@@ -38,6 +40,17 @@ tools:context="com.uki121.pooni.MainActivity">
         android:layout_marginTop="72dp"
         android:layout_below="@+id/button_start"
         android:layout_alignStart="@+id/button_start"
-        android:text="@string/home_quick"/>
+        />
+    <Button
+        android:id="@+id/button_sample"
+        android:text="@string/button_setting"
+        android:layout_width="128dp"
+        android:layout_height="84dp"
+        tools:layout_editor_absoluteY="285dp"
+        tools:layout_editor_absoluteX="128dp"
+        android:layout_marginTop="72dp"
+        android:layout_below="@+id/button_quick"
+        android:layout_alignStart="@+id/button_quick"
+        />
 
 </RelativeLayout>

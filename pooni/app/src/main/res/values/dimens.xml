@@ -6,4 +6,5 @@
   <dimen name="activity_main_lottie">250dp</dimen>
   <dimen name="main_lottie_width">140dp</dimen>
   <dimen name="main_lottie_height">160dp</dimen>
+  <dimen name="setting_tile">20dp</dimen>
 </resources>
