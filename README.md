@@ -11,17 +11,13 @@
    while inviting [invision for myproject](https://invis.io/DPGNB45J8HV), 'Collaborative UI design site'.
    
 **Features**
-- (1) Standard start 
-You can set your problem's name, limitted time to solve problems and per problem, clock setting etc. Then start lap.
+- (1) Standard start : You can set your problem's name, limitted time to solve problems and per problem, clock setting etc. Then start lap.
 
-- (2) Quick start
-It just ready to measure lap time right now.
+- (2) Quick start : It just ready to measure lap time right now.
 
-- (3) Setting
-It will save your settings in your app.
+- (3) Setting : It will save your settings in your app.
 
-- (4) Save & Share
-The result of lap can be saved and shared with friends.
+- (4) Save & Share : The result of lap can be saved and shared with friends.
 
 **Dependencies** (_add into build.gradle_)
 - (1) [Material-dialog](https://github.com/afollestad/material-dialogs)
