@@ -18,6 +18,9 @@ import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.StringTokenizer;
 
 /**
@@ -37,7 +40,7 @@ public class LabActivity extends AppCompatActivity {
     int cur_Status = Init; //현재의 상태를 저장할변수를 초기화함.
     int myCount=1;
     long myBaseTime, myPauseTime, baseLapTime;
-    long systemTime;
+    List listLap = new ArrayList();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,17 +58,11 @@ public class LabActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (myCount > 2)
                 {
-                    String targetIndex = String.valueOf(--myCount);//integer to string
-                    String subStr = myRec.getText().toString();
-                    int cutIndex = subStr.indexOf(targetIndex+ ".");//find target in the string
-
-                    //ajdustTimer_delete(subStr.substring(cutIndex, subStr.length() - 1));
-                    subStr = subStr.substring(0, cutIndex-1);
-                    myRec.setText(subStr+"\n");
+                    coloringStrInDel(myRec);
                 } else if (myCount == 2) {
                     myRec.setText("");
-                    myCount--;
                 } else { /* do nothing */ }
+                myCount--;
             }
         });
         myBtnEnd.setOnClickListener(new Button.OnClickListener() {
@@ -85,7 +82,6 @@ public class LabActivity extends AppCompatActivity {
                 {
                     switch(cur_Status){
                         case Run:
-                            //String str = myRec.getText().toString();
                             String str = String.format("%d. %s\n", myCount, getLabTimeout());
                             //분기점(5)마다 텍스트를 다른색으로 적용
                             if(myCount % 5 != 0) {
@@ -94,6 +90,8 @@ public class LabActivity extends AppCompatActivity {
                             else {
                                 setColorInPartitial(str, "","#FF1493",myRec);
                             }
+                            System.out.println(">>" + str);
+                            listLap.add(str);
                             myCount++; //카운트 증가
                             break;
                         case Pause:
@@ -178,6 +176,8 @@ public class LabActivity extends AppCompatActivity {
                         else {
                             setColorInPartitial(str, "","#FF1493",myRec);
                         }
+                        System.out.println(">>" + str);
+                        listLap.add(str);
                         myCount++; //카운트 증가
                         break;
                     case Pause:
@@ -190,6 +190,7 @@ public class LabActivity extends AppCompatActivity {
                         cur_Status = Init;
                         myCount = 1;
                         myRec.setText("");
+                        listLap.clear();
                         myBtnRec.setEnabled(false);
                         break;
                 }
@@ -278,11 +279,36 @@ public class LabActivity extends AppCompatActivity {
         }
     }
     //To highlight the every 5th in the text view
-    private TextView setColorInPartitial(String pre_string, String string, String color, TextView textView)
-    {   //지정된 단어 길이만큼 색을 변경하여 텍스트뷰에 프린트
-        SpannableStringBuilder builder = new SpannableStringBuilder(pre_string + string);
-        builder.setSpan(new ForegroundColorSpan(Color.parseColor(color)), 0, pre_string.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+    private TextView setColorInPartitial(String _baseStr, String _attachedStr, String color, TextView textView)
+    {
+        //print into textview with colored string by the specified lenth
+        SpannableStringBuilder builder = new SpannableStringBuilder(_baseStr + _attachedStr);
+        builder.setSpan(new ForegroundColorSpan(Color.parseColor(color)), 0, _baseStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         textView.append(builder);
         return textView;
+    }
+    private void coloringStrInDel(TextView _myrecView)
+    {
+        try {
+            //step1. deletion
+            listLap.remove(listLap.size() - 1);
+
+            //step2. clear view and print new lap strings into textview with Coloring
+            int tcount = 0;
+            Iterator it_lap = listLap.iterator();
+
+            _myrecView.setText("");
+            while (it_lap.hasNext()) {
+                String _addedStr = (String) it_lap.next();
+                if (++ tcount % 5 != 0) {
+                   // _baseStr = _attachedStr + "\n";
+                    _myrecView.append(_addedStr);
+                } else {
+                    setColorInPartitial(_addedStr, "", "#FF1493", _myrecView);
+                }
+            }
+        } catch (Exception e) {
+            Log.d("Fail", e.getMessage());
+        }
     }
 }
