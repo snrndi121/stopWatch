@@ -37,7 +37,7 @@ public class LabActivity extends AppCompatActivity {
     final static int Run =1;
     final static int Pause =2;
 
-    int cur_Status = Init; //현재의 상태를 저장할변수를 초기화함.
+    int cur_Status = Init;
     int myCount=1;
     long myBaseTime, myPauseTime, baseLapTime;
     List listLap = new ArrayList();
@@ -83,21 +83,20 @@ public class LabActivity extends AppCompatActivity {
                     switch(cur_Status){
                         case Run:
                             String str = String.format("%d. %s\n", myCount, getLabTimeout());
-                            //분기점(5)마다 텍스트를 다른색으로 적용
+                            //print
                             if(myCount % 5 != 0) {
                                 myRec.append(str);
                             }
                             else {
                                 setColorInPartitial(str, "","#FF1493",myRec);
                             }
-                            System.out.println(">>" + str);
                             listLap.add(str);
-                            myCount++; //카운트 증가
+                            myCount++;
                             break;
                         case Pause:
-                            //핸들러를 멈춤
+                            //print colored a string every 5th.
                             myTimer.removeMessages(0);
-                            //버튼 및 레코드값 초기화
+                            //reset buttons and records
                             myBtnStart.setText("시작");
                             myBtnRec.setText("기록");
                             myOutput.setText("00:00:00");
@@ -130,14 +129,13 @@ public class LabActivity extends AppCompatActivity {
             }
         }
     }
-    //a button listener for myBtnStart and myBtnRec
+    //A button listener for myBtnStart and myBtnRec
     public void myOnClick(View v){
         switch(v.getId()){
             case R.id.btn_start: //시작버튼을 클릭했을때 현재 상태값에 따라 다른 동작을 할수있게끔 구현.
                 switch(cur_Status){
                     case Init:
                         myBaseTime = SystemClock.elapsedRealtime();
-                        System.out.println(myBaseTime);
                         myTimer.sendEmptyMessage(0);    //myTimer 초기화
                         myBtnStart.setText("멈춤"); //버튼의 문자"시작"을 "멈춤"으로 변경
                         myBtnRec.setEnabled(true); //기록버튼 활성
@@ -145,8 +143,8 @@ public class LabActivity extends AppCompatActivity {
                         cur_Status = Run; //현재상태를 런상태로 변경
                         break;
                     case Run:
-                        adjustTimer_pause();  //기록되지 않은 마지막 랩 타임을 총 시간에서 빼주기위하여
-                        myTimer.removeMessages(0); //핸들러 메세지 제거
+                        adjustTimer_pause();  //processing of recording time that can not be saved after stopping.
+                        myTimer.removeMessages(0); //clear the message of handler
                         myPauseTime = SystemClock.elapsedRealtime();
                         myBtnStart.setText("시작");
                         myBtnRec.setText("리셋");
@@ -167,23 +165,21 @@ public class LabActivity extends AppCompatActivity {
             case R.id.btn_rec:
                 switch(cur_Status){
                     case Run:
-                        //String str = myRec.getText().toString();
                         String str = String.format("%d. %s\n", myCount, getLabTimeout());
-                        //분기점(5)마다 텍스트를 다른색으로 적용
+                        //print colored a string every 5th.
                         if(myCount % 5 != 0) {
                             myRec.append(str);
                         }
                         else {
                             setColorInPartitial(str, "","#FF1493",myRec);
                         }
-                        System.out.println(">>" + str);
                         listLap.add(str);
-                        myCount++; //카운트 증가
+                        myCount++; //add a count of lap
                         break;
                     case Pause:
-                        //핸들러를 멈춤
+                        //stop handler
                         myTimer.removeMessages(0);
-                        //버튼 및 레코드값 초기화
+                        //reset buttons and records
                         myBtnStart.setText("시작");
                         myBtnRec.setText("기록");
                         myOutput.setText("00:00:00");
@@ -200,21 +196,21 @@ public class LabActivity extends AppCompatActivity {
     //Handler for current time
     Handler myTimer = new Handler(){
         public void handleMessage(Message msg){
-            myOutput.setText(getHour_MinTime());    //최상단 output 구간에 현재 시간값을 출력
-            myTimer.sendEmptyMessage(0);    //sendEmptyMessage 는 비어있는 메세지를 Handler 에게 전송하는겁니다.
+            myOutput.setText(getHour_MinTime());    //print the elapsed time into top board
+            myTimer.sendEmptyMessage(0);    //sendEmptyMessage is now send a null message into Handler
         }
     };
     //Print the normal time by "hour:min:second"form
     String getTimeOut()
-    {   //분 : 초 : 밀리초 단위로 문자열값 출력
-        long now = SystemClock.elapsedRealtime(); //애플리케이션이 실행되고나서 실제로 경과된 시간(milli)
+    {   //print time with format(min : seconds : millis)
+        long now = SystemClock.elapsedRealtime(); //actual time(milli) after being loaded
         long outTime = now - myBaseTime;
         long millis = (outTime % 1000) /10, seconds = outTime/1000 , mins = seconds / 60;
         String easy_outTime = String.format("%02d:%02d:%02d", mins, seconds % 60, millis);
         return easy_outTime;
     }
     String getHour_MinTime()
-    {   //시간 : 분 : 초 단위로 문자열값 출력
+    {   //print time with format(hour : min : seconds)
         long now = SystemClock.elapsedRealtime();
         long outTime = now - myBaseTime;
         long seconds = outTime/1000, mins = seconds /60, hours = mins /60;
@@ -231,7 +227,7 @@ public class LabActivity extends AppCompatActivity {
     }
     //Print the lap time by "min:second:milli" form.
     String getLabTimeout()
-    {   //lab time을 계산하여 반환
+    {   //calculate a lab time then return
         if(myCount <= 1 ) {
             baseLapTime = SystemClock.elapsedRealtime();
             return getTimeOut();
@@ -255,9 +251,9 @@ public class LabActivity extends AppCompatActivity {
         }
         //Summation of lap
         if ( _recordType.equals("msms") ) {
-            return res = unit[0] * 60000 + unit[1] * 1000 + unit[2] * 10;//min : seconds : milli
+            return res = unit[0] * 60000 + unit[1] * 1000 + unit[2] * 10;//format(min : seconds : milli)
         } else if( _recordType.equals("hms") ) {
-            return res = unit[0] * 3600000 + unit[1] * 60000 + unit[2] * 1000;//hour : min : second
+            return res = unit[0] * 3600000 + unit[1] * 60000 + unit[2] * 1000;//format(hour : min : second)
         } else {
             System.out.println(">> There's no type of record");
             return 0;
@@ -265,6 +261,7 @@ public class LabActivity extends AppCompatActivity {
 
     }
     //Get rid of the differces between the sum of lap and the total operating time.
+    //Processing of recording time that can not be saved after stopping.
     void adjustTimer_pause()
     {
         if ( myCount > 1) {
@@ -287,6 +284,7 @@ public class LabActivity extends AppCompatActivity {
         textView.append(builder);
         return textView;
     }
+    //To print lap' textview with coloring after deleting the last element of lap.
     private void coloringStrInDel(TextView _myrecView)
     {
         try {
@@ -301,7 +299,6 @@ public class LabActivity extends AppCompatActivity {
             while (it_lap.hasNext()) {
                 String _addedStr = (String) it_lap.next();
                 if (++ tcount % 5 != 0) {
-                   // _baseStr = _attachedStr + "\n";
                     _myrecView.append(_addedStr);
                 } else {
                     setColorInPartitial(_addedStr, "", "#FF1493", _myrecView);
