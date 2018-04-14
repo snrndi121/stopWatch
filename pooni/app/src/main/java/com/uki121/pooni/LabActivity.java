@@ -28,7 +28,11 @@ import java.util.StringTokenizer;
  */
 
 public class LabActivity extends AppCompatActivity {
+    /* var_control app */
+    private final long FINISH_INTERVAL_TIME = 2000;
+    private long   backPressedTime = 0;
 
+    /* var_lap operation */
     float x, y;
     TextView myOutput, myRec;
     Button myBtnStart, myBtnRec, myBtnEnd,myBtnDel;
@@ -121,7 +125,16 @@ public class LabActivity extends AppCompatActivity {
     @Override
     public void onBackPressed()
     {
-        super.onBackPressed();
+        long tempTime = System.currentTimeMillis();
+        long intervalTime = tempTime - backPressedTime;
+        if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime)
+        {
+            super.onBackPressed();
+        }
+        else
+        {
+            backPressedTime = tempTime;
+        }
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
