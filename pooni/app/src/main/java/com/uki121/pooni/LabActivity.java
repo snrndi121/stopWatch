@@ -119,6 +119,11 @@ public class LabActivity extends AppCompatActivity {
         super.onDestroy();
     }
     @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed();
+    }
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode==RESULT_OK) // 액티비티가 정상적으로 종료되었을 경우
