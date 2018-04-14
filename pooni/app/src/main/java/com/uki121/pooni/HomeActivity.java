@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -20,6 +21,10 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
  */
 
 public class HomeActivity extends AppCompatActivity {
+    //onBackbutton_pressed
+    private final long FINISH_INTERVAL_TIME = 2000;
+    private long   backPressedTime = 0;
+
     private EditText name,stot,smot,snop, srot;
     private SettingBook sb;
     private View setting_dial_view;
@@ -61,7 +66,6 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent op_quick = new Intent(HomeActivity.this, LabActivity.class);
                 startActivity(op_quick);
-                finish();
             }
         });
         Button button_sample = (Button) findViewById(R.id.button_sample);
@@ -75,5 +79,20 @@ public class HomeActivity extends AppCompatActivity {
                         .show();
             }
         });
+    }
+    public void onBackPressed()
+    {
+        long tempTime = System.currentTimeMillis();
+        long intervalTime = tempTime - backPressedTime;
+        if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime)
+        {
+            super.onBackPressed();
+        }
+        else
+        {
+            backPressedTime = tempTime;
+            Toast.makeText(getApplicationContext(), "한번 더 뒤로가기 누르면 종료", Toast.LENGTH_SHORT).show();
+
+        }
     }
 }

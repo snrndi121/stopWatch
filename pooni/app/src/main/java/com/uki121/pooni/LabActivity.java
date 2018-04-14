@@ -18,6 +18,9 @@ import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -134,6 +137,18 @@ public class LabActivity extends AppCompatActivity {
         else
         {
             backPressedTime = tempTime;
+            new MaterialDialog.Builder(this)
+                    .title(R.string.exit_lab)
+                    .content(R.string.cancel_record)
+                    .positiveText(R.string.agree)
+                    .negativeText(R.string.disagree)
+                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@android.support.annotation.NonNull MaterialDialog dialog, @android.support.annotation.NonNull DialogAction which) {
+                            finish();
+                        }
+                    })
+                    .show();
         }
     }
     @Override
@@ -143,7 +158,7 @@ public class LabActivity extends AppCompatActivity {
         {
             if(requestCode==1) // requestCode==1 로 호출한 경우에만 처리합니다.
             {
-                Log.d("Message", ""+data.getStringExtra("re"));
+                Log.d("Message", ""+data.getStringExtra("Lab_done!!"));
             }
         }
     }

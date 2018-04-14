@@ -28,8 +28,14 @@ public class MainActivity extends AppCompatActivity {
         Intent welcome = new Intent( MainActivity.this, HomeActivity.class);
         startActivity(welcome);
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-        finish();
       }
     }, WELCOME_TIMEOUT);
+  }
+  @Override
+  public void onPause() {
+    super.onPause();
+
+    // Remove the activity when its off the screen
+    finish();
   }
 }

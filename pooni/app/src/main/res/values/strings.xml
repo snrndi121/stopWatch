@@ -31,4 +31,13 @@
   <!-- activity_lab_done -->
   <string name="lab_done_save">저장</string>
   <string name="lab_done_share">공유</string>
+
+  <!-- warnings -->
+  <string name="cancel_record">저장되지 않은 Lap 기록이 있습니다. 중지할까요?</string>
+
+  <!-- noraml notification -->
+  <string name="agree">확인</string>
+  <string name="disagree">취소</string>
+  <string name="moreinfo">더보기</string>
+  <string name="exit_lab">Lap 종료</string>
 </resources>
