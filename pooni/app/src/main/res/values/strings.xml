@@ -34,6 +34,7 @@
 
   <!-- warnings -->
   <string name="cancel_record">저장되지 않은 Lap 기록이 있습니다. 중지할까요?</string>
+  <string name="msg_back">한번 더 뒤로가기 누르면 종료</string>
 
   <!-- noraml notification -->
   <string name="agree">확인</string>
