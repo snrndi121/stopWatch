@@ -65,11 +65,14 @@ public class LabActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (myCount > 2)
                 {
+                    myCount--;
                     coloringStrInDel(myRec);
                 } else if (myCount == 2) {
+                    myCount--;
                     myRec.setText("");
-                } else { /* do nothing */ }
-                myCount--;
+                } else { /* do nothing */
+                    Log.d("Record_count ", "can't be lower than 0");
+                }
             }
         });
         myBtnEnd.setOnClickListener(new Button.OnClickListener() {
