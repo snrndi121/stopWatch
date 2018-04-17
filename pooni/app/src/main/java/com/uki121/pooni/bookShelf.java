@@ -11,13 +11,13 @@ import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
 
-public class SettingBook extends AppCompatActivity {
+public class bookShelf extends AppCompatActivity {
     final int MAX_BOOKS = 100;
     private List < Book > books;
     private int numOfbooks = 0;
 
-    public SettingBook() { books = new ArrayList<>();}
-    public SettingBook(String[] _onebook) {
+    public bookShelf() { books = new ArrayList<>();}
+    public bookShelf(String[] _onebook) {
         books = new ArrayList<>();
         books.add(new Book(_onebook));
         numOfbooks++;
@@ -46,7 +46,7 @@ public class SettingBook extends AppCompatActivity {
         }
     }
     public void AddBooks(String[] _bsData) {
-        Book b = new Book(_bsData);
+        Book b = new Book(_bsData)  ;
         AddBooks(b);
     }
     public void AddBooks(View view) {

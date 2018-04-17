@@ -5,6 +5,7 @@ import android.util.Log;
 import java.util.regex.Pattern;
 
 class Book {
+    /* Todo : Consistancy of variable */
     final private int sTitle = 0, smaxTotalTIme = 1, smaxTimeEach = 2, sresOftime = 3, snumOfprob = 4;
     final int MAX_CATEGORY =5;
     public String[] category;
@@ -45,13 +46,31 @@ class Book {
         //c2 is true -> c2 > 0
         return c1 && c2;//c1 && c2 is true -> target is valid
     }
+
+
+    /* essential function */
+    public void setTitle(String _title) {
+        this.category[sTitle] = _title;
+    }
+    public final String getTitle() {
+        return category[sTitle];
+    }
+    public void setTotal(String _totalTime) {
+        this.category[smaxTotalTIme] = _totalTime;
+    }
+    public final String getTotal() {
+        return category[smaxTotalTIme];
+    }
+    public void setMaxPer(String _maxtimePer) {
+        this.category[smaxTimeEach] = _maxtimePer;
+    }
+    public final String getMaxper() {
+        return category[smaxTimeEach];
+    }
     public final String[] getBook() {
         for (int i=0; i<MAX_CATEGORY; ++i) {
             Log.d("book_info_category " + i, category[i]);
         }
         return category;
-    }
-    public final String getTitle() {
-        return category[sTitle];
     }
 };

@@ -28,9 +28,11 @@ public class HomeActivity extends AppCompatActivity {
     private final long FINISH_INTERVAL_TIME = 2000;
     private long   backPressedTime = 0;
 
-    private EditText name, stot,smot,snop, srot;
-    private SettingBook sb;
+    private bookShelf sb;
     private View setting_dial_view;
+    private final String BOOKDB_NAME = "pooni.db";  //sqlite database name
+    private bookDBHelper bookdbHelper;
+
     class BtnOnClickListener implements Button.OnClickListener {
         @Override
         public void onClick(View view) {
@@ -83,7 +85,9 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceStates);
         setContentView(R.layout.activity_home);
 
-        sb = new SettingBook();
+        sb = new bookShelf();
+        bookdbHelper = new bookDBHelper( HomeActivity.this, BOOKDB_NAME, null, 1); bookdbHelper.testDB();
+
         BtnOnClickListener onClickListener = new BtnOnClickListener() ;
 
         Button btn_start = (Button) findViewById(R.id.button_start);
