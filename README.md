@@ -1,5 +1,5 @@
 **Stopwatch**
- - It is specialized in lap. I want to know how long it takes to solve problems. This is between project and hobby, not homework.
+ - It is specialized in measuring elapsed time when you check how long it takes to solve problems. This is between project and hobby, not homework.
 
 **Purpose**
  - There are many tests and problems with math, science, license test etc. If there will be limited testing time, you must distributed 
@@ -11,7 +11,7 @@
    while inviting [invision for myproject](https://invis.io/DPGNB45J8HV), 'Collaborative UI design site'.
    
 **Features**
-- (1) Standard start : You can set your problem's name, limitted time to solve problems and per problem, clock setting etc. Then start lap.
+- (1) New(standard) start : You can set your problem's name, limitted time to solve problems and per problem, clock setting etc. Then start lap.
 
 - (2) Quick start : It just ready to measure lap time right now.
 
@@ -43,5 +43,9 @@
 		implementation 'com.github.f0ris.sweetalert:library:1.5.1'
 	}
 ```
+**To be**
+- New features
+ (1) Check answer sheets with records of elapsed time.
+
 **Email**
 - snrndi4521@gmail.com
