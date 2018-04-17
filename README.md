@@ -47,5 +47,12 @@
 - New features
  (1) Check answer sheets with records of elapsed time.
 
+- Improved UI designe
+ There are many opensources from good-skill designer.
+
+ (1) [Floating Navigation View](https://kmshack.github.io/AndroidUICollection/2016/10/03/FloatingNavigationView/)
+ (2) [android-floating-action-button](https://github.com/futuresimple/android-floating-action-button)
+ (3) [Searchable](https://github.com/Wrdlbrnft/Searchable-RecyclerView-Demo)
+
 **Email**
 - snrndi4521@gmail.com
