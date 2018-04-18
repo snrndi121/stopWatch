@@ -45,7 +45,7 @@
 ```
 **To be**
 - New features
- - Check answer sheets with records of elapsed time.
+ (1) Check answer sheets with records of elapsed time.
 
  - Improved UI designe
  There are many opensources from good-skill designer. Look below.
