@@ -60,9 +60,9 @@ public class bookShelf extends AppCompatActivity {
                 AddBooks(dia);
             }
         } catch(Exception e) {
-            Log.d("AddBook_fail from ", "View is null!!!");
-        } catch(ExceptionInInitializerError exception) {
-            Log.d("Initialziing_variable", exception.getMessage());
+            Log.d("AddBook_fail from ", e.getMessage());
+        } catch(ExceptionInInitializerError e) {
+            Log.d("Initialziing_variable", e.getMessage());
         }
     }
     public boolean IsDupBooks(Book bs) {
