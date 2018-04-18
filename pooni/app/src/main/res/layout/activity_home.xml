@@ -1,53 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:id="@+id/frag_home_container"/>
 
-    <ImageView
-        android:id="@+id/pooni_trans"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/logo_top"
-        android:background="#00000000"
-        android:contentDescription="@string/todo"
-        android:src="@drawable/pooni_trans"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
-    <Button
-        android:id="@+id/button_start"
-        android:text="@string/home_start"
-        android:layout_width="@dimen/middleBtnWidth"
-        android:layout_height="@dimen/middleBtnHeight"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pooni_trans"
-        android:layout_marginTop="@dimen/btnMarginwithlogo"
-        />
-    <Button
-        android:id="@+id/button_quick"
-        android:text="@string/home_quick"
-        android:layout_width="@dimen/middleBtnWidth"
-        android:layout_height="@dimen/middleBtnHeight"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/button_start"
-        android:layout_marginTop="@dimen/middleMarginBtn"
-        />
-    <Button
-        android:id="@+id/button_setting"
-        android:text="@string/button_setting"
-        android:layout_width="@dimen/middleBtnWidth"
-        android:layout_height="@dimen/middleBtnHeight"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/button_quick"
-        android:layout_marginTop="@dimen/middleMarginBtn"
-        />
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>
+

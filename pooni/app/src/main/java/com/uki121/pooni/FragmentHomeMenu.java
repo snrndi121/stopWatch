@@ -1,61 +1,47 @@
 package com.uki121.pooni;
 
-
+import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
-import android.text.InputType;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.afollestad.materialdialogs.Theme;
+
+public class FragmentHomeMenu extends Fragment {
+
+    private View setting_dial_view;
+    private bookShelf sb;
 
 
-import cn.pedant.SweetAlert.SweetAlertDialog;
-
-/**
- * Created by uki121 on 2018-04-03.
- */
-
-public class HomeActivity extends AppCompatActivity {//} implements FragmentHomeMenu.OnHomeMenuSelectedListener{
-
-    //private bookShelf sb;
-    //private View setting_dial_view;
-    private onKeyBackPressedListener mOnKeyBackPressedListener;
-
+    public FragmentHomeMenu() { }
     @Override
-    protected void onCreate(Bundle savedInstanceStates) {
-        super.onCreate(savedInstanceStates);
-        try {
-            setContentView(R.layout.activity_home);
-            FragmentManager fm = getFragmentManager();
-            FragmentTransaction fragmentTransaction = fm.beginTransaction();
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        final View view = inflater.inflate(R.layout.fragment_home, container, false);
+        sb = new bookShelf();
 
-            fragmentTransaction.add(R.id.frag_home_container, new FragmentHomeMenu());
-            fragmentTransaction.commit();
-        } catch(Exception e) {
-            Log.e("ERROR", e.getMessage());
-        }
-    }
-    /*
-    @Override
-    public void onClicked( View v )  {
-        switch( v.getId() ) {
-            case R.id.btn_new_start: {
+        Button btn_start = (Button) view.findViewById(R.id.btn_new_start);
+        Button btn_quick = (Button) view.findViewById(R.id.btn_quick_start);
+        Button btn_setlog = (Button) view.findViewById(R.id.btn_setlog);
+
+        btn_start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 // Do something in response to button click
                 boolean wrapInScrollView = true;
-                final MaterialDialog startDialog = new MaterialDialog.Builder(HomeActivity.this)
+                Fragment newFragment = new FragmentHomeMenu();
+                final MaterialDialog startDialog = new MaterialDialog.Builder(newFragment.getActivity())
                         .title("setting")
                         .positiveText("확인")
                         .negativeText("취소")
@@ -63,9 +49,11 @@ public class HomeActivity extends AppCompatActivity {//} implements FragmentHome
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                 // Some unimportant data stuff
+                                /* Todo_BIG*/
                                 try {
                                     setting_dial_view = dialog.getCustomView();
-                                    if (setting_dial_view != null) {
+                                    if (setting_dial_view != null)
+                                    {
                                         //View v = dialog.getCustomView();
                                         sb.AddBooks(setting_dial_view);
                                         sb.printBooks();
@@ -78,9 +66,11 @@ public class HomeActivity extends AppCompatActivity {//} implements FragmentHome
                         .customView(R.layout.customview_setting, wrapInScrollView)
                         .build();
                 startDialog.show();
-                break;
             }
-            case R.id.btn_quick_start: {
+        });
+        btn_quick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 Fragment newFragment = new FragmentLap();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
@@ -91,9 +81,11 @@ public class HomeActivity extends AppCompatActivity {//} implements FragmentHome
 
                 // Commit the transaction
                 transaction.commit();
-                break;
             }
-            case R.id.btn_setlog : {
+        });
+        btn_setlog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 Fragment newFragment = new FragmentSetLog();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
@@ -104,22 +96,9 @@ public class HomeActivity extends AppCompatActivity {//} implements FragmentHome
 
                 // Commit the transaction
                 transaction.commit();
-                break;
             }
-        }
-    }
-    */
-    public interface onKeyBackPressedListener {
-        public void onBack();
-    }
-    public void setOnKeyBackPressedListener(onKeyBackPressedListener listener) {
-        mOnKeyBackPressedListener = listener;
-    }
-    public void onBackPressed() {
-        if (mOnKeyBackPressedListener != null) {
-            mOnKeyBackPressedListener.onBack();
-        } else {
-            super.onBackPressed();
-        }
+        });
+
+        return view;
     }
 }

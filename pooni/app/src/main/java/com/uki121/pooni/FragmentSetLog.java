@@ -6,11 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class FragmentHome extends Fragment {
-    public FragmentHome() { }
+public class FragmentSetLog extends Fragment {
+    public void FragmentSetLog(){};
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.activity_home, container, false);
+        View v = inflater.inflate(R.layout.fragment_setlog_home, container, false);
+        return v;
     }
 }

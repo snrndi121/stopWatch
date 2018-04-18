@@ -1,5 +1,8 @@
 package com.uki121.pooni;
 
+import android.app.Activity;
+import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -7,15 +10,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -26,12 +29,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
-/**
- * Created by uki121 on 2018-04-03.
- */
-
-public class LabActivity extends AppCompatActivity {
-    /* var_control app */
+public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPressedListener {
     private final long FINISH_INTERVAL_TIME = 2000;
     private long   backPressedTime = 0;
 
@@ -49,17 +47,20 @@ public class LabActivity extends AppCompatActivity {
     long myBaseTime, myPauseTime, baseLapTime;
     List listLap = new ArrayList();
 
+    public interface onKeyBackPressedListener {
+        public void onBack();
+    }
+    public void FragmentLap(){};
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_lab_start);
-
-        myOutput = (TextView) findViewById(R.id.time_out);
-        myRec = (TextView) findViewById(R.id.record);
-        myBtnStart = (Button) findViewById(R.id.btn_start);
-        myBtnRec = (Button) findViewById(R.id.btn_rec);
-        myBtnEnd = (Button) findViewById(R.id.btn_end);
-        myBtnDel = (Button) findViewById(R.id.btn_del);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_lab_start, container, false);
+        myOutput = (TextView) view.findViewById(R.id.time_out);
+        myRec = (TextView) view.findViewById(R.id.record);
+        myBtnStart = (Button) view.findViewById(R.id.btn_start);
+        myBtnRec = (Button) view.findViewById(R.id.btn_rec);
+        myBtnEnd = (Button) view.findViewById(R.id.btn_end);
+        myBtnDel = (Button) view.findViewById(R.id.btn_del);
         myBtnDel.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -79,10 +80,12 @@ public class LabActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // Do something in response to button click
-                Intent ssIntent = new Intent(LabActivity.this, SaveNShareActivity.class);
+                /*
+                Intent ssIntent = new Intent
                 ssIntent.setData(Uri.parse(myRec.getText().toString()));
                 startActivityForResult(ssIntent, 0);
                 finish();
+                */
             }
         });
         myRec.setOnTouchListener(new View.OnTouchListener() {
@@ -121,49 +124,7 @@ public class LabActivity extends AppCompatActivity {
                 return true;
             }
         });
-
-    }
-    @Override
-    protected void onDestroy() {
-        // TODO Auto-generated method stub
-        super.onDestroy();
-    }
-    @Override
-    public void onBackPressed()
-    {
-        long tempTime = System.currentTimeMillis();
-        long intervalTime = tempTime - backPressedTime;
-        if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime)
-        {
-            super.onBackPressed();
-        }
-        else
-        {
-            backPressedTime = tempTime;
-            new MaterialDialog.Builder(this)
-                    .title(R.string.exit_lab)
-                    .content(R.string.cancel_record)
-                    .positiveText(R.string.agree)
-                    .negativeText(R.string.disagree)
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@android.support.annotation.NonNull MaterialDialog dialog, @android.support.annotation.NonNull DialogAction which) {
-                            finish();
-                        }
-                    })
-                    .show();
-        }
-    }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode==RESULT_OK) // 액티비티가 정상적으로 종료되었을 경우
-        {
-            if(requestCode==1) // requestCode==1 로 호출한 경우에만 처리합니다.
-            {
-                Log.d("Message", ""+data.getStringExtra("Lab_done!!"));
-            }
-        }
+        return view;
     }
     //A button listener for myBtnStart and myBtnRec
     public void myOnClick(View v){
@@ -342,6 +303,42 @@ public class LabActivity extends AppCompatActivity {
             }
         } catch (Exception e) {
             Log.d("Fail", e.getMessage());
+        }
+    }
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        HomeActivity activity;
+        if (context instanceof HomeActivity) {
+            activity = (HomeActivity) context;
+            ((HomeActivity) activity).setOnKeyBackPressedListener(this);
+        }
+    }
+    public void onBack() {
+        long tempTime = System.currentTimeMillis();
+        long intervalTime = tempTime - backPressedTime;
+
+        final HomeActivity activity = (HomeActivity) getActivity();
+        if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime)
+        {
+            activity.onBackPressed();
+        }
+        else
+        {
+            backPressedTime = tempTime;
+            new MaterialDialog.Builder(getActivity())
+                    .title(R.string.exit_lab)
+                    .content(R.string.cancel_record)
+                    .positiveText(R.string.agree)
+                    .negativeText(R.string.disagree)
+                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@android.support.annotation.NonNull MaterialDialog dialog, @android.support.annotation.NonNull DialogAction which) {
+                            activity.setOnKeyBackPressedListener(null);
+                            activity.onBackPressed();
+                        }
+                    })
+                    .show();
         }
     }
 }
