@@ -7,4 +7,14 @@
   <dimen name="main_lottie_width">140dp</dimen>
   <dimen name="main_lottie_height">160dp</dimen>
   <dimen name="setting_tile">20dp</dimen>
+  <!-- logo -->
+  <dimen name="logo_top">50dp</dimen>
+
+  <!-- button -->
+  <dimen name="middleBtnWidth">128dp</dimen>
+  <dimen name="middleBtnHeight">84dp</dimen>
+  <dimen name="middleMarginBtn">72dp</dimen>
+
+  <!-- button with logo -->
+  <dimen name="btnMarginwithlogo">30dp</dimen>
 </resources>

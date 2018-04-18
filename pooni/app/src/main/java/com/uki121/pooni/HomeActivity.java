@@ -30,8 +30,6 @@ public class HomeActivity extends AppCompatActivity {
 
     private bookShelf sb;
     private View setting_dial_view;
-    private final String BOOKDB_NAME = "pooni.db";  //sqlite database name
-    private bookDBHelper bookdbHelper;
 
     class BtnOnClickListener implements Button.OnClickListener {
         @Override
@@ -70,12 +68,9 @@ public class HomeActivity extends AppCompatActivity {
                     Intent op_quick = new Intent(HomeActivity.this, LabActivity.class);
                     startActivity(op_quick);
                     break;
-                case R.id.button_sample:
-                    MaterialDialog.Builder setDialog= new MaterialDialog.Builder(HomeActivity.this);
-                    setDialog.title("기다려");
-                    setDialog.content("잠깐");
-                    setDialog.progress(true, 0);
-                    setDialog.show();
+                case R.id.button_setting:
+                    Intent op_set = new Intent(HomeActivity.this, SetLogActivity.class);
+                    startActivity(op_set);
                     break;
             }
         }
@@ -86,7 +81,6 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         sb = new bookShelf();
-        bookdbHelper = new bookDBHelper( HomeActivity.this, BOOKDB_NAME, null, 1); bookdbHelper.testDB();
 
         BtnOnClickListener onClickListener = new BtnOnClickListener() ;
 
@@ -96,7 +90,7 @@ public class HomeActivity extends AppCompatActivity {
         Button btn_quick = (Button) findViewById(R.id.button_quick);
         btn_quick.setOnClickListener(onClickListener);
 
-        Button btn_sample = (Button) findViewById(R.id.button_sample);
+        Button btn_sample = (Button) findViewById(R.id.button_setting);
         btn_sample.setOnClickListener(onClickListener);
     }
     public void onBackPressed()

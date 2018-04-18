@@ -16,11 +16,15 @@ import java.io.StringReader;
 
 public class MainActivity extends AppCompatActivity {
   private static int WELCOME_TIMEOUT = 2000;
+  private final String BOOKDB_NAME = "pooni.db";  //sqlite database name
+  private bookDBHelper bookdbHelper;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
+
+    bookdbHelper = new bookDBHelper( MainActivity.this, BOOKDB_NAME, null, 1); bookdbHelper.testDB();
 
     new Handler().postDelayed(new Runnable() {
       @Override
