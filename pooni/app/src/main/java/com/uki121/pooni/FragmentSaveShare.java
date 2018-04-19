@@ -18,8 +18,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 public class FragmentSaveShare extends Fragment implements HomeActivity.onKeyBackPressedListener {
     private Button btnShare;
     final String LAP_RECORD = "elapsed_record";
-    private final long FINISH_INTERVAL_TIME = 2000;
-    private long   backPressedTime = 0;
 
     public void FragmentSaveShare(){};
     @Override
@@ -27,12 +25,16 @@ public class FragmentSaveShare extends Fragment implements HomeActivity.onKeyBac
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_savenshare, container, false);
 
+        String msg = getArguments().getString(LAP_RECORD);
+        System.out.println(">> RECORD_STRING_FROM_LAP:" + msg);
+
         btnShare = (Button) view.findViewById(R.id.btn_share);
         btnShare.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                String msg = getArguments().getString(LAP_RECORD);
+                //Send SNS
+                
             }
         });
         return view;

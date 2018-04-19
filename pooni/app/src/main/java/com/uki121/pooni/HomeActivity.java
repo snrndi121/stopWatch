@@ -28,15 +28,17 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
  * Created by uki121 on 2018-04-03.
  */
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements dialogCustomSet.OnSetCreatedListener {
     private final long FINISH_INTERVAL_TIME = 2000;
     private long   backPressedTime = 0;
     private onKeyBackPressedListener mOnKeyBackPressedListener;
+    private bookShelf bookshelf;
 
     @Override
     protected void onCreate(Bundle savedInstanceStates) {
         super.onCreate(savedInstanceStates);
         setContentView(R.layout.activity_home);
+        bookshelf = new bookShelf();
         try {
             String tag =  String.valueOf(R.string.TAG_HOME);
             FragmentManager fm = getFragmentManager();
@@ -47,6 +49,7 @@ public class HomeActivity extends AppCompatActivity {
             Log.e("ERROR", e.getMessage());
         }
     }
+    //Back-listener
     public interface onKeyBackPressedListener {
         public void onBack();
     }
@@ -70,8 +73,15 @@ public class HomeActivity extends AppCompatActivity {
             else
             {
                 backPressedTime = tempTime;
-                Toast.makeText(getApplicationContext(), "한번 더 뒤로가기 누르면 꺼버린다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "한번 더 뒤로가기 누르면 종료합니다.", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+    @Override
+    public boolean onSetCreated(Book _book) {
+        System.out.println(" >> HomaActivity_onSetCreated");
+        boolean canBeSaved = bookshelf.AddBooks(_book);
+        bookshelf.printBooks();
+        return canBeSaved;
     }
 }

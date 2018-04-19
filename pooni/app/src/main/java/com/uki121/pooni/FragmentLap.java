@@ -32,8 +32,6 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPressedListener {
-    private final long FINISH_INTERVAL_TIME = 2000;
-    private long   backPressedTime = 0;
 
     Button btnStart, btnRec, btnEnd, btnDel;
     TextView myOutput, myRec;
@@ -219,12 +217,6 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
         backDialog.show();
     }
     class BtnOnClickListener implements Button.OnClickListener {
-        /* var_lap operation */
-        final static int Init =0;
-        final static int Run =1;
-        final static int Pause =2;
-        int cur_Status = Init;
-
         final String LAP_RECORD = "elapsed_record";
 
         @Override

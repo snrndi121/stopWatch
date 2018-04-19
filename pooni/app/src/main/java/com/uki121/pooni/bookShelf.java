@@ -22,22 +22,20 @@ public class bookShelf extends AppCompatActivity {
         books.add(new Book(_onebook));
         numOfbooks++;
     }
-    public void AddBooks(Book bs) {
+    public boolean AddBooks(Book bs) {
         try {
-            if (books.size() > MAX_BOOKS) {
-                Log.d("Out of books", "Books too much now");
-                return;
+            if (books.size() > MAX_BOOKS && IsDupBooks(bs)) {
+                Log.d("AddBooks_fail", "cause by booksize or duplication");
+                return false;
             }
-            if (IsDupBooks(bs)) {
                 books.add(new Book(bs));
                 numOfbooks++;
-            }
         } catch (ArrayIndexOutOfBoundsException e) {
             System.out.println(">> Out of Books size");
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        return;
+        return true;
     }
     /* Todo : saving multi-books*/
     public void AddBooks(Book[] bs) {
@@ -49,6 +47,7 @@ public class bookShelf extends AppCompatActivity {
         Book b = new Book(_bsData)  ;
         AddBooks(b);
     }
+    /*
     public void AddBooks(View view) {
         try {
             if (view != null) {
@@ -65,17 +64,17 @@ public class bookShelf extends AppCompatActivity {
             Log.d("Initialziing_variable", e.getMessage());
         }
     }
+    */
     public boolean IsDupBooks(Book bs) {
-        return IsDupName(bs.category[0]);
+        return IsDupName(bs.getTitle());
     }
-
     private boolean IsDupName(String _bTitle) {
         for (Book b : books) {
             if (b.getBook().equals(_bTitle) == true) {
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     }
     public void printBooks() {
         try {
