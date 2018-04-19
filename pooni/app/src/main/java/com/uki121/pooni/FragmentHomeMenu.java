@@ -71,7 +71,6 @@ public class FragmentHomeMenu extends Fragment {
                 transaction.commit();
             }
         });
-
         return view;
     }
     private void openSetDialog() {

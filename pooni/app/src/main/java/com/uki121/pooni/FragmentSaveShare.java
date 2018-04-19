@@ -71,37 +71,4 @@ public class FragmentSaveShare extends Fragment implements HomeActivity.onKeyBac
                 .build();
         backDialog.show();
     }
-/*
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        HomeActivity activity;
-        if (context instanceof HomeActivity) {
-            activity = (HomeActivity) context;
-            ((HomeActivity) activity).setOnKeyBackPressedListener(this);
-        }
-    }
-    @Override
-    public void onBack() {
-        onCustomBack();
-        HomeActivity activity = (HomeActivity) getActivity();
-        activity.setOnKeyBackPressedListener(null);
-        //activity.onBackPressed();
-    }
-    private void onCustomBack() {
-
-        Fragment bf = new FragmentLap();
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.frag_home_container, bf);
-        transaction.commit();
-
-        try {
-            FragmentManager fragmentManager = getActivity().getFragmentManager();
-            fragmentManager.beginTransaction().remove(FragmentSaveShare.this).commit();
-            fragmentManager.popBackStack();
-        } catch(NullPointerException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-    */
 }

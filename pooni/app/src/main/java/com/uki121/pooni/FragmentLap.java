@@ -46,14 +46,7 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
     long baseTime, pauseTime, beforeLapTime;
     List listLap = new ArrayList();
 
-    /*
-    public interface onKeyBackPressedListener {
-        public void onBack();
-    }
-    */
-    public void FragmentLap(){
-
-    };
+    public void FragmentLap(){ };
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
