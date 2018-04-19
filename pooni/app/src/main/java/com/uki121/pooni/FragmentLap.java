@@ -2,6 +2,7 @@ package com.uki121.pooni;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
@@ -45,9 +46,11 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
     long baseTime, pauseTime, beforeLapTime;
     List listLap = new ArrayList();
 
+    /*
     public interface onKeyBackPressedListener {
         public void onBack();
     }
+    */
     public void FragmentLap(){
 
     };
@@ -73,42 +76,6 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
         btnEnd.setOnClickListener(btnOnClickListener);
 
         return view;
-    }
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        HomeActivity activity;
-        if (context instanceof HomeActivity) {
-            activity = (HomeActivity) context;
-            ((HomeActivity) activity).setOnKeyBackPressedListener(this);
-        }
-    }
-    public void onBack() {
-        long tempTime = System.currentTimeMillis();
-        long intervalTime = tempTime - backPressedTime;
-
-        final HomeActivity activity = (HomeActivity) getActivity();
-        if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime)
-        {
-            activity.onBackPressed();
-        }
-        else
-        {
-            backPressedTime = tempTime;
-            new MaterialDialog.Builder(getActivity())
-                    .title(R.string.exit_lab)
-                    .content(R.string.cancel_record)
-                    .positiveText(R.string.agree)
-                    .negativeText(R.string.disagree)
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@android.support.annotation.NonNull MaterialDialog dialog, @android.support.annotation.NonNull DialogAction which) {
-                            activity.setOnKeyBackPressedListener(null);
-                            activity.onBackPressed();
-                        }
-                    })
-                    .show();
-        }
     }
     //Handler for current time
     Handler myTimer = new Handler(){
@@ -224,7 +191,40 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
             Log.d("Fail", e.getMessage());
         }
     }
-
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        HomeActivity activity;
+        if (context instanceof HomeActivity) {
+            activity = (HomeActivity) context;
+            (activity).setOnKeyBackPressedListener(this);
+        }
+    }
+    @Override
+    public void onBack() {
+        System.out.println(">> Lap_back");
+        backDialog();
+        HomeActivity activity = (HomeActivity) getActivity();
+        activity.setOnKeyBackPressedListener(null);
+        //activity.onBackPressed();
+    }
+    private void backDialog() {
+        MaterialDialog backDialog = new MaterialDialog.Builder(getActivity())
+                .title(R.string.exit_lab)
+                .content(R.string.cancel_record)
+                .positiveText(R.string.agree)
+                .negativeText(R.string.disagree)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@android.support.annotation.NonNull MaterialDialog dialog, @android.support.annotation.NonNull DialogAction which) {
+                        FragmentManager fragmentManager = getActivity().getFragmentManager();//
+                        fragmentManager.beginTransaction().remove(FragmentLap.this).commit();//
+                        fragmentManager.popBackStack();
+                    }
+                })
+                .build();
+        backDialog.show();
+    }
     class BtnOnClickListener implements Button.OnClickListener {
         /* var_lap operation */
         final static int Init =0;
@@ -300,10 +300,6 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
                     if (myCount >= 2) {
                         myCount--;
                         coloringStrInDel(myRec);
-                    /*} else if (myCount == 2) {
-                        myCount--;
-                        myRec.setText("");
-                     */
                     } else { /* do nothing */
                         Log.d("Record_count ", "can't be lower than 0");
                     }
@@ -320,8 +316,9 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
 
                     // Replace whatever is in the fragment_container view with this fragment,
                     // and add the transaction to the back stack
-                    transaction.replace(R.id.frag_home_container, newFragment);
-                    //transaction.addToBackStack(null);
+                    String tag = String.valueOf(R.string.TAG_SAVESHARE);
+                    transaction.replace(R.id.frag_home_container, newFragment, tag);
+                    transaction.addToBackStack(null);
 
                     // Commit the transaction
                     transaction.commit();

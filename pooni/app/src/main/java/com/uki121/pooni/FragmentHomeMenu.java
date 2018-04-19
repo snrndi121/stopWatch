@@ -21,10 +21,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 
 public class FragmentHomeMenu extends Fragment {
 
-    //private View setting_dial_view;
-    private bookShelf sb;
-
-
     public FragmentHomeMenu() { }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,12 +42,13 @@ public class FragmentHomeMenu extends Fragment {
         btn_quick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String tag =  String.valueOf(R.string.TAG_LAB);
                 Fragment newFragment = new FragmentLap();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
                 // Replace whatever is in the fragment_container view with this fragment,
                 // and add the transaction to the back stack
-                transaction.replace(R.id.frag_home_container, newFragment);
+                transaction.replace(R.id.frag_home_container, newFragment, tag);
                 transaction.addToBackStack(null);
 
                 // Commit the transaction
@@ -61,12 +58,13 @@ public class FragmentHomeMenu extends Fragment {
         btn_setlog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String tag =  String.valueOf(R.string.TAG_SETLOG);
                 Fragment newFragment = new FragmentSetLog();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
                 // Replace whatever is in the fragment_container view with this fragment,
                 // and add the transaction to the back stack
-                transaction.replace(R.id.frag_home_container, newFragment);
+                transaction.replace(R.id.frag_home_container, newFragment, tag);
                 transaction.addToBackStack(null);
 
                 // Commit the transaction
@@ -79,6 +77,6 @@ public class FragmentHomeMenu extends Fragment {
     private void openSetDialog() {
         DialogFragment setDialogFragment = new dialogCustomSet();
         setDialogFragment.setTargetFragment(this, 0);
-        setDialogFragment.show(getFragmentManager(), "SweetAlert");
+        setDialogFragment.show(getFragmentManager(), "setdialog");
     }
 }
