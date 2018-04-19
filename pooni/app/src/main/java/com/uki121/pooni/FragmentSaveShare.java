@@ -10,6 +10,7 @@ import android.widget.Button;
 
 public class FragmentSaveShare extends Fragment {
     private Button btnShare;
+    final String LAP_RECORD = "elapsed_record";
 
     public void FragmentSaveShare(){};
     @Override
@@ -21,18 +22,8 @@ public class FragmentSaveShare extends Fragment {
         btnShare.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*
-                Intent toggleIntent = new Intent(), getIntent = getIntent();
-                String shareStr = getIntent.getDataString();
-                toggleIntent.setAction(Intent.ACTION_SEND);
-                toggleIntent.putExtra(Intent.EXTRA_TEXT, shareStr);
-                toggleIntent.setType("text/plain");
 
-                startActivityForResult(Intent.createChooser(toggleIntent, "Share your Records"), 0);
-                getIntent.putExtra("re", ">> Sharing's done");
-                //setResult(RESULT_OK, getIntent);
-                //finish();
-                */
+                String msg = getArguments().getString(LAP_RECORD);
             }
         });
         return view;

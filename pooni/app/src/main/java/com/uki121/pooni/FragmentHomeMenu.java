@@ -40,7 +40,7 @@ public class FragmentHomeMenu extends Fragment {
             @Override
             public void onClick(View v) {
                 // Do something in response to button click
-                openDialog();
+                openSetDialog();
             }
         });
         btn_quick.setOnClickListener(new View.OnClickListener() {
@@ -76,7 +76,7 @@ public class FragmentHomeMenu extends Fragment {
 
         return view;
     }
-    private void openDialog() {
+    private void openSetDialog() {
         DialogFragment setDialogFragment = new dialogCustomSet();
         setDialogFragment.setTargetFragment(this, 0);
         setDialogFragment.show(getFragmentManager(), "SweetAlert");
