@@ -1,7 +1,11 @@
 package com.uki121.pooni;
 
 
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -27,84 +31,47 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 public class HomeActivity extends AppCompatActivity {
     private final long FINISH_INTERVAL_TIME = 2000;
     private long   backPressedTime = 0;
+    private onKeyBackPressedListener mOnKeyBackPressedListener;
 
-    private bookShelf sb;
-    private View setting_dial_view;
-
-    class BtnOnClickListener implements Button.OnClickListener {
-        @Override
-        public void onClick(View view) {
-            switch(view.getId()) {
-                case R.id.button_start:
-                    // Do something in response to button click
-                    boolean wrapInScrollView = true;
-                    final MaterialDialog startDialog = new MaterialDialog.Builder(HomeActivity.this)
-                            .title("setting")
-                            .positiveText("확인")
-                            .negativeText("취소")
-                            .onPositive(new MaterialDialog.SingleButtonCallback() {
-                                @Override
-                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                    // Some unimportant data stuff
-                                    /* Todo_BIG*/
-                                    try {
-                                        setting_dial_view = dialog.getCustomView();
-                                        if (setting_dial_view != null)
-                                        {
-                                            //View v = dialog.getCustomView();
-                                            sb.AddBooks(setting_dial_view);
-                                            sb.printBooks();
-                                        }
-                                    } catch (NullPointerException e) {
-                                        System.out.println(e.getMessage());
-                                    }
-                                }
-                            })
-                            .customView(R.layout.lap_setting, wrapInScrollView)
-                            .build();
-                        startDialog.show();
-                    break;
-                case R.id.button_quick:
-                    Intent op_quick = new Intent(HomeActivity.this, LabActivity.class);
-                    startActivity(op_quick);
-                    break;
-                case R.id.button_setting:
-                    Intent op_set = new Intent(HomeActivity.this, SetLogActivity.class);
-                    startActivity(op_set);
-                    break;
-            }
-        }
-    }
     @Override
     protected void onCreate(Bundle savedInstanceStates) {
         super.onCreate(savedInstanceStates);
         setContentView(R.layout.activity_home);
-
-        sb = new bookShelf();
-
-        BtnOnClickListener onClickListener = new BtnOnClickListener() ;
-
-        Button btn_start = (Button) findViewById(R.id.button_start);
-        btn_start.setOnClickListener(onClickListener);
-
-        Button btn_quick = (Button) findViewById(R.id.button_quick);
-        btn_quick.setOnClickListener(onClickListener);
-
-        Button btn_sample = (Button) findViewById(R.id.button_setting);
-        btn_sample.setOnClickListener(onClickListener);
-    }
-    public void onBackPressed()
-    {
-        long tempTime = System.currentTimeMillis();
-        long intervalTime = tempTime - backPressedTime;
-        if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime)
-        {
-            super.onBackPressed();
+        try {
+            String tag =  String.valueOf(R.string.TAG_HOME);
+            FragmentManager fm = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fm.beginTransaction();
+            fragmentTransaction.add(R.id.frag_home_container, new FragmentHomeMenu(), tag);
+            fragmentTransaction.commit();
+        } catch(Exception e) {
+            Log.e("ERROR", e.getMessage());
         }
-        else
-        {
-            backPressedTime = tempTime;
-            Toast.makeText(getApplicationContext(), R.string.msg_back, Toast.LENGTH_SHORT).show();
+    }
+    public interface onKeyBackPressedListener {
+        public void onBack();
+    }
+    public void setOnKeyBackPressedListener(onKeyBackPressedListener listener) {
+        mOnKeyBackPressedListener = listener;
+    }
+    public void onBackPressed() {
+        // 개별 onBack함수 구현된 것 실현
+        if (mOnKeyBackPressedListener != null) {
+            mOnKeyBackPressedListener.onBack();
+        } else {
+            //초기 홈에서만 동작
+            System.out.println(">> Home_back");
+            long tempTime = System.currentTimeMillis();
+            long intervalTime = tempTime - backPressedTime;
+
+            if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime)
+            {
+                super.onBackPressed();
+            }
+            else
+            {
+                backPressedTime = tempTime;
+                Toast.makeText(getApplicationContext(), "한번 더 뒤로가기 누르면 꺼버린다.", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }

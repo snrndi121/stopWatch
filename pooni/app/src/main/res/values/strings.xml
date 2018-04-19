@@ -45,4 +45,11 @@
   <string name="moreinfo">더보기</string>
   <string name="exit_lab">Lap 종료</string>
   <string name="notSet">NUll</string>
+
+  <!-- fragment string tag -->
+  <string name="TAG_HOME">tag_home</string>
+  <string name="TAG_LAB">tag_lab</string>
+  <string name="TAG_SAVESHARE">TAG_saveshare</string>
+  <string name="TAG_SETLOG">tag_setlog</string>
+
 </resources>

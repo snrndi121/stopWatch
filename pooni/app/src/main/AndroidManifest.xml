@@ -21,9 +21,6 @@
       </intent-filter>
     </activity>
     <activity android:name=".HomeActivity"/>
-    <activity android:name=".LabActivity"/>
-    <activity android:name=".SaveNShareActivity"/>
-    <activity android:name=".SetLogActivity"/>
     <meta-data android:name="android.max_aspect" android:value="2.1" />
   </application>
 
