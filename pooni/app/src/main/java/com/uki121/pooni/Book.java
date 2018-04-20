@@ -12,17 +12,8 @@ class Book {
     public Book(){};
     public Book(String[] _data)
     {
-        /*TODO : BOOOK CONSTURCTOR */
         try {
-            /*
-            category = new String[MAX_CATEGORY];
-            category[TITLE] = _data[TITLE];
-            category[TOTAL_TIME] = _data[TOTAL_TIME];
-            category[EACH_TIME] = _data[EACH_TIME];
-            category[REST_TIME] = _data[REST_TIME];
-            category[NUM_PROB] = _data[NUM_PROB];
-            */
-            category = new String[]{_data[TITLE],
+           category = new String[]{_data[TITLE],
                                     _data[TOTAL_TIME],
                                     _data[EACH_TIME],
                                     _data[REST_TIME],
@@ -87,17 +78,23 @@ class Book {
     public final String getTitle() {
         return category[TITLE];
     }
-    public void setTotal(String _totalTime) {
+    public void setToTime(String _totalTime) {
         this.category[TOTAL_TIME] = _totalTime;
     }
-    public final String getTotal() {
+    public final String getToTime() {
         return category[TOTAL_TIME];
     }
-    public void setMaxper(String _maxtimePer) {
+    public void setEachTime(String _maxtimePer) {
         this.category[EACH_TIME] = _maxtimePer;
     }
-    public final String getMaxper() {
+    public final String getEachTime() {
         return category[EACH_TIME];
+    }
+    public final String getRestTime() {
+        return category[REST_TIME];
+    }
+    public final String getNumProb() {
+        return category[NUM_PROB];
     }
     public final String[] getBook() {
         System.out.println("Book_title " + category[TITLE]);

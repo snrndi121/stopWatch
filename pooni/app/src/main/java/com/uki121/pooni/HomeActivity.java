@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -33,12 +34,16 @@ public class HomeActivity extends AppCompatActivity implements dialogCustomSet.O
     private long   backPressedTime = 0;
     private onKeyBackPressedListener mOnKeyBackPressedListener;
     private bookShelf bookshelf;
+    private bookDBHelper dbhelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceStates) {
         super.onCreate(savedInstanceStates);
         setContentView(R.layout.activity_home);
         bookshelf = new bookShelf();
+        dbhelper = new bookDBHelper(HomeActivity.this);
+        //SQLiteDatabase bookdb = bookDBHelper.
+
         try {
             String tag =  String.valueOf(R.string.TAG_HOME);
             FragmentManager fm = getFragmentManager();
@@ -46,7 +51,7 @@ public class HomeActivity extends AppCompatActivity implements dialogCustomSet.O
             fragmentTransaction.add(R.id.frag_home_container, new FragmentHomeMenu(), tag);
             fragmentTransaction.commit();
         } catch(Exception e) {
-            Log.e("ERROR", e.getMessage());
+            Log.e("HOME_ERROR", e.getMessage());
         }
     }
     //Back-listener

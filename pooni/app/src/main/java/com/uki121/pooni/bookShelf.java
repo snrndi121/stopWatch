@@ -40,8 +40,7 @@ public class bookShelf extends AppCompatActivity {
         }
         return false;
     }
-    /* Todo : saving multi-books*/
-    public void AddBooks(Book[] bs) {
+   public void AddBooks(Book[] bs) {
         for (int i = 0; i < bs.length; ++i) {
             AddBooks(bs[i]);
         }
