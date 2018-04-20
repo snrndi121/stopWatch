@@ -47,11 +47,12 @@ public class dialogCustomSet extends DialogFragment {
                             if (setting_dial_view != null)
                             {
                                 setBookFromview(setting_dial_view);
-                                temp_book.getBook();
-                                boolean swithch = sListener.onSetCreated(temp_book);
+                                //temp_book.getBook();
+                                boolean sflag = sListener.onSetCreated(temp_book);
+                                if ( sflag ) Log.d("Book_SetDialog :","Success");
                             }
                         } catch (NullPointerException e) {
-                            System.out.println(e.getMessage());
+                            Log.d("Book_SetDialog", e.getMessage());
                         }
                     }
                 })
@@ -67,9 +68,6 @@ public class dialogCustomSet extends DialogFragment {
                         ((EditText) view.findViewById(R.id.setting_maxtime)).getText().toString(),
                         ((EditText) view.findViewById(R.id.setting_count)).getText().toString(),
                         ((EditText) view.findViewById(R.id.setting_rest)).getText().toString()};
-                for (int i=0; i<5; ++i) {
-                    System.out.println(" >> books_info :" + bdata[i]);
-                }
                 temp_book = new Book(bdata);
             }
         } catch(Exception e) {

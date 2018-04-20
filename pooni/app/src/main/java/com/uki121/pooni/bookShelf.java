@@ -28,14 +28,17 @@ public class bookShelf extends AppCompatActivity {
                 Log.d("AddBooks_fail", "cause by booksize or duplication");
                 return false;
             }
+            if ( bs.IsBookValid()) {
                 books.add(new Book(bs));
                 numOfbooks++;
+                return true;
+            }
         } catch (ArrayIndexOutOfBoundsException e) {
             System.out.println(">> Out of Books size");
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        return true;
+        return false;
     }
     /* Todo : saving multi-books*/
     public void AddBooks(Book[] bs) {
@@ -47,24 +50,6 @@ public class bookShelf extends AppCompatActivity {
         Book b = new Book(_bsData)  ;
         AddBooks(b);
     }
-    /*
-    public void AddBooks(View view) {
-        try {
-            if (view != null) {
-                String[] dia = {((EditText) view.findViewById(R.id.setting_name)).getText().toString(),
-                        ((EditText) view.findViewById(R.id.setting_totime)).getText().toString(),
-                        ((EditText) view.findViewById(R.id.setting_maxtime)).getText().toString(),
-                        ((EditText) view.findViewById(R.id.setting_count)).getText().toString(),
-                        ((EditText) view.findViewById(R.id.setting_rest)).getText().toString()};
-                AddBooks(dia);
-            }
-        } catch(Exception e) {
-            Log.d("AddBook_fail from ", e.getMessage());
-        } catch(ExceptionInInitializerError e) {
-            Log.d("Initialziing_variable", e.getMessage());
-        }
-    }
-    */
     public boolean IsDupBooks(Book bs) {
         return IsDupName(bs.getTitle());
     }
@@ -76,11 +61,15 @@ public class bookShelf extends AppCompatActivity {
         }
         return false;
     }
+    final public int getNumOfBooks() {
+        return books.size();
+    }
     public void printBooks() {
         try {
             if (books.size() == 0) {
                 Log.d("book_size", " 0 ");
             }
+            Log.d("BOOK_COUNT", String.valueOf(getNumOfBooks()));
             for (Book b : books) {
                 b.getBook();
             }
