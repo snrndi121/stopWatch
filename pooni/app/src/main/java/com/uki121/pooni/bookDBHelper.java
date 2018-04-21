@@ -18,8 +18,8 @@ public class bookDBHelper extends SQLiteOpenHelper {
     private final String TABLE_USERS = "TABLE_USERS_RECORDS";//table for user regarding to your records
     private static final String DATABASE_NAME ="pooni.db";
 
-    public static SQLiteDatabase userDB;
-    public static SQLiteDatabase bookdb;
+    //public static SQLiteDatabase userDB;
+    //public static SQLiteDatabase bookdb;
     private Context bcontext;
 
     public bookDBHelper(Context context) {
@@ -42,8 +42,8 @@ public class bookDBHelper extends SQLiteOpenHelper {
                     .append(TABLE_BOOKS)
                     .append("(id)")
                     .append("ON DELETE CASCADE");
-            createTable(sqLiteDatabase, TABLE_BOOKS, table_books_attr.toString());
-            createTable(sqLiteDatabase, TABLE_USERS, table_users_attr.toString());
+            createTable(TABLE_BOOKS, table_books_attr.toString());
+            createTable(TABLE_USERS, table_users_attr.toString());
             Toast.makeText(bcontext, "pooni db 생성 성공", Toast.LENGTH_SHORT).show();
         } catch(SQLException e) {
             Log.d("SQL_onCreate", e.getMessage());
@@ -54,9 +54,9 @@ public class bookDBHelper extends SQLiteOpenHelper {
     {
         try {
             Toast.makeText(bcontext, "pooni 안드로이드 버전이 변경되었습니다.", Toast.LENGTH_SHORT).show();
-            dropTable(db, TABLE_BOOKS);
-            dropTable(db, TABLE_USERS);
-            onCreate(db);
+            dropTable(TABLE_BOOKS);
+            dropTable(TABLE_USERS);
+            //onCreate(db);
         } catch (SQLException e)
         {
             Log.d("SQL_onUpgrade", e.getMessage());
@@ -67,28 +67,33 @@ public class bookDBHelper extends SQLiteOpenHelper {
     }
     public long insertData(String targetTable, Book bs) {
         ContentValues cv = new ContentValues();
-        if (targetTable.equals(TABLE_BOOKS)) {
-            cv.put("title", bs.getTitle());
-            cv.put("total_time", bs.getToTime());
-            cv.put("each_titme", bs.getEachTime());
-            cv.put("rest_time", bs.getRestTime());
-            cv.put("prob_num", bs.getNumProb());
-            //cv.put("num_access", dataC);
-            return getWritableDatabase().insert(TABLE_BOOKS, null, cv);
-        } else if (targetTable.equals(TABLE_USERS)) {
-            cv.put("rid", bs.getTitle());
-            cv.put("bid", bs.getToTime());
-            cv.put("prob_excess", bs.getEachTime());
-            cv.put("prob_solved", bs.getRestTime());
-            cv.put("prob_corrected", bs.getNumProb());
-            return getWritableDatabase().insert(TABLE_USERS, null, cv);
+        try {
+            if (targetTable.equals(TABLE_BOOKS)) {
+                cv.put("title", bs.getTitle());
+                cv.put("total_time", bs.getToTime());
+                cv.put("each_titme", bs.getEachTime());
+                cv.put("rest_time", bs.getRestTime());
+                cv.put("prob_num", bs.getNumProb());
+                //cv.put("num_access", dataC);
+                return getWritableDatabase().insert(TABLE_BOOKS, null, cv);
+            } else if (targetTable.equals(TABLE_USERS)) {
+                cv.put("rid", bs.getTitle());
+                cv.put("bid", bs.getToTime());
+                cv.put("prob_excess", bs.getEachTime());
+                cv.put("prob_solved", bs.getRestTime());
+                cv.put("prob_corrected", bs.getNumProb());
+                return getWritableDatabase().insert(TABLE_USERS, null, cv);
+            }
+        } catch (SQLException e) {
+            Log.d("SQL_INSERT", e.getMessage());
+            return -1;
         }
         return -1;
     }
     public void insertAllDatas(ArrayList <Book> bs) {
         SQLiteDatabase db = getWritableDatabase();
         db.beginTransaction();
-        Iterator < Book> it = bs.iterator();
+        Iterator<Book> it = bs.iterator();
         try {
             while (it.hasNext()) {
                 ContentValues cv = new ContentValues();
@@ -104,21 +109,47 @@ public class bookDBHelper extends SQLiteOpenHelper {
         } finally {
             db.endTransaction();
         }
-    public void createTable(SQLiteDatabase sqLiteDatabase, String _name, StringBuffer _attr)
-    {
-        StringBuffer create_table = new StringBuffer();
-        create_table.append("CREATE TABLE")
-                .append(_name)
-                .append("(")
-                .append(_attr)
-                .append(")");
-        _sqLiteDatabase.execSQL(create_table.toString());
     }
-    public void dropTable(SQLiteDatabase _sqLiteDatabases, String _name)
+    public void createTable(String _name, String _attr)
     {
-        StringBuffer drop_table = new StringBuffer("DROP TABLE IF EXISTS")
-                .append(_name);
-        _sqLiteDatabases.execSQL(drop_table.toString());
-        onCreate(_sqLiteDatabases);
+        SQLiteDatabase db = getWritableDatabase();
+        try {
+            StringBuffer create_table = new StringBuffer();
+            create_table.append("CREATE TABLE")
+                    .append(_name)
+                    .append("(")
+                    .append(_attr)
+                    .append(")");
+            db.execSQL(create_table.toString());
+        } catch (SQLException e) {
+            Log.d("SQL_CREATE", e.getMessage());
+        } finally {
+            db.close();
+        }
+    }
+    public void dropTable(String _name)
+    {
+        SQLiteDatabase db = getWritableDatabase();
+        try {
+            StringBuffer drop_table = new StringBuffer("DROP TABLE IF EXISTS")
+                    .append(_name);
+            db.execSQL(drop_table.toString());
+            onCreate(db);
+        } catch (SQLException e) {
+            Log.d("SQL_DROP", e.getMessage());
+        }
+    }
+    public void showTable(String _table)
+    {
+        SQLiteDatabase db = getWritableDatabase();
+        try {
+            StringBuffer selectAll = new StringBuffer("SELECT ALL FROM ");
+            selectAll.append(_table);
+            db.execSQL(selectAll.toString());
+        } catch (SQLException e) {
+            Log.d("SQL_SELECT", e.getMessage());
+        } finally {
+            db.close();
+        }
     }
 }

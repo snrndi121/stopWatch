@@ -35,6 +35,8 @@ public class HomeActivity extends AppCompatActivity implements dialogCustomSet.O
     private onKeyBackPressedListener mOnKeyBackPressedListener;
     private bookShelf bookshelf;
     private bookDBHelper dbhelper;
+    private final static String TABLE_BOOKS = "TABLE_BOOKS";//table for books regarding to each setting.
+    private final String TABLE_USERS = "TABLE_USERS_RECORDS";//table for user regarding to your records
 
     @Override
     protected void onCreate(Bundle savedInstanceStates) {
@@ -42,7 +44,6 @@ public class HomeActivity extends AppCompatActivity implements dialogCustomSet.O
         setContentView(R.layout.activity_home);
         bookshelf = new bookShelf();
         dbhelper = new bookDBHelper(HomeActivity.this);
-        //SQLiteDatabase bookdb = bookDBHelper.
 
         try {
             String tag =  String.valueOf(R.string.TAG_HOME);
@@ -86,6 +87,12 @@ public class HomeActivity extends AppCompatActivity implements dialogCustomSet.O
     public boolean onSetCreated(Book _book) {
         System.out.println(" >> HomaActivity_onSetCreated");
         boolean canBeSaved = bookshelf.AddBooks(_book);
+        if ( canBeSaved == true ) {
+            dbhelper.insertData(TABLE_BOOKS, _book);
+            dbhelper.showTable(TABLE_BOOKS);
+        } else {
+            System.out.println(" >> new books can not be saved !!!");
+        }
         bookshelf.printBooks();
         return canBeSaved;
     }
