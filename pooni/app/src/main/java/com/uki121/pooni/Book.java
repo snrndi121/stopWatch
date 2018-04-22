@@ -28,6 +28,7 @@ class Book {
     {
         this.category = bs.category;
     }
+    /*TODO : mask flag*/
     //Check a form of book regardless of its title
     final public boolean IsBookValid() {
         boolean ttflag = category[TOTAL_TIME] != null ? IsNumber(category[TOTAL_TIME]) : false,

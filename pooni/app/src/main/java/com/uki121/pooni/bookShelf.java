@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
-
+/* ToDo : Add attribute of the numbfer of access each book */
 public class bookShelf extends AppCompatActivity {
     final int MAX_BOOKS = 100;
     private List < Book > books;
@@ -28,7 +28,7 @@ public class bookShelf extends AppCompatActivity {
                 Log.d("AddBooks_fail", "cause by booksize or duplication");
                 return false;
             }
-            if ( bs.IsBookValid()) {
+            if (bs.IsBookValid()) {
                 books.add(new Book(bs));
                 numOfbooks++;
                 return true;

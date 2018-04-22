@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -36,33 +37,33 @@ public class HomeActivity extends AppCompatActivity implements dialogCustomSet.O
     private long   backPressedTime = 0;
     private onKeyBackPressedListener mOnKeyBackPressedListener;
     private bookShelf bookshelf;
-    private bookDBHelper dbhelper;
-    private SQLiteDatabase poonidb;
-    private boolean databaseCreate = false;
+    private bookDBHelper dbhelper = null;
     private static final String DATABASE_NAME ="pooni.db";
-    private final static String TABLE_BOOKS = "TABLE_BOOKS";//table for books regarding to each setting.
-    private final String TABLE_USERS = "TABLE_USERS_RECORDS";//table for user regarding to your records
 
     @Override
     protected void onCreate(Bundle savedInstanceStates) {
         super.onCreate(savedInstanceStates);
         setContentView(R.layout.activity_home);
+        init();
+    }
+    public void init() {
+        //Initialize variables.
         bookshelf = new bookShelf();
         dbhelper = new bookDBHelper(HomeActivity.this);
+        //dbhelper.dropTable(ContractDBinfo.TBL_BOOK);
+        //dbhelper.dropTable(ContractDBinfo.TBL_USER);
+        //Load HomeFragment
         try {
             String tag =  String.valueOf(R.string.TAG_HOME);
             FragmentManager fm = getFragmentManager();
             FragmentTransaction fragmentTransaction = fm.beginTransaction();
             fragmentTransaction.add(R.id.frag_home_container, new FragmentHomeMenu(), tag);
             fragmentTransaction.commit();
-
-            poonidb = null ;
-            poonidb = SQLiteDatabase.openOrCreateDatabase("sample.db", null) ;
         } catch(Exception e) {
             Log.e("HOME_ERROR", e.getMessage());
         }
     }
-    //Back-listener
+    //Back-listener to receive back event from each fragments
     public interface onKeyBackPressedListener {
         public void onBack();
     }
@@ -90,17 +91,22 @@ public class HomeActivity extends AppCompatActivity implements dialogCustomSet.O
             }
         }
     }
+    //Button listener for handling event prduced in dialogCustomset
     @Override
     public boolean onSetCreated(Book _book) {
         System.out.println(" >> HomaActivity_onSetCreated");
         boolean canBeSaved = bookshelf.AddBooks(_book);
         if ( canBeSaved == true ) {
-            dbhelper.insertData(TABLE_BOOKS, _book);
-            //dbhelper.showTable(TABLE_BOOKS);
+            dbhelper.insertData(ContractDBinfo.TBL_BOOK, _book);
         } else {
             System.out.println(" >> new books can not be saved !!!");
         }
         bookshelf.printBooks();
+        load_values();
         return canBeSaved;
+    }
+    public void load_values()
+    {
+        dbhelper.showTable(ContractDBinfo.TBL_BOOK);
     }
 }

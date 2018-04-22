@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
+/* ToDo : separte some functions from class FragmentLap, too big */
 public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPressedListener {
 
     Button btnStart, btnRec, btnEnd, btnDel;
