@@ -2,6 +2,7 @@ package com.uki121.pooni;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -13,50 +14,30 @@ import java.util.Iterator;
 
 /* TODO : class DBHELPER */
 public class bookDBHelper extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 1;
-    private final String TABLE_BOOKS = "TABLE_BOOKS";//table for books regarding to each setting.
-    private final String TABLE_USERS = "TABLE_USERS_RECORDS";//table for user regarding to your records
-    private static final String DATABASE_NAME ="pooni.db";
-
-    //public static SQLiteDatabase userDB;
-    //public static SQLiteDatabase bookdb;
-    private Context bcontext;
-
+    public static final int DATABASE_VERSION = 1;
+    public static final String DATABASE_NAME ="pooni.db";
+    private Context context;
     public bookDBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
     public bookDBHelper(Context context, String name,
                         SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
-        this.bcontext = context;
+        this.context = context;
     }
-
+    /*TODO : The table could not be found now*/
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        try {
-            StringBuffer table_books_attr = new StringBuffer(
-                    "id int NOT NULL AUTO_INCREMENT, title varchar(30) NOT NULL, total_time int NOT NULL, each_titme int, rest_time int, prob_num int, num_access int default(0)");
-            StringBuffer table_users_attr = new StringBuffer(
-                    "rid char(16) NOT NULL, bid int NOT NULL, prob_excess int, prob_solved int, prob_corrected int,")
-                    .append("PRIMARY KEY(rid), References bid on")
-                    .append(TABLE_BOOKS)
-                    .append("(id)")
-                    .append("ON DELETE CASCADE");
-            createTable(TABLE_BOOKS, table_books_attr.toString());
-            createTable(TABLE_USERS, table_users_attr.toString());
-            Toast.makeText(bcontext, "pooni db 생성 성공", Toast.LENGTH_SHORT).show();
-        } catch(SQLException e) {
-            Log.d("SQL_onCreate", e.getMessage());
-        }
+        init_table(sqLiteDatabase);
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldversion, int newversion)
     {
         try {
-            Toast.makeText(bcontext, "pooni 안드로이드 버전이 변경되었습니다.", Toast.LENGTH_SHORT).show();
-            dropTable(TABLE_BOOKS);
-            dropTable(TABLE_USERS);
-            //onCreate(db);
+            Toast.makeText(context, "pooni 안드로이드 버전이 변경되었습니다.", Toast.LENGTH_SHORT).show();
+            dropTable(ContractDBinfo.TBL_BOOK);
+            dropTable(ContractDBinfo.TBL_USER);
+            onCreate(db);
         } catch (SQLException e)
         {
             Log.d("SQL_onUpgrade", e.getMessage());
@@ -65,24 +46,35 @@ public class bookDBHelper extends SQLiteOpenHelper {
     public void testDB() {
         SQLiteDatabase db = getReadableDatabase();
     }
+    public void init_table(SQLiteDatabase db) {
+        try {
+            db.execSQL(ContractDBinfo.SQL_CREATE_BOOK);
+            db.execSQL(ContractDBinfo.SQL_CREATE_USER);
+            Toast.makeText(context, "pooni db 생성 성공", Toast.LENGTH_SHORT).show();
+        } catch(SQLException e) {
+            Log.d("SQL_onCreate", e.getMessage());
+        }
+    }
     public long insertData(String targetTable, Book bs) {
         ContentValues cv = new ContentValues();
+        SQLiteDatabase db = getWritableDatabase();
         try {
-            if (targetTable.equals(TABLE_BOOKS)) {
+            if (targetTable.equals(ContractDBinfo.TBL_BOOK)) {
                 cv.put("title", bs.getTitle());
                 cv.put("total_time", bs.getToTime());
                 cv.put("each_titme", bs.getEachTime());
                 cv.put("rest_time", bs.getRestTime());
                 cv.put("prob_num", bs.getNumProb());
                 //cv.put("num_access", dataC);
-                return getWritableDatabase().insert(TABLE_BOOKS, null, cv);
-            } else if (targetTable.equals(TABLE_USERS)) {
+                long newRowid = db.insert(ContractDBinfo.TBL_BOOK, null, cv);
+                return newRowid;
+            } else if (targetTable.equals(ContractDBinfo.TBL_USER)) {
                 cv.put("rid", bs.getTitle());
                 cv.put("bid", bs.getToTime());
                 cv.put("prob_excess", bs.getEachTime());
                 cv.put("prob_solved", bs.getRestTime());
                 cv.put("prob_corrected", bs.getNumProb());
-                return getWritableDatabase().insert(TABLE_USERS, null, cv);
+                return getWritableDatabase().insert(ContractDBinfo.TBL_USER, null, cv);
             }
         } catch (SQLException e) {
             Log.d("SQL_INSERT", e.getMessage());
@@ -103,24 +95,26 @@ public class bookDBHelper extends SQLiteOpenHelper {
                 cv.put("rest_time", it.next().getRestTime());
                 cv.put("prob_num", it.next().getNumProb());
                 //cv.put("num_access", dataC);
-                db.insert(TABLE_BOOKS, null, cv);
+                db.insert(ContractDBinfo.TBL_BOOK, null, cv);
             }
             db.setTransactionSuccessful();
         } finally {
             db.endTransaction();
         }
     }
-    public void createTable(String _name, String _attr)
+    public void createTable(String _tableName, String _attr)
     {
+        System.out.println(" >> Create table");
         SQLiteDatabase db = getWritableDatabase();
         try {
             StringBuffer create_table = new StringBuffer();
-            create_table.append("CREATE TABLE")
-                    .append(_name)
+            create_table.append("CREATE TABLE IF NOT EXISTS ")
+                    .append(_tableName)
                     .append("(")
                     .append(_attr)
                     .append(")");
             db.execSQL(create_table.toString());
+            Toast.makeText(context, "Insert 완료", Toast.LENGTH_SHORT).show();
         } catch (SQLException e) {
             Log.d("SQL_CREATE", e.getMessage());
         } finally {
@@ -139,13 +133,30 @@ public class bookDBHelper extends SQLiteOpenHelper {
             Log.d("SQL_DROP", e.getMessage());
         }
     }
+    public void dropDatabase(String _name)
+    {
+        try {
+            context.deleteDatabase(_name);
+            Toast.makeText(context, "데이터베이스가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+        } catch (SQLException e) {
+            Log.d("SQL_DROP_DATABASE", e.getMessage());
+        }
+    }
     public void showTable(String _table)
     {
-        SQLiteDatabase db = getWritableDatabase();
+        SQLiteDatabase db = getReadableDatabase();
+        StringBuffer selectAll = new StringBuffer("SELECT ALL FROM ");
+        selectAll.append(_table);
+        Cursor cursor = db.rawQuery(selectAll.toString(), null);
+        Book bData = null;
         try {
-            StringBuffer selectAll = new StringBuffer("SELECT ALL FROM ");
-            selectAll.append(_table);
-            db.execSQL(selectAll.toString());
+            while(cursor.moveToNext()) {
+                bData = new Book();
+                bData.setTitle(cursor.getString(1));
+                bData.setToTime(cursor.getString(2));
+                bData.setEachTime(cursor.getString(3));
+                bData.getBook();
+            }
         } catch (SQLException e) {
             Log.d("SQL_SELECT", e.getMessage());
         } finally {
