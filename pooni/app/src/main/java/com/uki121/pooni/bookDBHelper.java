@@ -45,6 +45,23 @@ public class bookDBHelper extends SQLiteOpenHelper {
         }
     }
 
+    public void dropTable(String _table)
+    {
+        System.out.println("###################### Start ######################");
+        System.out.println(" Drop table and Recreate");
+        SQLiteDatabase db = getWritableDatabase();
+        try {
+            StringBuffer sql_drop_table = new StringBuffer(ContractDBinfo.SQL_DROP_TBL)
+                    .append(_table);
+            db.execSQL(sql_drop_table.toString());
+        } catch (SQLException e) {
+            Log.d("SQL_DROP", e.getMessage());
+        } finally {
+            System.out.println("####################### End #######################");
+        }
+
+    }
+
     public void init_table(SQLiteDatabase db) {
         System.out.println("###################### Start ######################");
         System.out.println("  Initialize Tables");
@@ -76,6 +93,7 @@ public class bookDBHelper extends SQLiteOpenHelper {
                 cv.put(ContractDBinfo.COL_NOACC, 1);
                 //cv.put("num_access", dataC);
                 long newRowid = db.insert(ContractDBinfo.TBL_BOOK, null, cv);
+                System.out.println(" >> newRowId :" + newRowid);
                 return newRowid;
             } else if (targetTable.equals(ContractDBinfo.TBL_USER)) {
                 /*
@@ -83,7 +101,7 @@ public class bookDBHelper extends SQLiteOpenHelper {
                 */
             }
         } catch (SQLException e) {
-            Log.d("SQL_INSERT", e.getMessage());
+            Log.e("SQL_INSERT", e.getMessage());
             return -1;
         } finally {
             System.out.println("####################### End #######################");
@@ -111,23 +129,7 @@ public class bookDBHelper extends SQLiteOpenHelper {
         }
     }
     */
-    public void dropTable(String _table)
-    {
-        System.out.println("###################### Start ######################");
-        System.out.println(" Drop table and Recreate");
-        SQLiteDatabase db = getWritableDatabase();
-        try {
-            StringBuffer sql_drop_table = new StringBuffer(ContractDBinfo.SQL_DROP_TBL)
-                        .append(_table);
-            db.execSQL(sql_drop_table.toString());
-            onCreate(db);
-        } catch (SQLException e) {
-            Log.d("SQL_DROP", e.getMessage());
-        } finally {
-            System.out.println("####################### End #######################");
-        }
 
-    }
     public void showTable(String _table)
     {
         System.out.println("###################### Start ######################");
@@ -146,7 +148,7 @@ public class bookDBHelper extends SQLiteOpenHelper {
                 bData.getBook();
             }
         } catch (SQLException e) {
-            Log.d("SQL_SELECT", e.getMessage());
+            Log.e("SQL_SELECT", e.getMessage());
         } finally {
             System.out.println("####################### End #######################");
         }
@@ -163,10 +165,11 @@ public class bookDBHelper extends SQLiteOpenHelper {
             Cursor cursor = db.rawQuery(sql_select.toString(), null);
             if (cursor.moveToLast() != false) {
                 int lastIndx = cursor.getInt(0);
-                return lastIndx;
+                System.out.println(" >> last Index :" + lastIndx);
+                return lastIndx + 1;
             }
         } catch (SQLException e) {
-            Log.d("SQL_SELECT", e.getMessage());
+            Log.e("SQL_SELECT", e.getMessage());
         } finally {
             System.out.println("####################### End #######################");
         }

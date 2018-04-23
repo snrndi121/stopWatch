@@ -34,9 +34,9 @@ public class bookShelf extends AppCompatActivity {
                 return true;
             }
         } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.println(">> Out of Books size");
+            Log.e("ADD_BBOK_ARR", e.getMessage());
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            Log.e("ADD_BOOK_EXC", e.getMessage());
         }
         return false;
     }
@@ -68,12 +68,12 @@ public class bookShelf extends AppCompatActivity {
             if (books.size() == 0) {
                 Log.d("book_size", " 0 ");
             }
-            Log.d("BOOK_COUNT", String.valueOf(getNumOfBooks()));
+            Log.i("BOOK_COUNT", String.valueOf(getNumOfBooks()));
             for (Book b : books) {
                 b.getBook();
             }
         } catch (NullPointerException e) {
-            System.out.println(e.getMessage());
+            Log.e("BOOK_LIST", e.getMessage());
         }
     }
 }

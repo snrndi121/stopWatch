@@ -52,6 +52,7 @@ public class HomeActivity extends AppCompatActivity implements dialogCustomSet.O
         dbhelper = new bookDBHelper(HomeActivity.this);
         //dbhelper.dropTable(ContractDBinfo.TBL_BOOK);
         //dbhelper.dropTable(ContractDBinfo.TBL_USER);
+        loadBookShelf();
         //Load HomeFragment
         try {
             String tag =  String.valueOf(R.string.TAG_HOME);
@@ -102,11 +103,44 @@ public class HomeActivity extends AppCompatActivity implements dialogCustomSet.O
             System.out.println(" >> new books can not be saved !!!");
         }
         bookshelf.printBooks();
-        load_values();
         return canBeSaved;
     }
-    public void load_values()
-    {
-        dbhelper.showTable(ContractDBinfo.TBL_BOOK);
+    //Load book data from Database
+    public void loadBookShelf() {
+        System.out.println("###################### Start ######################");
+        System.out.println(" Load Book DB");
+        SQLiteDatabase db = dbhelper.getReadableDatabase();
+        StringBuffer sql_select_book = new StringBuffer(ContractDBinfo.SQL_SELECT_BOOK);
+        try {
+            Cursor cursor = db.rawQuery(sql_select_book.toString(), null);
+            Log.i("Cursor_count ", String.valueOf(cursor.getCount()));
+
+            if (cursor == null) {
+                Log.w("Cursor","No DB of book is found");
+            }
+            if (cursor.moveToFirst()){
+                Book abook;
+                while (cursor.moveToNext()) {
+                    abook = new Book();
+                    abook.setTitle(cursor.getString(1));
+                    abook.setToTime(String.valueOf(cursor.getInt(2)));
+                    abook.setEachTime(String.valueOf(cursor.getInt(3)));
+                    abook.setRestTime(String.valueOf(cursor.getInt(4)));
+                    abook.setNumProb(String.valueOf(cursor.getInt(5)));
+                    bookshelf.AddBooks(abook);
+                }
+            }
+
+        } catch (SQLException e) {
+            Log.e("LOAD_CONFIGURE_SQL",e.getMessage());
+        } catch (NullPointerException e) {
+            Log.e("LOAD_CONFIGURE_NULL", e.getMessage());
+        }
+        finally {
+            System.out.println("###################### Ends ######################");
+        }
+    }
+    public void loadBookUser() {
+
     }
 }
