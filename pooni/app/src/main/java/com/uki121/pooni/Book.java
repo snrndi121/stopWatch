@@ -50,6 +50,7 @@ class Book {
     public boolean IsRangeOf(String base, String target)
     {
         try {
+            System.out.println("base : " + base + ", target : " + target);
             int a = Integer.parseInt(base), b = Integer.parseInt(target);
             boolean c1 = IsNumber(target), c2 = a > b;
             //c1 is true -> baseTime is number

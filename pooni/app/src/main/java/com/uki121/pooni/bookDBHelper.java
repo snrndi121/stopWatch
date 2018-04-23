@@ -74,7 +74,6 @@ public class bookDBHelper extends SQLiteOpenHelper {
             System.out.println("####################### End #######################");
         }
     }
-    /* ToDo: issue #15 */
     public long insertData(String targetTable, Book bs) {
         System.out.println("###################### Start ######################");
         System.out.println(" Insert into db");

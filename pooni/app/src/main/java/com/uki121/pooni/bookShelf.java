@@ -25,10 +25,11 @@ public class bookShelf extends AppCompatActivity {
     public boolean AddBooks(Book bs) {
         try {
             if (books.size() > MAX_BOOKS && IsDupBooks(bs)) {
-                Log.d("AddBooks_fail", "cause by booksize or duplication");
+                Log.w("AddBooks_fail", "cause by booksize or duplication");
                 return false;
             }
             if (bs.IsBookValid()) {
+                Log.i("Book_Valid"," passed");
                 books.add(new Book(bs));
                 numOfbooks++;
                 return true;
@@ -38,6 +39,7 @@ public class bookShelf extends AppCompatActivity {
         } catch (Exception e) {
             Log.e("ADD_BOOK_EXC", e.getMessage());
         }
+        Log.w("Book_Valid", "failed");
         return false;
     }
    public void AddBooks(Book[] bs) {
@@ -66,7 +68,7 @@ public class bookShelf extends AppCompatActivity {
     public void printBooks() {
         try {
             if (books.size() == 0) {
-                Log.d("book_size", " 0 ");
+                Log.w("book_size", " 0 ");
             }
             Log.i("BOOK_COUNT", String.valueOf(getNumOfBooks()));
             for (Book b : books) {

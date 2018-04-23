@@ -32,7 +32,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
  * Created by uki121 on 2018-04-03.
  */
 
-public class HomeActivity extends AppCompatActivity implements dialogCustomSet.OnSetCreatedListener {
+public class HomeActivity extends AppCompatActivity implements DialogCustomSet.OnSetCreatedListener {
     private final long FINISH_INTERVAL_TIME = 2000;
     private long   backPressedTime = 0;
     private onKeyBackPressedListener mOnKeyBackPressedListener;

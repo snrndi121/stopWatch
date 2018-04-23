@@ -74,7 +74,7 @@ public class FragmentHomeMenu extends Fragment {
         return view;
     }
     private void openSetDialog() {
-        DialogFragment setDialogFragment = new dialogCustomSet();
+        DialogFragment setDialogFragment = new DialogCustomSet();
         setDialogFragment.setTargetFragment(this, 0);
         setDialogFragment.show(getFragmentManager(), "setdialog");
     }

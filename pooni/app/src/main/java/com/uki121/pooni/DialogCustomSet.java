@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,7 +20,7 @@ import android.widget.EditText;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
-public class dialogCustomSet extends DialogFragment {
+public class DialogCustomSet extends DialogFragment {
     private OnSetCreatedListener sListener;
     public interface OnSetCreatedListener {
         public boolean onSetCreated(Book b);//Uri articleUri);
@@ -27,7 +28,7 @@ public class dialogCustomSet extends DialogFragment {
     private View setting_dial_view;
     private Book temp_book;
 
-    public dialogCustomSet() {
+    public DialogCustomSet() {
         temp_book = new Book();
     }
     @Override
@@ -49,10 +50,13 @@ public class dialogCustomSet extends DialogFragment {
                                 setBookFromview(setting_dial_view);
                                 //temp_book.getBook();
                                 boolean sflag = sListener.onSetCreated(temp_book);
-                                if ( sflag ) Log.d("Book_SetDialog :","Success");
+                                if (sflag) {
+                                    Log.w("Book_SetDialog :","Success");
+                                    onCreateLap();
+                                }
                             }
                         } catch (NullPointerException e) {
-                            Log.d("Book_SetDialog", e.getMessage());
+                            Log.e("Book_SetDialog", e.getMessage());
                         }
                     }
                 })
@@ -66,14 +70,14 @@ public class dialogCustomSet extends DialogFragment {
                 String[] bdata = {((EditText) view.findViewById(R.id.setting_name)).getText().toString(),
                         ((EditText) view.findViewById(R.id.setting_totime)).getText().toString(),
                         ((EditText) view.findViewById(R.id.setting_maxtime)).getText().toString(),
-                        ((EditText) view.findViewById(R.id.setting_count)).getText().toString(),
-                        ((EditText) view.findViewById(R.id.setting_rest)).getText().toString()};
+                        ((EditText) view.findViewById(R.id.setting_rest)).getText().toString(),
+                        ((EditText) view.findViewById(R.id.setting_count)).getText().toString()};
                 temp_book = new Book(bdata);
             }
         } catch(Exception e) {
-            Log.d(" >> Book to String_fail from ", e.getMessage());
+            Log.e(" >> Book to String_fail from ", e.getMessage());
         } catch(ExceptionInInitializerError e) {
-            Log.d(" >> Initialziing_variable", e.getMessage());
+            Log.e(" >> Initialziing_variable", e.getMessage());
         }
     }
     @Override
@@ -89,5 +93,16 @@ public class dialogCustomSet extends DialogFragment {
             throw new ClassCastException(activity.toString() + " must implement OnArticleSelectedListener");
         }
     }
+    public void onCreateLap() {
+        Fragment newFragment = new FragmentLap();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
+        // Replace whatever is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack
+        transaction.replace(R.id.frag_home_container, newFragment, null);
+        transaction.addToBackStack(null);
+
+        // Commit the transaction
+        transaction.commit();
+    }
 }
