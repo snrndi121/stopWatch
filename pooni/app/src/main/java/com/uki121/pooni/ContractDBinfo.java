@@ -12,7 +12,7 @@ public class ContractDBinfo {
     public static final String COL_NOACC = "access_num";
     public static final String SQL_CREATE_BOOK = "CREATE TABLE IF NOT EXISTS " + TBL_BOOK +
             "(" +
-                COL_ID + " INTEGER PRIMARY KEY " + ", " +
+                COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT" + ", " +
                 COL_TITLE + " VARCHAR(30) NOT NULL" + ", " +
                 COL_TOTIME + " INTEGER NOT NULL" + ", " +
                 COL_EATIME + " INTEGER NOT NULL" + ", " +

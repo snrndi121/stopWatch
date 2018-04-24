@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -33,20 +34,43 @@ import java.util.StringTokenizer;
 
 /* ToDo : separte some functions from class FragmentLap, too big */
 public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPressedListener {
-
-    Button btnStart, btnRec, btnEnd, btnDel;
-    TextView myOutput, myRec;
+    //Bundle
+    private static final String CURCB = "current_book_info";
+    private static String strCurBook;
+    private Book curbook;
+    //View
+    private Book curBook;
+    private Button btnStart, btnRec, btnEnd, btnDel;
+    private TextView myOutput, myRec;
+    //Time handler
     final static int Init =0;
     final static int Run =1;
     final static int Pause =2;
-
     int cur_Status = Init;
     int myCount=1;
     long baseTime, pauseTime, beforeLapTime;
     List listLap = new ArrayList();
 
     public void FragmentLap(){ };
+
+    public static FragmentLap newInstance(String _gsonBook) {
+        strCurBook = _gsonBook;
+        FragmentLap fragment = new FragmentLap();
+        Bundle args = new Bundle();
+        args.putString(CURCB, _gsonBook);
+        fragment.setArguments(args);
+        return fragment;
+    }
     @Override
+    public void onCreate(Bundle SavedInstancState) {
+        super.onCreate(SavedInstancState);
+        if (getArguments() != null) {
+            String strCurBook = getArguments().getString(CURCB);
+            Gson gson = new Gson();
+            curbook = gson.fromJson(strCurBook, Book.class);
+            curbook.getBook();
+        }
+    }
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_lab_start, container, false);

@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 class Book {
     private final int TITLE = 0, TOTAL_TIME = 1, EACH_TIME = 2, REST_TIME = 3, NUM_PROB = 4;
-    final int MAX_CATEGORY =5;
+    final int MAX_CATEGORY = 5;
     public String[] category;
     public Book(){ category = new String[MAX_CATEGORY];};
     public Book(String[] _data)
@@ -50,7 +50,6 @@ class Book {
     public boolean IsRangeOf(String base, String target)
     {
         try {
-            System.out.println("base : " + base + ", target : " + target);
             int a = Integer.parseInt(base), b = Integer.parseInt(target);
             boolean c1 = IsNumber(target), c2 = a > b;
             //c1 is true -> baseTime is number

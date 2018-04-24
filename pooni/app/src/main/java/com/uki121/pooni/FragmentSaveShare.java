@@ -14,12 +14,39 @@ import android.widget.Button;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.gson.Gson;
 
 public class FragmentSaveShare extends Fragment implements HomeActivity.onKeyBackPressedListener {
+    //Bundle
+    //Todo : 3 variables need : for current book if it is new, for personal record data, for elapsed time
+
+    //for current book
+    private static final String CURCB = "current_book_info";
+    private static String strCurBook;
+    private Book curbook;
+    //view
     private Button btnShare;
     final String LAP_RECORD = "elapsed_record";
 
     public void FragmentSaveShare(){};
+    public static FragmentSaveShare newInstance(String _gsonBook) {
+        strCurBook = _gsonBook;
+        FragmentSaveShare fragment = new FragmentSaveShare();
+        Bundle args = new Bundle();
+        args.putString(CURCB, _gsonBook);
+        fragment.setArguments(args);
+        return fragment;
+    }
+    @Override
+    public void onCreate(Bundle SavedInstancState) {
+        super.onCreate(SavedInstancState);
+        if (getArguments() != null) {
+            String strCurBook = getArguments().getString(CURCB);
+            Gson gson = new Gson();
+            curbook = gson.fromJson(strCurBook, Book.class);
+            curbook.getBook();
+        }
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

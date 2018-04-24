@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -24,6 +25,8 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -38,8 +41,14 @@ public class HomeActivity extends AppCompatActivity implements DialogCustomSet.O
     private onKeyBackPressedListener mOnKeyBackPressedListener;
     private bookShelf bookshelf;
     private bookDBHelper dbhelper = null;
-    private Book b;
-    private static final String DATABASE_NAME ="pooni.db";
+    //SharedPreferences
+    private final String sharedCurBook = "shared_cur_book";
+    private final String sharedKey = "cur_book_info";
+    private String curBookTitle;
+    private Book curbook;
+    //Bundle
+    private final String CBTITLE = "current_book_title";
+    private final String ARG_CURCB = "CURRENT_BOOK";
 
     @Override
     protected void onCreate(Bundle savedInstanceStates) {
@@ -47,22 +56,67 @@ public class HomeActivity extends AppCompatActivity implements DialogCustomSet.O
         setContentView(R.layout.activity_home);
         init();
     }
+    //Load data and initializing variables
     public void init() {
         //Initialize variables.
         bookshelf = new bookShelf();
         dbhelper = new bookDBHelper(HomeActivity.this);
-        //dbhelper.dropTable(ContractDBinfo.TBL_BOOK);
-        //dbhelper.dropTable(ContractDBinfo.TBL_USER);
-        loadBookShelf();
-        //Load HomeFragment
+        //Load books' info from database
+        LoadBookShelf();
+        //Load a basic book setting user sets before
+        onSearchInnerData();
+        //Inflate HomeFragment
         try {
-            String tag =  String.valueOf(R.string.TAG_HOME);
+            //convert book to gson
+            Gson gson = new GsonBuilder().create();
+            String strCurBook = gson.toJson(curbook, Book.class);
+
+            //Create fragment
             FragmentManager fm = getFragmentManager();
             FragmentTransaction fragmentTransaction = fm.beginTransaction();
-            fragmentTransaction.add(R.id.frag_home_container, new FragmentHomeMenu(), tag);
+            fragmentTransaction.add(R.id.frag_home_container, FragmentHomeMenu.newInstance(strCurBook));
             fragmentTransaction.commit();
         } catch(Exception e) {
             Log.e("HOME_ERROR", e.getMessage());
+        }
+    }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        onSaveInnerData();//preserve current book instance
+    }
+    protected void onSaveInnerData() {
+        try {
+            Log.i("Save new shardPrefernces"," Excuted");
+            Gson gson = new GsonBuilder().create();
+            String strCurBook = gson.toJson(curbook, Book.class);
+
+            SharedPreferences sp = getSharedPreferences(sharedCurBook, 0);
+            SharedPreferences.Editor editor = sp.edit();
+            editor.putString(sharedKey, strCurBook);
+            editor.commit();
+        } catch (Exception e) {
+            Log.e("Search_sharedPrefernces",e.getMessage());
+        }
+    }
+
+    protected void onSearchInnerData() {
+        try {
+            SharedPreferences sp = getSharedPreferences(sharedCurBook, 0);
+            String strCurBook = sp.getString(sharedKey, "");
+
+            //conversion
+            if (strCurBook.equals("") == false) {
+                Log.i("SharedPreferences", "Inner Found.");
+                System.out.println(" >> strCurBook :" + strCurBook);
+                Gson gson = new Gson();
+                curbook = gson.fromJson(strCurBook, Book.class);
+            } else {
+                Log.i("SharedPreferences", "Defalut is excuted.");
+                curbook = bookshelf.getBook(0);
+            }
+        } catch (Exception e) {
+            Log.e("Search_sharedPrefernces",e.getMessage());
         }
     }
     //Back-listener to receive back event from each fragments
@@ -107,7 +161,7 @@ public class HomeActivity extends AppCompatActivity implements DialogCustomSet.O
         return canBeSaved;
     }
     //Load book data from Database
-    public void loadBookShelf() {
+    public void LoadBookShelf() {
         System.out.println("###################### Start ######################");
         System.out.println(" Load Book DB");
         SQLiteDatabase db = dbhelper.getReadableDatabase();
@@ -119,7 +173,7 @@ public class HomeActivity extends AppCompatActivity implements DialogCustomSet.O
             if (cursor == null) {
                 Log.w("Cursor","No DB of book is found");
             }
-            if (cursor.moveToFirst()){
+            if (cursor.moveToFirst()) {
                 Book abook;
                 while (cursor.moveToNext()) {
                     abook = new Book();
@@ -141,6 +195,7 @@ public class HomeActivity extends AppCompatActivity implements DialogCustomSet.O
             System.out.println("###################### Ends ######################");
         }
     }
+
     public void loadBookUser() {
 
     }

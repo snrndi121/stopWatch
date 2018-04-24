@@ -18,62 +18,74 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.gson.Gson;
 
 public class FragmentHomeMenu extends Fragment {
+    //Bundle
+    private static final String CURCB = "current_book_info";
+    private static String strCurBook;
+    private Book curbook;
 
     public FragmentHomeMenu() { }
+    public static FragmentHomeMenu newInstance(String _gsonBook) {
+        strCurBook = _gsonBook;
+        FragmentHomeMenu fragment = new FragmentHomeMenu();
+        Bundle args = new Bundle();
+        args.putString(CURCB, _gsonBook);//key : value
+        fragment.setArguments(args);
+        return fragment;
+    }
+    @Override
+    public void onCreate(Bundle SavedInstancState) {
+        super.onCreate(SavedInstancState);
+        if (getArguments() != null) {
+            String strCurBook = getArguments().getString(CURCB);
+            Gson gson = new Gson();
+            curbook = gson.fromJson(strCurBook, Book.class);
+            curbook.getBook();
+        }
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         final View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        Button btn_start = (Button) view.findViewById(R.id.btn_new_start);
-        Button btn_quick = (Button) view.findViewById(R.id.btn_quick_start);
+        Button btn_new_start = (Button) view.findViewById(R.id.btn_new_start);
+        Button btn_quick_start = (Button) view.findViewById(R.id.btn_quick_start);
         Button btn_setlog = (Button) view.findViewById(R.id.btn_setlog);
 
-        btn_start.setOnClickListener(new View.OnClickListener() {
+        //feat1 : Create new dialog
+        btn_new_start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Do something in response to button click
                 openSetDialog();
             }
         });
-        btn_quick.setOnClickListener(new View.OnClickListener() {
+        //feat2 : Start 'stopwatch' right away
+        btn_quick_start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String tag =  String.valueOf(R.string.TAG_LAB);
-                Fragment newFragment = new FragmentLap();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-                // Replace whatever is in the fragment_container view with this fragment,
-                // and add the transaction to the back stack
-                transaction.replace(R.id.frag_home_container, newFragment, tag);
+                transaction.replace(R.id.frag_home_container, FragmentLap.newInstance(strCurBook));
                 transaction.addToBackStack(null);
-
-                // Commit the transaction
                 transaction.commit();
             }
         });
+        //feat3 : Set your setting and check your logs
         btn_setlog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Send to current set book info
-
                 Fragment newFragment = new FragmentSetLog();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-                // Replace whatever is in the fragment_container view with this fragment,
-                // and add the transaction to the back stack
                 transaction.replace(R.id.frag_home_container, newFragment);
                 transaction.addToBackStack(null);
-
-                // Commit the transaction
                 transaction.commit();
             }
         });
         return view;
     }
+    //Pop up a DialogFragment
     private void openSetDialog() {
         DialogFragment setDialogFragment = new DialogCustomSet();
         setDialogFragment.setTargetFragment(this, 0);
