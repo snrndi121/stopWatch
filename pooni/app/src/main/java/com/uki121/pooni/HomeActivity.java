@@ -38,6 +38,7 @@ public class HomeActivity extends AppCompatActivity implements DialogCustomSet.O
     private onKeyBackPressedListener mOnKeyBackPressedListener;
     private bookShelf bookshelf;
     private bookDBHelper dbhelper = null;
+    private Book b;
     private static final String DATABASE_NAME ="pooni.db";
 
     @Override

@@ -58,13 +58,14 @@ public class FragmentHomeMenu extends Fragment {
         btn_setlog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String tag =  String.valueOf(R.string.TAG_SETLOG);
+                //Send to current set book info
+
                 Fragment newFragment = new FragmentSetLog();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
                 // Replace whatever is in the fragment_container view with this fragment,
                 // and add the transaction to the back stack
-                transaction.replace(R.id.frag_home_container, newFragment, tag);
+                transaction.replace(R.id.frag_home_container, newFragment);
                 transaction.addToBackStack(null);
 
                 // Commit the transaction

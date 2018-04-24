@@ -52,4 +52,6 @@
   <string name="TAG_SAVESHARE">TAG_saveshare</string>
   <string name="TAG_SETLOG">tag_setlog</string>
 
+  <!-- personal_setting_book -->
+  <string name="empty">-</string>
 </resources>

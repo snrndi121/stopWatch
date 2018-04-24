@@ -17,4 +17,9 @@
 
   <!-- button with logo -->
   <dimen name="btnMarginwithlogo">30dp</dimen>
+
+  <!-- Personal_setting_book -->
+  <dimen name="personal_title">45dp</dimen>
+  <dimen name="personal_menu">20dp</dimen>
+  <dimen name="personal_menu_margin">15dp</dimen>
 </resources>
