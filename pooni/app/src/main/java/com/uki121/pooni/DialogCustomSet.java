@@ -26,7 +26,6 @@ public class DialogCustomSet extends DialogFragment {
     //view
     private View setting_dial_view;
     private Book temp_book;
-
     public DialogCustomSet() {
         temp_book = new Book();
     }
@@ -49,7 +48,10 @@ public class DialogCustomSet extends DialogFragment {
                             {
                                 setBookFromview(setting_dial_view);
                                 if (temp_book != null) {
-                                    dialogSuccess();
+                                    new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
+                                            .setTitleText("설정")
+                                            .setContentText("문제를 시작합니다")
+                                            .show();
                                     onCreateLap();
                                 }
                             }
@@ -77,13 +79,6 @@ public class DialogCustomSet extends DialogFragment {
         } catch(ExceptionInInitializerError e) {
             Log.e(" >> Initialziing_variable", e.getMessage());
         }
-    }
-    public void dialogSuccess() {
-        Log.w("Book_SetDialog :","Success");
-        new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
-                .setTitleText("새 설정")
-                .setContentText("문제를 시작합니다.")
-                .show();
     }
     public void onCreateLap() {
         Fragment newFragment = new FragmentLap();
