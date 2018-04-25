@@ -19,10 +19,14 @@ import android.widget.EditText;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class DialogCustomSet extends DialogFragment {
+    //bundle
+    private static final String NEWB = "new_book_info";
     //view
     private View setting_dial_view;
     private Book temp_book;
@@ -81,15 +85,17 @@ public class DialogCustomSet extends DialogFragment {
         }
     }
     public void onCreateLap() {
+        //bundle for lap
+        Bundle args = new Bundle();
+        Gson gson = new GsonBuilder().create();
+        String strNewBook = gson.toJson(temp_book, Book.class);
+        args.putString(NEWB, strNewBook);
+        //create tranaction
         Fragment newFragment = new FragmentLap();
+        newFragment.setArguments(args);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-        // Replace whatever is in the fragment_container view with this fragment,
-        // and add the transaction to the back stack
         transaction.replace(R.id.frag_home_container, newFragment, null);
         transaction.addToBackStack(null);
-
-        // Commit the transaction
         transaction.commit();
     }
 }

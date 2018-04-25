@@ -22,7 +22,7 @@ import com.google.gson.Gson;
 
 public class FragmentHomeMenu extends Fragment {
     //Bundle
-    private static final String CURCB = "current_book_info";
+    private static final String CURB = "current_book_info";
     private static String strCurBook;
     private Book curbook;
 
@@ -31,7 +31,7 @@ public class FragmentHomeMenu extends Fragment {
         strCurBook = _gsonBook;
         FragmentHomeMenu fragment = new FragmentHomeMenu();
         Bundle args = new Bundle();
-        args.putString(CURCB, _gsonBook);//key : value
+        args.putString(CURB, _gsonBook);//key : value
         fragment.setArguments(args);
         return fragment;
     }
@@ -39,7 +39,7 @@ public class FragmentHomeMenu extends Fragment {
     public void onCreate(Bundle SavedInstancState) {
         super.onCreate(SavedInstancState);
         if (getArguments() != null) {;
-            String strCurBook = getArguments().getString(CURCB);
+            String strCurBook = getArguments().getString(CURB);
             Gson gson = new Gson();
             curbook = gson.fromJson(strCurBook, Book.class);
             curbook.getBook();

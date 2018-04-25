@@ -35,29 +35,33 @@ import java.util.StringTokenizer;
 /* ToDo : separte some functions from class FragmentLap, too big */
 public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPressedListener {
     //Bundle
-    private static final String CURCB = "current_book_info";
+    private static final String CURB = "current_book_info";
+    private static final String NEWB = "new_book_info";
     private static String strCurBook;
-    private Book curBook;
-    private boolean IsCurrentBook = false;
+    private Book curBook, newBook;
+    private boolean IsCurrentBook = false, IsNewBook = false;
     //View
     private Button btnStart, btnRec, btnEnd, btnDel;
     private TextView myOutput, myRec;
     //Time handler
-    final static int Init =0;
-    final static int Run =1;
-    final static int Pause =2;
-    int cur_Status = Init;
-    int myCount=1;
-    long baseTime, pauseTime, beforeLapTime;
+    private final static int Init =0;
+    private final static int Run =1;
+    private final static int Pause =2;
+    private int cur_Status = Init;
+    private int myCount=1;
+    private long baseTime, pauseTime, beforeLapTime;
     List listLap = new ArrayList();
+    //Setting book in Time handler
+    int total_time, each_time;
+    //user
+    int access_prob = 0, access_time = 0;
 
     public void FragmentLap(){ };
-
     public static FragmentLap newInstance(String _gsonBook) {
         strCurBook = _gsonBook;
         FragmentLap fragment = new FragmentLap();
         Bundle args = new Bundle();
-        args.putString(CURCB, _gsonBook);
+        args.putString(CURB, _gsonBook);
         fragment.setArguments(args);
         return fragment;
     }
@@ -65,18 +69,27 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
     public void onCreate(Bundle SavedInstancState) {
         super.onCreate(SavedInstancState);
         if (getArguments() != null) {
-            String strCurBook = getArguments().getString(CURCB);
-            Gson gson = new Gson();
-            curBook = gson.fromJson(strCurBook, Book.class);
-            curBook.getBook();
-            IsCurrentBook = true;
+            if (getArguments().getString(NEWB) != null) {//case2. new Book is set
+                String strNewBook = getArguments().getString(NEWB);
+                Gson gson = new Gson();
+                newBook = gson.fromJson(strNewBook, Book.class);
+                newBook.getBook();
+                IsNewBook = true;
+                IsCurrentBook = false;
+            } else if (getArguments().getString(CURB) != null) {//case1. current book is set
+                String strCurBook = getArguments().getString(CURB);
+                Gson gson = new Gson();
+                curBook = gson.fromJson(strCurBook, Book.class);
+                curBook.getBook();
+                IsCurrentBook = true;
+                IsNewBook = false;
+            }
         }
     }
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_lab_start, container, false);
         init(view);
-
         return view;
     }
     public void init(View view) {
@@ -97,9 +110,15 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
 
         //apply current book's setting to count time
         if (IsCurrentBook == true) {
-            if (getArguments() != null) {
-
-            }
+            each_time = Integer.parseInt(curBook.getEachTime());
+            total_time = Integer.parseInt(curBook.getToTime());
+            Log.i("Book_SettingInLap", "Existing setting is applied");
+        } else if (IsNewBook == true) {
+            each_time = Integer.parseInt(newBook.getEachTime());
+            total_time = Integer.parseInt(newBook.getToTime());
+            Log.i("Book_SettingInLap", "New setting is applied");
+        } else {
+            Log.w("Book_SettingInLap","No seting is selected");
         }
     }
     //Handler for current time
