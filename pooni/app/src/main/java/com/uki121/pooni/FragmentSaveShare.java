@@ -77,7 +77,7 @@ public class FragmentSaveShare extends Fragment implements HomeActivity.onKeyBac
                 updateToHomeListener = (onUpdateStateListener) activity;
             }
         } catch (ClassCastException e) {
-                throw new ClassCastException(activity.toString() + " must implement OnArticleSelectedListener");
+                throw new ClassCastException(activity.toString() + " must implement onUpdateStateListener");
         }
     }
     @Override

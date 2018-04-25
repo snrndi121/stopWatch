@@ -20,12 +20,9 @@ import android.widget.EditText;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 public class DialogCustomSet extends DialogFragment {
-    //interface for homeactivity
-    private OnSetCreatedListener sListener;
-    public interface OnSetCreatedListener {
-        public boolean onSetCreated(Book b);
-    }
     //view
     private View setting_dial_view;
     private Book temp_book;
@@ -33,6 +30,7 @@ public class DialogCustomSet extends DialogFragment {
     public DialogCustomSet() {
         temp_book = new Book();
     }
+    /* ToDo : If a new setting doesn't match the given format then notice it to user*/
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         boolean wrapInScrollView = true;
@@ -50,10 +48,8 @@ public class DialogCustomSet extends DialogFragment {
                             if (setting_dial_view != null)
                             {
                                 setBookFromview(setting_dial_view);
-                                //temp_book.getBook();
-                                boolean sflag = sListener.onSetCreated(temp_book);
-                                if (sflag) {
-                                    Log.w("Book_SetDialog :","Success");
+                                if (temp_book != null) {
+                                    dialogSuccess();
                                     onCreateLap();
                                 }
                             }
@@ -82,18 +78,12 @@ public class DialogCustomSet extends DialogFragment {
             Log.e(" >> Initialziing_variable", e.getMessage());
         }
     }
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        HomeActivity activity;
-        activity = (HomeActivity) context;
-        try {
-            if (context instanceof HomeActivity) {
-                sListener = (OnSetCreatedListener) activity;
-            }
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + " must implement OnArticleSelectedListener");
-        }
+    public void dialogSuccess() {
+        Log.w("Book_SetDialog :","Success");
+        new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
+                .setTitleText("새 설정")
+                .setContentText("문제를 시작합니다.")
+                .show();
     }
     public void onCreateLap() {
         Fragment newFragment = new FragmentLap();

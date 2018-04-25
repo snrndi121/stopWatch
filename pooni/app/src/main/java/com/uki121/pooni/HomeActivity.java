@@ -35,7 +35,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
  * Created by uki121 on 2018-04-03.
  */
 
-public class HomeActivity extends AppCompatActivity implements DialogCustomSet.OnSetCreatedListener, onUpdateStateListener {
+public class HomeActivity extends AppCompatActivity implements onUpdateStateListener {
     private final long FINISH_INTERVAL_TIME = 2000;
     private long backPressedTime = 0;
     private onKeyBackPressedListener mOnKeyBackPressedListener;
@@ -152,19 +152,6 @@ public class HomeActivity extends AppCompatActivity implements DialogCustomSet.O
                 Toast.makeText(getApplicationContext(), "한번 더 뒤로가기 누르면 종료합니다.", Toast.LENGTH_SHORT).show();
             }
         }
-    }
-    //Button listener for handling event prduced in dialogCustomset
-    @Override
-    public boolean onSetCreated(Book _book) {
-        System.out.println(" >> HomaActivity_onSetCreated");
-        boolean canBeSaved = bookshelf.AddBooks(_book);
-        if ( canBeSaved == true ) {
-            dbhelper.insertData(ContractDBinfo.TBL_BOOK, _book);
-        } else {
-            System.out.println(" >> new books can not be saved !!!");
-        }
-        bookshelf.printBooks();
-        return canBeSaved;
     }
     //Load book data from Database
     public void LoadBookShelf() {
