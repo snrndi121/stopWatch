@@ -61,6 +61,7 @@ public class FragmentSaveShare extends Fragment implements HomeActivity.onKeyBac
             @Override
             public void onClick(View view) {
                 updateToHomeListener.onUpdateBook(strCurBook);
+                updateToHomeListener.onSharingSNS(strCurBook);
             }
         });
         return view;
@@ -108,4 +109,5 @@ public class FragmentSaveShare extends Fragment implements HomeActivity.onKeyBac
 //private onUpdateStateListener updateStateListener;
 interface onUpdateStateListener {
     public boolean onUpdateBook(String _strBook);//can be added more parameter
+    public boolean onSharingSNS(String _strBook);
 }

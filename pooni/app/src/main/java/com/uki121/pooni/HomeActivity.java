@@ -213,9 +213,21 @@ public class HomeActivity extends AppCompatActivity implements DialogCustomSet.O
             curbook = gson.fromJson(_newCurBook, Book.class);
             strCurBook = _newCurBook;
             Log.i("Current Book", "update sucessful");
+            return true;
         } else {
             Log.w("Current Book", "update unnecessary");
         }
-        return true;
+        return false;
+    };
+    @Override
+    public boolean onSharingSNS(String _newRecord) {
+        Intent toggleIntent = new Intent();
+        String shareStr = _newRecord;
+        toggleIntent.setAction(Intent.ACTION_SEND);
+        toggleIntent.putExtra(Intent.EXTRA_TEXT, shareStr);
+        toggleIntent.setType("text/plain");
+        startActivityForResult(Intent.createChooser(toggleIntent, "Share your Records"), 0);
+        //getIntent.putExtra("re", ">> Sharing's done");
+        return false;
     };
 }
