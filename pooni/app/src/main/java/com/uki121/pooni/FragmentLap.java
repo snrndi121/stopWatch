@@ -37,7 +37,7 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
     //Bundle
     private static final String CURB = "current_book_info";
     private static final String NEWB = "new_book_info";
-    private static String strCurBook;
+    private static String strCurBook, strNewBook;
     private Book curBook, newBook;
     private boolean IsCurrentBook = false, IsNewBook = false;
     //View
@@ -52,9 +52,10 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
     private long baseTime, pauseTime, beforeLapTime;
     List listLap = new ArrayList();
     //Setting book in Time handler
-    int total_time, each_time;
+    long total_time, each_time;
     //user
-    int access_prob = 0, access_time = 0;
+    int access_prob = 0;
+    long access_time = 0;
 
     public void FragmentLap(){ };
     public static FragmentLap newInstance(String _gsonBook) {
@@ -70,14 +71,14 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
         super.onCreate(SavedInstancState);
         if (getArguments() != null) {
             if (getArguments().getString(NEWB) != null) {//case2. new Book is set
-                String strNewBook = getArguments().getString(NEWB);
+                strNewBook = getArguments().getString(NEWB);
                 Gson gson = new Gson();
                 newBook = gson.fromJson(strNewBook, Book.class);
                 newBook.getBook();
                 IsNewBook = true;
                 IsCurrentBook = false;
             } else if (getArguments().getString(CURB) != null) {//case1. current book is set
-                String strCurBook = getArguments().getString(CURB);
+                strCurBook = getArguments().getString(CURB);
                 Gson gson = new Gson();
                 curBook = gson.fromJson(strCurBook, Book.class);
                 curBook.getBook();
@@ -108,14 +109,15 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
         btnDel.setOnClickListener(btnOnClickListener);
         btnEnd.setOnClickListener(btnOnClickListener);
 
+        /* ToDo : each time is considered as min. If not, it will cause error and bug*/
         //apply current book's setting to count time
         if (IsCurrentBook == true) {
-            each_time = Integer.parseInt(curBook.getEachTime());
-            total_time = Integer.parseInt(curBook.getToTime());
+            each_time = Integer.parseInt(curBook.getEachTime())  * 60000; //considered this as min
+            total_time = Integer.parseInt(curBook.getToTime()) * 60000; //considered this as min
             Log.i("Book_SettingInLap", "Existing setting is applied");
         } else if (IsNewBook == true) {
-            each_time = Integer.parseInt(newBook.getEachTime());
-            total_time = Integer.parseInt(newBook.getToTime());
+            each_time = Integer.parseInt(newBook.getEachTime()) * 60000;
+            total_time = Integer.parseInt(newBook.getToTime()) * 60000;
             Log.i("Book_SettingInLap", "New setting is applied");
         } else {
             Log.w("Book_SettingInLap","No seting is selected");
@@ -128,17 +130,18 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
             myTimer.sendEmptyMessage(0);    //sendEmptyMessage is now send a null message into Handler
         }
     };
-    //Print the normal time by "hour:min:second"form
+    // print time with format(min : seconds : millis)
     String getTimeOut()
-    {   //print time with format(min : seconds : millis)
+    {
         long now = SystemClock.elapsedRealtime(); //actual time(milli) after being loaded
         long outTime = now - baseTime;
         long millis = (outTime % 1000) /10, seconds = outTime/1000 , mins = seconds / 60;
         String easy_outTime = String.format("%02d:%02d:%02d", mins, seconds % 60, millis);
         return easy_outTime;
     }
+    //print time with format(hour : min : seconds)
     String getHour_MinTime()
-    {   //print time with format(hour : min : seconds)
+    {
         long now = SystemClock.elapsedRealtime();
         long outTime = now - baseTime;
         long seconds = outTime/1000, mins = seconds /60, hours = mins /60;
@@ -268,9 +271,21 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
                 .build();
         backDialog.show();
     }
+    public void checkEachBound(String _laptime) {
+        long lapInMilli = recordTolong(_laptime, "msms");
+        if (each_time < lapInMilli) {
+            access_prob++;
+        }
+        Log.i("Access_problem", String.valueOf(access_prob));
+    }
+    public void checkTotalBound() {
+        String _curPauseTime = myOutput.getText().toString();
+        long _curToTimeInMilli = recordTolong(_curPauseTime, "hms");
+        access_time = _curToTimeInMilli - total_time;
+        Log.i("Access_time", String.valueOf(access_time));
+    }
     class BtnOnClickListener implements Button.OnClickListener {
         final String LAP_RECORD = "elapsed_record";
-
         @Override
         public void onClick(View view) {
             switch(view.getId()) {
@@ -307,7 +322,9 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
                 case R.id.btn_rec: {
                     switch (cur_Status) {
                         case Run:
-                            String str = String.format("%d. %s\n", myCount, getLabTimeout());
+                            String curlap = getLabTimeout();
+                            checkEachBound(curlap);//Event access
+                            String str = String.format("%d. %s\n", myCount, curlap);
                             //print colored a string every 5th.
                             if (myCount % 5 != 0) {
                                 myRec.append(str);
@@ -343,16 +360,14 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
                     break;
                 }
                 case R.id.btn_end: {
-                    // Do something in response to button click
-                    Fragment newFragment = new FragmentSaveShare();
+                    checkTotalBound();
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-                    // Replace whatever is in the fragment_container view with this fragment,
-                    // and add the transaction to the back stack
-                    transaction.replace(R.id.frag_home_container, FragmentSaveShare.newInstance(strCurBook));
+                    if (IsCurrentBook = true) {
+                        transaction.replace(R.id.frag_home_container, FragmentSaveShare.newInstance(strCurBook));
+                    } else if (IsNewBook == true) {
+                        transaction.replace(R.id.frag_home_container, FragmentSaveShare.newInstance(strNewBook));
+                    }
                     transaction.addToBackStack(null);
-
-                    // Commit the transaction
                     transaction.commit();
                     break;
                 }
