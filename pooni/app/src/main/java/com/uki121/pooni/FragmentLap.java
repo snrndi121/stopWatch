@@ -35,11 +35,12 @@ import java.util.StringTokenizer;
 /* ToDo : separte some functions from class FragmentLap, too big */
 public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPressedListener {
     //Bundle
-    private static final String CURB = "current_book_info";
-    private static final String NEWB = "new_book_info";
-    private static String strCurBook, strNewBook;
+    //private static final String CURB = "current_book_info";
+    //private static final String NEWB = "new_book_info";
+    private static final String APPB = "applied_book_info";
+    private static String strCurBook;
     private Book curBook, newBook;
-    private boolean IsCurrentBook = false, IsNewBook = false;
+    private static boolean IsNewBook = false;
     //View
     private Button btnStart, btnRec, btnEnd, btnDel;
     private TextView myOutput, myRec;
@@ -58,11 +59,12 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
     long access_time = 0;
 
     public void FragmentLap(){ };
-    public static FragmentLap newInstance(String _gsonBook) {
+    public static FragmentLap newInstance(String _gsonBook, boolean _isNewBook) {
         strCurBook = _gsonBook;
+        IsNewBook = _isNewBook;
         FragmentLap fragment = new FragmentLap();
         Bundle args = new Bundle();
-        args.putString(CURB, _gsonBook);
+        args.putString(APPB, _gsonBook);
         fragment.setArguments(args);
         return fragment;
     }
@@ -70,20 +72,16 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
     public void onCreate(Bundle SavedInstancState) {
         super.onCreate(SavedInstancState);
         if (getArguments() != null) {
-            if (getArguments().getString(NEWB) != null) {//case2. new Book is set
-                strNewBook = getArguments().getString(NEWB);
+            if (IsNewBook == true) {//case2. new Book is set
+                strCurBook = getArguments().getString(APPB);
                 Gson gson = new Gson();
-                newBook = gson.fromJson(strNewBook, Book.class);
+                newBook = gson.fromJson(strCurBook, Book.class);
                 newBook.getBook();
-                IsNewBook = true;
-                IsCurrentBook = false;
-            } else if (getArguments().getString(CURB) != null) {//case1. current book is set
-                strCurBook = getArguments().getString(CURB);
+            } else {//case1. current book is set
+                strCurBook = getArguments().getString(APPB);
                 Gson gson = new Gson();
                 curBook = gson.fromJson(strCurBook, Book.class);
                 curBook.getBook();
-                IsCurrentBook = true;
-                IsNewBook = false;
             }
         }
     }
@@ -110,17 +108,16 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
         btnEnd.setOnClickListener(btnOnClickListener);
 
         /* ToDo : each time is considered as min. If not, it will cause error and bug*/
+        /* ToDo : Now the back event from FragmentSaveShare has error in "getEachtime()' caused by curBook is null */
         //apply current book's setting to count time
-        if (IsCurrentBook == true) {
+        if (IsNewBook == false) {
             each_time = Integer.parseInt(curBook.getEachTime())  * 60000; //considered this as min
             total_time = Integer.parseInt(curBook.getToTime()) * 60000; //considered this as min
             Log.i("Book_SettingInLap", "Existing setting is applied");
-        } else if (IsNewBook == true) {
+        } else {//(IsNewBook == true)
             each_time = Integer.parseInt(newBook.getEachTime()) * 60000;
             total_time = Integer.parseInt(newBook.getToTime()) * 60000;
             Log.i("Book_SettingInLap", "New setting is applied");
-        } else {
-            Log.w("Book_SettingInLap","No seting is selected");
         }
     }
     //Handler for current time
@@ -362,11 +359,8 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
                 case R.id.btn_end: {
                     checkTotalBound();
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                    if (IsCurrentBook = true) {
-                        transaction.replace(R.id.frag_home_container, FragmentSaveShare.newInstance(strCurBook));
-                    } else if (IsNewBook == true) {
-                        transaction.replace(R.id.frag_home_container, FragmentSaveShare.newInstance(strNewBook));
-                    }
+                    /* ToDo : More arguments are need like 'user' class*/
+                    transaction.replace(R.id.frag_home_container, FragmentSaveShare.newInstance(strCurBook, IsNewBook));
                     transaction.addToBackStack(null);
                     transaction.commit();
                     break;

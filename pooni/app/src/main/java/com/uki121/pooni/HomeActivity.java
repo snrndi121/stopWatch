@@ -74,9 +74,10 @@ public class HomeActivity extends AppCompatActivity implements onUpdateStateList
                 strCurBook = null;
             }
                 //Create fragment
+                String tag = "frag_home";
                 FragmentManager fm = getFragmentManager();
                 FragmentTransaction fragmentTransaction = fm.beginTransaction();
-                fragmentTransaction.add(R.id.frag_home_container, FragmentHomeMenu.newInstance(strCurBook));
+                fragmentTransaction.add(R.id.frag_home_container, FragmentHomeMenu.newInstance(strCurBook), tag);
                 fragmentTransaction.commit();
 
         } catch(Exception e) {

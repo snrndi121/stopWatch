@@ -86,15 +86,12 @@ public class DialogCustomSet extends DialogFragment {
     }
     public void onCreateLap() {
         //bundle for lap
-        Bundle args = new Bundle();
         Gson gson = new GsonBuilder().create();
         String strNewBook = gson.toJson(temp_book, Book.class);
-        args.putString(NEWB, strNewBook);
         //create tranaction
         Fragment newFragment = new FragmentLap();
-        newFragment.setArguments(args);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.frag_home_container, newFragment, null);
+        transaction.replace(R.id.frag_home_container, FragmentLap.newInstance(strNewBook, true), null);
         transaction.addToBackStack(null);
         transaction.commit();
     }
