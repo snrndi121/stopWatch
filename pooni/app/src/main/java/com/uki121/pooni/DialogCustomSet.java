@@ -21,10 +21,12 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 public class DialogCustomSet extends DialogFragment {
+    //interface for homeactivity
     private OnSetCreatedListener sListener;
     public interface OnSetCreatedListener {
-        public boolean onSetCreated(Book b);//Uri articleUri);
+        public boolean onSetCreated(Book b);
     }
+    //view
     private View setting_dial_view;
     private Book temp_book;
 

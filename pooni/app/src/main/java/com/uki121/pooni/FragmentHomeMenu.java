@@ -26,7 +26,7 @@ public class FragmentHomeMenu extends Fragment {
     private static String strCurBook;
     private Book curbook;
 
-    public FragmentHomeMenu() { }
+    public FragmentHomeMenu() { };
     public static FragmentHomeMenu newInstance(String _gsonBook) {
         strCurBook = _gsonBook;
         FragmentHomeMenu fragment = new FragmentHomeMenu();
@@ -38,7 +38,7 @@ public class FragmentHomeMenu extends Fragment {
     @Override
     public void onCreate(Bundle SavedInstancState) {
         super.onCreate(SavedInstancState);
-        if (getArguments() != null) {
+        if (getArguments() != null) {;
             String strCurBook = getArguments().getString(CURCB);
             Gson gson = new Gson();
             curbook = gson.fromJson(strCurBook, Book.class);
@@ -84,6 +84,11 @@ public class FragmentHomeMenu extends Fragment {
             }
         });
         return view;
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i("onResume", "####################################");
     }
     //Pop up a DialogFragment
     private void openSetDialog() {

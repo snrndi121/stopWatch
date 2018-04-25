@@ -37,9 +37,9 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
     //Bundle
     private static final String CURCB = "current_book_info";
     private static String strCurBook;
-    private Book curbook;
-    //View
     private Book curBook;
+    private boolean IsCurrentBook = false;
+    //View
     private Button btnStart, btnRec, btnEnd, btnDel;
     private TextView myOutput, myRec;
     //Time handler
@@ -67,23 +67,27 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
         if (getArguments() != null) {
             String strCurBook = getArguments().getString(CURCB);
             Gson gson = new Gson();
-            curbook = gson.fromJson(strCurBook, Book.class);
-            curbook.getBook();
+            curBook = gson.fromJson(strCurBook, Book.class);
+            curBook.getBook();
+            IsCurrentBook = true;
         }
     }
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_lab_start, container, false);
+        init(view);
+
+        return view;
+    }
+    public void init(View view) {
         //textview on FragmentLap
         myOutput = (TextView) view.findViewById(R.id.time_out);
         myRec = (TextView) view.findViewById(R.id.record);
-
         //button on FragmentLap
         btnStart = (Button) view.findViewById(R.id.btn_start);
         btnRec = (Button) view.findViewById(R.id.btn_rec);
         btnDel = (Button) view.findViewById(R.id.btn_del);
         btnEnd = (Button) view.findViewById(R.id.btn_end);
-
         //button-clickListener
         BtnOnClickListener btnOnClickListener = new BtnOnClickListener() ;
         btnStart.setOnClickListener(btnOnClickListener);
@@ -91,7 +95,12 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
         btnDel.setOnClickListener(btnOnClickListener);
         btnEnd.setOnClickListener(btnOnClickListener);
 
-        return view;
+        //apply current book's setting to count time
+        if (IsCurrentBook == true) {
+            if (getArguments() != null) {
+
+            }
+        }
     }
     //Handler for current time
     Handler myTimer = new Handler(){
@@ -319,14 +328,9 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
                     Fragment newFragment = new FragmentSaveShare();
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
-                    Bundle bundle = new Bundle(1); // 파라미터는 전달할 데이터 개수
-                    bundle.putString(LAP_RECORD, myRec.getText().toString()); // key , value
-                    newFragment.setArguments(bundle);
-
                     // Replace whatever is in the fragment_container view with this fragment,
                     // and add the transaction to the back stack
-                    String tag = String.valueOf(R.string.TAG_SAVESHARE);
-                    transaction.replace(R.id.frag_home_container, newFragment, tag);
+                    transaction.replace(R.id.frag_home_container, FragmentSaveShare.newInstance(strCurBook));
                     transaction.addToBackStack(null);
 
                     // Commit the transaction

@@ -35,20 +35,20 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
  * Created by uki121 on 2018-04-03.
  */
 
-public class HomeActivity extends AppCompatActivity implements DialogCustomSet.OnSetCreatedListener {
+public class HomeActivity extends AppCompatActivity implements DialogCustomSet.OnSetCreatedListener, onUpdateStateListener {
     private final long FINISH_INTERVAL_TIME = 2000;
-    private long   backPressedTime = 0;
+    private long backPressedTime = 0;
     private onKeyBackPressedListener mOnKeyBackPressedListener;
     private bookShelf bookshelf;
     private bookDBHelper dbhelper = null;
     //SharedPreferences
     private final String sharedCurBook = "shared_cur_book";
     private final String sharedKey = "cur_book_info";
-    private String curBookTitle;
     private Book curbook;
+    private boolean IsSharedPref = false;
     //Bundle
-    private final String CBTITLE = "current_book_title";
-    private final String ARG_CURCB = "CURRENT_BOOK";
+    private static String strCurBook;
+    private static String NewCurBook = "new_cur_book";
 
     @Override
     protected void onCreate(Bundle savedInstanceStates) {
@@ -61,21 +61,24 @@ public class HomeActivity extends AppCompatActivity implements DialogCustomSet.O
         //Initialize variables.
         bookshelf = new bookShelf();
         dbhelper = new bookDBHelper(HomeActivity.this);
-        //Load books' info from database
-        LoadBookShelf();
-        //Load a basic book setting user sets before
-        onSearchInnerData();
+
+        LoadBookShelf();//Load books' info from database
+        onSearchInnerData();//Load a basic book setting user sets in the sharedPreferences before
         //Inflate HomeFragment
         try {
-            //convert book to gson
-            Gson gson = new GsonBuilder().create();
-            String strCurBook = gson.toJson(curbook, Book.class);
+            if (IsSharedPref = true) {
+                //convert book to gson
+                Gson gson = new GsonBuilder().create();
+                strCurBook = gson.toJson(curbook, Book.class);
+            } else {
+                strCurBook = null;
+            }
+                //Create fragment
+                FragmentManager fm = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fm.beginTransaction();
+                fragmentTransaction.add(R.id.frag_home_container, FragmentHomeMenu.newInstance(strCurBook));
+                fragmentTransaction.commit();
 
-            //Create fragment
-            FragmentManager fm = getFragmentManager();
-            FragmentTransaction fragmentTransaction = fm.beginTransaction();
-            fragmentTransaction.add(R.id.frag_home_container, FragmentHomeMenu.newInstance(strCurBook));
-            fragmentTransaction.commit();
         } catch(Exception e) {
             Log.e("HOME_ERROR", e.getMessage());
         }
@@ -87,19 +90,20 @@ public class HomeActivity extends AppCompatActivity implements DialogCustomSet.O
     }
     protected void onSaveInnerData() {
         try {
-            Log.i("Save new shardPrefernces"," Excuted");
-            Gson gson = new GsonBuilder().create();
-            String strCurBook = gson.toJson(curbook, Book.class);
+            if (curbook != null) {
+                Log.i("Save new shardPrefernces","Excuted");
+                Gson gson = new GsonBuilder().create();
+                String strCurBook = gson.toJson(curbook, Book.class);
 
-            SharedPreferences sp = getSharedPreferences(sharedCurBook, 0);
-            SharedPreferences.Editor editor = sp.edit();
-            editor.putString(sharedKey, strCurBook);
-            editor.commit();
+                SharedPreferences sp = getSharedPreferences(sharedCurBook, 0);
+                SharedPreferences.Editor editor = sp.edit();
+                editor.putString(sharedKey, strCurBook);
+                editor.commit();
+            } else { Log.w("Save shardPrefernces", "ignored");}
         } catch (Exception e) {
             Log.e("Search_sharedPrefernces",e.getMessage());
         }
     }
-
     protected void onSearchInnerData() {
         try {
             SharedPreferences sp = getSharedPreferences(sharedCurBook, 0);
@@ -111,9 +115,11 @@ public class HomeActivity extends AppCompatActivity implements DialogCustomSet.O
                 System.out.println(" >> strCurBook :" + strCurBook);
                 Gson gson = new Gson();
                 curbook = gson.fromJson(strCurBook, Book.class);
+                IsSharedPref = true;
             } else {
-                Log.i("SharedPreferences", "Defalut is excuted.");
-                curbook = bookshelf.getBook(0);
+                Log.i("SharedPreferences", "default is applied.");
+                //curbook = bookshelf.getBook(0);
+                curbook = null;
             }
         } catch (Exception e) {
             Log.e("Search_sharedPrefernces",e.getMessage());
@@ -199,4 +205,17 @@ public class HomeActivity extends AppCompatActivity implements DialogCustomSet.O
     public void loadBookUser() {
 
     }
+    @Override
+    public boolean onUpdateBook(String _newCurBook) {
+        //If changed then update
+        if (strCurBook.equals(_newCurBook) == false) {
+            Gson gson = new Gson();
+            curbook = gson.fromJson(_newCurBook, Book.class);
+            strCurBook = _newCurBook;
+            Log.i("Current Book", "update sucessful");
+        } else {
+            Log.w("Current Book", "update unnecessary");
+        }
+        return true;
+    };
 }
