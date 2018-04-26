@@ -39,7 +39,7 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
     //private static final String NEWB = "new_book_info";
     private static final String APPB = "applied_book_info";
     private static String strCurBook;
-    private Book curBook, newBook;
+    private Book curBook;
     private static boolean IsNewBook = false;
     //View
     private Button btnStart, btnRec, btnEnd, btnDel;
@@ -62,6 +62,7 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
     public static FragmentLap newInstance(String _gsonBook, boolean _isNewBook) {
         strCurBook = _gsonBook;
         IsNewBook = _isNewBook;
+        System.out.println(">> new :" + strCurBook);
         FragmentLap fragment = new FragmentLap();
         Bundle args = new Bundle();
         args.putString(APPB, _gsonBook);
@@ -72,12 +73,12 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
     public void onCreate(Bundle SavedInstancState) {
         super.onCreate(SavedInstancState);
         if (getArguments() != null) {
-            if (IsNewBook == true) {//case2. new Book is set
+            if (IsNewBook == true) {//case1. new Book is set
                 strCurBook = getArguments().getString(APPB);
                 Gson gson = new Gson();
-                newBook = gson.fromJson(strCurBook, Book.class);
-                newBook.getBook();
-            } else {//case1. current book is set
+                curBook = gson.fromJson(strCurBook, Book.class);
+                curBook.getBook();
+            } else {//case2. current book is set
                 strCurBook = getArguments().getString(APPB);
                 Gson gson = new Gson();
                 curBook = gson.fromJson(strCurBook, Book.class);
@@ -110,14 +111,15 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
         /* [ToDo] : each time is considered as min. If not, it will cause error and bug */
         /* [ToDo] Now the back event from FragmentSaveShare has error in "getEachtime()' caused by curBook is null */
         //apply current book's setting to count time
-        if (IsNewBook == false) {
+        if (curBook != null)
+        {
             each_time = Integer.parseInt(curBook.getEachTime())  * 60000; //considered this as min
             total_time = Integer.parseInt(curBook.getToTime()) * 60000; //considered this as min
-            Log.i("Book_SettingInLap", "Existing setting is applied");
-        } else {//(IsNewBook == true)
-            each_time = Integer.parseInt(newBook.getEachTime()) * 60000;
-            total_time = Integer.parseInt(newBook.getToTime()) * 60000;
-            Log.i("Book_SettingInLap", "New setting is applied");
+            if (IsNewBook == false) {
+                Log.i("Book_SettingInLap", "Existing setting is applied");
+            } else {    //(IsNewBook == true)
+                Log.i("Book_SettingInLap", "New setting is applied");
+            }
         }
     }
     //Handler for current time
@@ -360,7 +362,11 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
                     checkTotalBound();
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
                     /* ToDo : More arguments are need like 'user' class*/
-                    transaction.replace(R.id.frag_home_container, FragmentSaveShare.newInstance(strCurBook, IsNewBook));
+                    if (curBook != null) {
+                        transaction.replace(R.id.frag_home_container, FragmentSaveShare.newInstance(strCurBook, IsNewBook));
+                    } else {
+                        transaction.replace(R.id.frag_home_container, new FragmentSaveShare());
+                    }
                     transaction.addToBackStack(null);
                     transaction.commit();
                     break;

@@ -67,7 +67,11 @@ public class FragmentHomeMenu extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.frag_home_container, FragmentLap.newInstance(strCurBook, false));
+                if (curbook != null) {
+                    transaction.replace(R.id.frag_home_container, FragmentLap.newInstance(strCurBook, false));
+                } else {
+                    transaction.replace(R.id.frag_home_container, new FragmentLap());
+                }
                 transaction.addToBackStack(null);
                 transaction.commit();
             }

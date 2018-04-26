@@ -22,12 +22,10 @@ public class FragmentSaveShare extends Fragment implements HomeActivity.onKeyBac
     //Bundle
     //Todo : 3 variables need : for current book if it is new, for personal record data, for elapsed time
     //for current book
-    //private static final String CURB = "current_book_info";
-    //private static final String NEWB = "new_book_info";
     private static final String APPB = "applied_book_info";
     private static String strBook;
     private onUpdateStateListener updateToHomeListener;
-    private Book tempBook;
+    private Book curBook;
     private static boolean IsNewBook = false;
     private static boolean IsSaved;
     //view
@@ -49,8 +47,8 @@ public class FragmentSaveShare extends Fragment implements HomeActivity.onKeyBac
         if (getArguments() != null) {
                 strBook = getArguments().getString(APPB);
                 Gson gson = new Gson();
-                tempBook = gson.fromJson(strBook, Book.class);
-                tempBook.getBook();
+                curBook = gson.fromJson(strBook, Book.class);
+                curBook.getBook();
         }
     }
     @Override
@@ -61,23 +59,13 @@ public class FragmentSaveShare extends Fragment implements HomeActivity.onKeyBac
         init(view);
         return view;
     }
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.i("onResume", "on");
-    }
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.i("onStop", "on");
-    }
     void init(View view) {
         IsSaved = false;
         btnShare = (Button) view.findViewById(R.id.btn_share);
         btnShare.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                updateToHomeListener.onUpdateBook(strBook);
+                updateToHomeListener.onUpdateBook(strBook, IsNewBook);
                 updateToHomeListener.onSharingSNS(strBook);
             }
         });
@@ -93,7 +81,7 @@ public class FragmentSaveShare extends Fragment implements HomeActivity.onKeyBac
                         .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                             @Override
                             public void onClick(SweetAlertDialog sDialog) {
-                                updateToHomeListener.onUpdateBook(strBook);
+                                updateToHomeListener.onUpdateBook(strBook, IsNewBook);
                                 IsSaved = true;
                                 sDialog.dismissWithAnimation();
                             }
@@ -126,24 +114,19 @@ public class FragmentSaveShare extends Fragment implements HomeActivity.onKeyBac
     public void onBack() {
         System.out.println(">> SaveShare_back");
         if (IsSaved == false) { //already saved the data
+            Log.i("onBack", "Not saved states");
             backDialog();
         } else { //Go back to home
-            String home_tag = "frag_home";
-            FragmentManager fragmentManager = getFragmentManager();
-            fragmentManager.popBackStack();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            FragmentHomeMenu fragHome = (FragmentHomeMenu) fragmentManager.findFragmentByTag(home_tag);
-
-            if(fragHome == null) {
-                Log.i("onBack", "SaveShare go to new home");
-                FragmentHomeMenu fragment = new FragmentHomeMenu();
-                fragmentTransaction.add(R.id.frag_home_container, fragment, home_tag);
-            } else {
-                Log.i("onBack", "SaveShare go to existing home");
-                fragmentTransaction.replace(R.id.frag_home_container, fragHome, home_tag);
-            }
-            fragmentTransaction.commit();
-
+            //Home backHandler reset
+            HomeActivity activity = (HomeActivity) getActivity();
+            activity.setOnKeyBackPressedListener(null);
+            //Fragment transition
+            FragmentManager fragmentmanager = getFragmentManager();
+            FragmentTransaction transaction = fragmentmanager.beginTransaction();
+            fragmentmanager.popBackStack();
+            Log.i("onBack", "SaveShare go to existing home");
+            transaction.replace(R.id.frag_home_container, new FragmentHomeMenu());
+            transaction.commit();
         }
     }
     private void backDialog() {
@@ -157,8 +140,12 @@ public class FragmentSaveShare extends Fragment implements HomeActivity.onKeyBac
                     public void onClick(@android.support.annotation.NonNull MaterialDialog dialog, @android.support.annotation.NonNull DialogAction which) {
                         FragmentManager fragmentManager = getActivity().getFragmentManager();
                         fragmentManager.popBackStack();
-                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                        transaction.replace(R.id.frag_home_container, FragmentLap.newInstance(strBook, IsNewBook));
+                        FragmentTransaction transaction = fragmentManager.beginTransaction();
+                        if (curBook != null) {
+                            transaction.replace(R.id.frag_home_container, FragmentLap.newInstance(strBook, IsNewBook));
+                        } else {
+                            transaction.replace(R.id.frag_home_container, new FragmentLap());
+                        }
                         transaction.commit();
                     }
                 })
@@ -168,6 +155,6 @@ public class FragmentSaveShare extends Fragment implements HomeActivity.onKeyBac
 }
 //private onUpdateStateListener updateStateListener;
 interface onUpdateStateListener {
-    public boolean onUpdateBook(String _strBook);//can be added more parameter
+    public boolean onUpdateBook(String _strBook, boolean _isNewBook);//can be added more parameter
     public boolean onSharingSNS(String _strBook);
 }

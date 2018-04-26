@@ -75,8 +75,10 @@ public class DialogCustomSet extends DialogFragment {
                         ((EditText) view.findViewById(R.id.setting_totime)).getText().toString(),
                         ((EditText) view.findViewById(R.id.setting_maxtime)).getText().toString(),
                         ((EditText) view.findViewById(R.id.setting_rest)).getText().toString(),
-                        ((EditText) view.findViewById(R.id.setting_count)).getText().toString()};
+                        ((EditText) view.findViewById(R.id.setting_count)).getText().toString(),
+                        "0"};
                 temp_book = new Book(bdata);
+                temp_book.getBook();
             }
         } catch(Exception e) {
             Log.e(" >> Book to String_fail from ", e.getMessage());
@@ -91,7 +93,7 @@ public class DialogCustomSet extends DialogFragment {
         //create tranaction
         Fragment newFragment = new FragmentLap();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.frag_home_container, FragmentLap.newInstance(strNewBook, true), null);
+        transaction.replace(R.id.frag_home_container, FragmentLap.newInstance(strNewBook, true));
         transaction.addToBackStack(null);
         transaction.commit();
     }

@@ -14,11 +14,11 @@ public class ContractDBinfo {
             "(" +
                 COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT" + ", " +
                 COL_TITLE + " VARCHAR(30) NOT NULL" + ", " +
-                COL_TOTIME + " INTEGER NOT NULL" + ", " +
-                COL_EATIME + " INTEGER NOT NULL" + ", " +
-                COL_RETIME + " INTEGER" + ", " +
-                COL_NOPROB + " INTEGER" + ", " +
-                COL_NOACC + " INTEGER DEFAULT(0)" +
+                COL_TOTIME + " INTEGER NOT NULL DEFAULT '0'" + ", " +
+                COL_EATIME + " INTEGER NOT NULL DEFAULT '0'" + ", " +
+                COL_RETIME + " INTEGER NOT NULL DEFAULT '0'" + ", " +
+                COL_NOPROB + " INTEGER NOT NULL DEFAULT '0'" + ", " +
+                COL_NOACC + " INTEGER NOT NULL DEFAULT '0'" +
             ")" ;
     public static final String TBL_USER = "TABLE_USER";
     public static final String COL_RECID = "rid";
@@ -47,4 +47,16 @@ public class ContractDBinfo {
     public static final String SQL_INSERT_BOOK = "INSERT OR REPLACE INTO " + TBL_BOOK + " VALUES ";
     public static final String SQL_INSERT_USER = "INSERT OR REPLACE INTO " + TBL_USER + " VALUES ";
     public static final String SQL_DELETE = "DELETE FROM ";
+    //update
+    public static final String WHERE_TITLE = "title=?";    //Book
+    public static final String WHERE_TOTIME = "total_time=?";
+    public static final String WHERE_EATIME = "each_time=?";
+    public static final String WHERE_RETIME = "rest_time=?";
+    public static final String WHERE_NOPROB = "prob_num=?";
+    public static final String WHERE_NOACC = "access_num=?";
+    public static final String WHERE_RECID = "rid=?";    //User
+    public static final String WHERE_BOOKID = "bid=?";
+    public static final String WHERE_EXECPROB = "prob_excess=?";
+    public static final String WHERE_SOLVEDPROB = "prob_solved=?";
+    public static final String WHERE_CORRPROB = "prob_corrected=?";
 }

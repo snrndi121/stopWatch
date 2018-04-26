@@ -89,13 +89,14 @@ public class bookShelf extends AppCompatActivity {
     //Get index 'i' of bookshelf
     public Book getBook(int _index) {
         try {
-            if (_index > numOfbooks - 1) {
+            if (_index >= numOfbooks) {
+                Log.w("Book Shelf","Empty");
                 throw new Exception();
             }
             Book target = books.get(_index);
             return target;
         } catch(Exception e) {
-            Log.e("Book_size", "out of index");
+            Log.e("Book_getBook", e.getMessage());
         }
         return null;
     }

@@ -73,27 +73,27 @@ public class bookDBHelper extends SQLiteOpenHelper {
             System.out.println("####################### End #######################");
         }
     }
-    public long insertData(String targetTable, Book bs) {
+    public long insertData(Book _bs, String _targetTable) {
         System.out.println("###################### Start ######################");
         System.out.println(" Insert into db");
 
         ContentValues cv = new ContentValues();
         SQLiteDatabase db = getWritableDatabase();
         try {
-            if (targetTable.equals(ContractDBinfo.TBL_BOOK)) {
-                cv.put(ContractDBinfo.COL_ID, getLast(ContractDBinfo.TBL_BOOK));
-                Log.d(" >> last index ", String.valueOf(getLast(ContractDBinfo.TBL_BOOK)));
-                cv.put(ContractDBinfo.COL_TITLE, bs.getTitle());
-                cv.put(ContractDBinfo.COL_TOTIME, bs.getToTime());
-                cv.put(ContractDBinfo.COL_EATIME, bs.getEachTime());
-                cv.put(ContractDBinfo.COL_RETIME, bs.getRestTime());
-                cv.put(ContractDBinfo.COL_NOPROB, bs.getNumProb());
+            if (_targetTable.equals(ContractDBinfo.TBL_BOOK)) {
+                //cv.put(ContractDBinfo.COL_ID, getLast(ContractDBinfo.TBL_BOOK));
+                //Log.d(" >> last index ", String.valueOf(getLast(ContractDBinfo.TBL_BOOK)));
+                cv.put(ContractDBinfo.COL_TITLE, _bs.getTitle());
+                cv.put(ContractDBinfo.COL_TOTIME, _bs.getToTime());
+                cv.put(ContractDBinfo.COL_EATIME, _bs.getEachTime());
+                cv.put(ContractDBinfo.COL_RETIME, _bs.getRestTime());
+                cv.put(ContractDBinfo.COL_NOPROB, _bs.getNumProb());
                 cv.put(ContractDBinfo.COL_NOACC, 1);
                 //cv.put("num_access", dataC);
                 long newRowid = db.insert(ContractDBinfo.TBL_BOOK, null, cv);
                 System.out.println(" >> newRowId :" + newRowid);
                 return newRowid;
-            } else if (targetTable.equals(ContractDBinfo.TBL_USER)) {
+            } else if (_targetTable.equals(ContractDBinfo.TBL_USER)) {
                 /*
                 return getWritableDatabase().insert(ContractDBinfo.TBL_USER, null, cv);
                 */
@@ -105,6 +105,68 @@ public class bookDBHelper extends SQLiteOpenHelper {
             System.out.println("####################### End #######################");
         }
         return -1;
+    }
+    public void updateData(String _attr, String _whereArgs, String _targetTable) {
+        System.out.println("###################### Start ######################");
+        System.out.println(" Update into db");
+
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        try {
+            if (_targetTable.equals(ContractDBinfo.TBL_BOOK)) {
+                switch(_attr) {
+                    case ContractDBinfo.COL_TITLE :
+                        cv.put(ContractDBinfo.COL_TITLE, _whereArgs);
+                        db.update(_targetTable, cv, ContractDBinfo.WHERE_TITLE, new String[]{_whereArgs});
+                        break;
+                    case ContractDBinfo.COL_TOTIME  :
+                        cv.put(ContractDBinfo.COL_TOTIME, _whereArgs);
+                        db.update(_targetTable, cv, ContractDBinfo.WHERE_TITLE, new String[]{_whereArgs});
+                        break;
+                    case ContractDBinfo.COL_EATIME  :
+                        cv.put(ContractDBinfo.COL_EATIME, _whereArgs);
+                        db.update(_targetTable, cv, ContractDBinfo.WHERE_TITLE, new String[]{_whereArgs});
+                        break;
+                    case ContractDBinfo.COL_RETIME  :
+                        cv.put(ContractDBinfo.COL_RETIME, _whereArgs);
+                        db.update(_targetTable, cv, ContractDBinfo.WHERE_TITLE, new String[]{_whereArgs});
+                        break;
+                    case ContractDBinfo.COL_NOPROB  :
+                        cv.put(ContractDBinfo.COL_NOPROB, _whereArgs);
+                        db.update(_targetTable, cv, ContractDBinfo.WHERE_TITLE, new String[]{_whereArgs});
+                        break;
+                    case ContractDBinfo.COL_NOACC  :
+                        cv.put(ContractDBinfo.COL_NOACC, _whereArgs);
+                        db.update(_targetTable, cv, ContractDBinfo.WHERE_TITLE, new String[]{_whereArgs});
+                        break;
+                    default :
+                        break;
+                }
+            } else if (_targetTable.equals(ContractDBinfo.TBL_USER)) {
+                switch(_attr) {
+                    case ContractDBinfo.COL_EXECPROB :
+                        cv.put(ContractDBinfo.COL_EXECPROB, _whereArgs);
+                        db.update(_targetTable, cv, ContractDBinfo.WHERE_EXECPROB, new String[]{_whereArgs});
+                        break;
+                    case ContractDBinfo.COL_SOLVEDPROB  :
+                        cv.put(ContractDBinfo.COL_SOLVEDPROB, _whereArgs);
+                        db.update(_targetTable, cv, ContractDBinfo.WHERE_SOLVEDPROB, new String[]{_whereArgs});
+                        break;
+                    case ContractDBinfo.COL_CORRPROB  :
+                        cv.put(ContractDBinfo.COL_CORRPROB, _whereArgs);
+                        db.update(_targetTable, cv, ContractDBinfo.WHERE_CORRPROB, new String[]{_whereArgs});
+                        break;
+                    default :
+                        break;
+                }/*
+                return getWritableDatabase().insert(ContractDBinfo.TBL_USER, null, cv);
+                */
+            }
+        } catch (SQLException e) {
+            Log.e("SQL_INSERT", e.getMessage());
+        } finally {
+            System.out.println("####################### End #######################");
+        }
     }
     /*
     public void insertAllDatas(ArrayList <Book> bs) {
