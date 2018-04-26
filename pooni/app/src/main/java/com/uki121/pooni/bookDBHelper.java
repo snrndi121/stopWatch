@@ -26,7 +26,6 @@ public class bookDBHelper extends SQLiteOpenHelper {
                         SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
     }
-    /*TODO : The table could not be found now*/
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         init_table(sqLiteDatabase);
@@ -173,5 +172,22 @@ public class bookDBHelper extends SQLiteOpenHelper {
             System.out.println("####################### End #######################");
         }
         return 0;
+    }
+    public int getNumOfAcc(String _bookname) {
+        int _numOfaccess = -1;
+        SQLiteDatabase db = getReadableDatabase();
+        StringBuffer sql_select_where = new StringBuffer(ContractDBinfo.SQL_SELECT_BOOK);
+        sql_select_where.append("WHERE title = ")
+                        .append(_bookname);
+        try {
+            Cursor cursor = db.rawQuery(sql_select_where.toString(), null);
+            if (cursor.moveToNext()) {
+                Log.i("Get_num Of Access", "The required book is found");
+                _numOfaccess = cursor.getInt(6);
+            }
+        } catch(SQLException e) {
+            Log.i("Get_num Of Access", e.getMessage());
+        }
+        return _numOfaccess;
     }
 }

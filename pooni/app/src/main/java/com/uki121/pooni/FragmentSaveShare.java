@@ -157,9 +157,8 @@ public class FragmentSaveShare extends Fragment implements HomeActivity.onKeyBac
                     public void onClick(@android.support.annotation.NonNull MaterialDialog dialog, @android.support.annotation.NonNull DialogAction which) {
                         FragmentManager fragmentManager = getActivity().getFragmentManager();
                         fragmentManager.popBackStack();
-                        Fragment bf = new FragmentLap();
                         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                        transaction.replace(R.id.frag_home_container, bf);
+                        transaction.replace(R.id.frag_home_container, FragmentLap.newInstance(strBook, IsNewBook));
                         transaction.commit();
                     }
                 })

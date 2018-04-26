@@ -107,8 +107,8 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
         btnDel.setOnClickListener(btnOnClickListener);
         btnEnd.setOnClickListener(btnOnClickListener);
 
-        /* ToDo : each time is considered as min. If not, it will cause error and bug*/
-        /* ToDo : Now the back event from FragmentSaveShare has error in "getEachtime()' caused by curBook is null */
+        /* [ToDo] : each time is considered as min. If not, it will cause error and bug */
+        /* [ToDo] Now the back event from FragmentSaveShare has error in "getEachtime()' caused by curBook is null */
         //apply current book's setting to count time
         if (IsNewBook == false) {
             each_time = Integer.parseInt(curBook.getEachTime())  * 60000; //considered this as min

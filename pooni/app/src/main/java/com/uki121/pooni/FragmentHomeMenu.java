@@ -88,7 +88,7 @@ public class FragmentHomeMenu extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.i("onResume", "####################################");
+        Log.i("onResume", "################ Home Menu ################");
     }
     //Pop up a DialogFragment
     private void openSetDialog() {

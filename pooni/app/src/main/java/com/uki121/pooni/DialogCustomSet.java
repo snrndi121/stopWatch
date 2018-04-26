@@ -33,7 +33,7 @@ public class DialogCustomSet extends DialogFragment {
     public DialogCustomSet() {
         temp_book = new Book();
     }
-    /* ToDo : If a new setting doesn't match the given format then notice it to user*/
+    /* ToDo : If a new setting doesn't match the given format, then notice it to user*/
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         boolean wrapInScrollView = true;
