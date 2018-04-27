@@ -359,9 +359,10 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
                     break;
                 }
                 case R.id.btn_end: {
+                    /* ToDo : new ElapsedRecord and Deliver ot SaveNShare */
+                    /* ToDo : More arguments are need like 'user' class*/
                     checkTotalBound();
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                    /* ToDo : More arguments are need like 'user' class*/
                     if (curBook != null) {
                         transaction.replace(R.id.frag_home_container, FragmentSaveShare.newInstance(strCurBook, IsNewBook));
                     } else {

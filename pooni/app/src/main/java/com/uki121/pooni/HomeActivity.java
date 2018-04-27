@@ -90,8 +90,8 @@ public class HomeActivity extends AppCompatActivity implements onUpdateStateList
     @Override
     protected void onStop() {
         super.onStop();
-        onSaveInnerData();//preserve current book instance
-        //reset();
+        //onSaveInnerData();//preserve current book instance
+        reset();
     }
     protected void onSaveInnerData() {
         try {
