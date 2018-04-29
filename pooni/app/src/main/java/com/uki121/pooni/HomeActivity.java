@@ -16,6 +16,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
+import android.text.ParcelableSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -48,7 +49,6 @@ public class HomeActivity extends AppCompatActivity implements onUpdateStateList
     private boolean IsSharedPref = false;
     //Bundle
     private static String strCurBook;
-    private static String NewCurBook = "new_cur_book";
 
     @Override
     protected void onCreate(Bundle savedInstanceStates) {
@@ -195,26 +195,31 @@ public class HomeActivity extends AppCompatActivity implements onUpdateStateList
     }
     //It will be called from FragmentSaveShare when book setting is saved
     @Override
-    public boolean onUpdateBook(String _newCurBook, boolean _IsNewBook) {
-        /* ToDo : update for User data */
-        //Convert json format into Book class
-        if ( _newCurBook != null) {
-            Gson gson = new Gson();
-            Book _target = gson.fromJson(_newCurBook, Book.class);
+    /*ToDo : */
+    public boolean onUpdateBook(String _strUserRec, boolean _IsNewBook) {
+        //Convert json format into Elapsed class
+        Gson gsonUser = new Gson();
+        ElapsedRecord elp = gsonUser.fromJson(_strUserRec, ElapsedRecord.class);
+        ///If book is set
+        if (elp.IsBookSet() == true) {
+            Book _target = new Book(elp.getBaseBook());
             try {
                 if (_IsNewBook == false) {  //If the setting have already existed
                     Log.w("Current Book", "Insert unnecessary,instead update its attributes");
                     //In this method, There is a only change for the number of access now
                     dbhelper.updateData(ContractDBinfo.COL_NOACC, _target.getNumAcc() + 1, ContractDBinfo.TBL_BOOK);
                 } else {    //If new setting is added
-                    dbhelper.insertData(_target, ContractDBinfo.TBL_BOOK);
+                    dbhelper.insertData(elp, ContractDBinfo.TBL_BOOK);
+                    dbhelper.insertData(elp, ContractDBinfo.TBL_RECORD);
                     Log.i("Current Book", "Insert sucessful");
                 }
+                /* ToDo : update user Table */
                 return true;
             } catch (Exception e) {
                 Log.e("UpdateDB on HomeActivity", e.getMessage());
             }
-        } else {    //No Book is setting then no action
+        } else {    //No Book is setting then record data
+            /* ToDo : save total info */
             Log.w("Update_Book","No Book is founded");
             return false;
         }
@@ -224,6 +229,7 @@ public class HomeActivity extends AppCompatActivity implements onUpdateStateList
         DelShpf();
         dbhelper.dropTable(ContractDBinfo.TBL_BOOK);
         dbhelper.dropTable(ContractDBinfo.TBL_USER);
+        dbhelper.dropTable(ContractDBinfo.TBL_RECORD);
     }
     public void DelShpf() {
         SharedPreferences pref = getSharedPreferences(sharedCurBook, 0);
@@ -233,10 +239,12 @@ public class HomeActivity extends AppCompatActivity implements onUpdateStateList
     }
     //It will be called from FragmentSaveShare when a record is sharing
     @Override
-    public boolean onSharingSNS(String _newRecord) {
-        if (_newRecord != null) {
+    public boolean onSharingSNS(String _strUserRec) {
+        Gson gson = new Gson();
+        ElapsedRecord elp = gson.fromJson(_strUserRec, ElapsedRecord.class);
+        if (elp != null) {
             Intent toggleIntent = new Intent();
-            String shareStr = _newRecord;
+            String shareStr = elp.getStrRecrod();
             toggleIntent.setAction(Intent.ACTION_SEND);
             toggleIntent.putExtra(Intent.EXTRA_TEXT, shareStr);
             toggleIntent.setType("text/plain");

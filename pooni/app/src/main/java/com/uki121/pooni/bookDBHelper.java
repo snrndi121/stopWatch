@@ -37,6 +37,7 @@ public class bookDBHelper extends SQLiteOpenHelper {
         try {
             dropTable(ContractDBinfo.TBL_BOOK);
             dropTable(ContractDBinfo.TBL_USER);
+            dropTable(ContractDBinfo.TBL_RECORD);
             onCreate(db);
         } catch (SQLException e)
         {
@@ -67,13 +68,14 @@ public class bookDBHelper extends SQLiteOpenHelper {
         try {
             db.execSQL(ContractDBinfo.SQL_CREATE_BOOK);
             db.execSQL(ContractDBinfo.SQL_CREATE_USER);
+            db.execSQL(ContractDBinfo.SQL_CREATE_REC);
          } catch(SQLException e) {
             Log.d("SQL_onCreate", e.getMessage());
         } finally {
             System.out.println("####################### End #######################");
         }
     }
-    public long insertData(Book _bs, String _targetTable) {
+    public long insertData(ElapsedRecord elp, String _targetTable) {
         System.out.println("###################### Start ######################");
         System.out.println(" Insert into db");
 
@@ -81,8 +83,7 @@ public class bookDBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         try {
             if (_targetTable.equals(ContractDBinfo.TBL_BOOK)) {
-                //cv.put(ContractDBinfo.COL_ID, getLast(ContractDBinfo.TBL_BOOK));
-                //Log.d(" >> last index ", String.valueOf(getLast(ContractDBinfo.TBL_BOOK)));
+                Book _bs = new Book(elp.getBaseBook());
                 cv.put(ContractDBinfo.COL_TITLE, _bs.getTitle());
                 cv.put(ContractDBinfo.COL_TOTIME, _bs.getToTime());
                 cv.put(ContractDBinfo.COL_EATIME, _bs.getEachTime());
@@ -97,6 +98,18 @@ public class bookDBHelper extends SQLiteOpenHelper {
                 /*
                 return getWritableDatabase().insert(ContractDBinfo.TBL_USER, null, cv);
                 */
+            } else if (_targetTable.equals(ContractDBinfo.TBL_RECORD)) {
+                Book _bs = new Book(elp.getBaseBook());
+                cv.put(ContractDBinfo.COL_BOOKID, getBookId(elp.getBaseBook().getTitle()));
+                cv.put(ContractDBinfo.COL_RECAVG, elp.getRecAvg());
+                cv.put(ContractDBinfo.COL_RECTOP, elp.getCutTop10());
+                cv.put(ContractDBinfo.COL_RECBOT, elp.getCutBottom10());
+                cv.put(ContractDBinfo.COL_CORRPROB, _bs.getRestTime());
+                cv.put(ContractDBinfo.COL_STRACC, elp.getStrAccess());
+                //cv.put("num_access", dataC);
+                long newRowid = db.insert(ContractDBinfo.TBL_BOOK, null, cv);
+                System.out.println(" >> newRowId :" + newRowid);
+                return newRowid;
             }
         } catch (SQLException e) {
             Log.e("SQL_INSERT", e.getMessage());
@@ -240,16 +253,28 @@ public class bookDBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         StringBuffer sql_select_where = new StringBuffer(ContractDBinfo.SQL_SELECT_BOOK);
         sql_select_where.append("WHERE title = ")
-                        .append(_bookname);
+                .append(_bookname);
         try {
             Cursor cursor = db.rawQuery(sql_select_where.toString(), null);
             if (cursor.moveToNext()) {
                 Log.i("Get_num Of Access", "The required book is found");
                 _numOfaccess = cursor.getInt(6);
             }
-        } catch(SQLException e) {
+        } catch (SQLException e) {
             Log.i("Get_num Of Access", e.getMessage());
         }
         return _numOfaccess;
+    }
+    public int getBookId(String _title) {
+        SQLiteDatabase db = getReadableDatabase();
+        StringBuffer sql_select_where = new StringBuffer(ContractDBinfo.SQL_SELECT_BOOK);
+        sql_select_where.append(" Where ")
+                        .append("title=")
+                        .append(_title);
+        Cursor cursor = db.rawQuery(sql_select_where.toString(), null);
+        if (cursor.moveToNext()) {
+          return cursor.getInt(0);
+        }
+        return -1;
     }
 }

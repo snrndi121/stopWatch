@@ -22,22 +22,22 @@ public class FragmentSaveShare extends Fragment implements HomeActivity.onKeyBac
     //Bundle
     //Todo : 3 variables need : for current book if it is new, for personal record data, for elapsed time
     //for current book
-    private static final String APPB = "applied_book_info";
-    private static String strBook;
+    private static final String APPR = "applied_record_info";
+    private static String strUserRecord;
     private onUpdateStateListener updateToHomeListener;
-    private Book curBook;
+    private ElapsedRecord curUserRec;
     private static boolean IsNewBook = false;
     private static boolean IsSaved;
     //view
     private Button btnShare, btnSave;
 
     public void FragmentSaveShare(){};
-    public static FragmentSaveShare newInstance(String _gsonBook, boolean _IsNewSet) {
-        strBook = _gsonBook;
+    public static FragmentSaveShare newInstance(String _gsonUser, boolean _IsNewSet) {
+        strUserRecord = _gsonUser;
         IsNewBook = _IsNewSet;
         FragmentSaveShare fragment = new FragmentSaveShare();
         Bundle args = new Bundle();
-        args.putString(APPB, _gsonBook);
+        args.putString(APPR, _gsonUser);
         fragment.setArguments(args);
         return fragment;
     }
@@ -45,10 +45,9 @@ public class FragmentSaveShare extends Fragment implements HomeActivity.onKeyBac
     public void onCreate(Bundle SavedInstancState) {
         super.onCreate(SavedInstancState);
         if (getArguments() != null) {
-                strBook = getArguments().getString(APPB);
+            strUserRecord = getArguments().getString(APPR);
                 Gson gson = new Gson();
-                curBook = gson.fromJson(strBook, Book.class);
-                curBook.getBook();
+            curUserRec = gson.fromJson(strUserRecord, ElapsedRecord.class);
         }
     }
     @Override
@@ -65,8 +64,8 @@ public class FragmentSaveShare extends Fragment implements HomeActivity.onKeyBac
         btnShare.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                updateToHomeListener.onUpdateBook(strBook, IsNewBook);
-                updateToHomeListener.onSharingSNS(strBook);
+                updateToHomeListener.onUpdateBook(strUserRecord, IsNewBook);
+                updateToHomeListener.onSharingSNS(strUserRecord);
             }
         });
         btnSave = (Button) view.findViewById(R.id.btn_save);
@@ -81,7 +80,7 @@ public class FragmentSaveShare extends Fragment implements HomeActivity.onKeyBac
                         .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                             @Override
                             public void onClick(SweetAlertDialog sDialog) {
-                                updateToHomeListener.onUpdateBook(strBook, IsNewBook);
+                                updateToHomeListener.onUpdateBook(strUserRecord, IsNewBook);
                                 IsSaved = true;
                                 sDialog.dismissWithAnimation();
                             }
@@ -141,8 +140,8 @@ public class FragmentSaveShare extends Fragment implements HomeActivity.onKeyBac
                         FragmentManager fragmentManager = getActivity().getFragmentManager();
                         fragmentManager.popBackStack();
                         FragmentTransaction transaction = fragmentManager.beginTransaction();
-                        if (curBook != null) {
-                            transaction.replace(R.id.frag_home_container, FragmentLap.newInstance(strBook, IsNewBook));
+                        if (curUserRec != null) {
+                            transaction.replace(R.id.frag_home_container, FragmentLap.newInstance(strUserRecord, IsNewBook));
                         } else {
                             transaction.replace(R.id.frag_home_container, new FragmentLap());
                         }
@@ -155,6 +154,6 @@ public class FragmentSaveShare extends Fragment implements HomeActivity.onKeyBac
 }
 //private onUpdateStateListener updateStateListener;
 interface onUpdateStateListener {
-    public boolean onUpdateBook(String _strBook, boolean _isNewBook);//can be added more parameter
-    public boolean onSharingSNS(String _strBook);
+    public boolean onUpdateBook(String _strUserRec, boolean _isNewBook);//can be added more parameter
+    public boolean onSharingSNS(String _strUserRec);
 }

@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -270,6 +271,7 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
                 .build();
         backDialog.show();
     }
+    //Count the number of access if a current elapsed time exceed its each Bound time.
     public void checkEachBound(String _laptime) {
         long lapInMilli = recordTolong(_laptime, "msms");
         if (each_time < lapInMilli) {
@@ -277,6 +279,12 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
         }
         Log.i("Access_problem", String.valueOf(access_prob));
     }
+    public String convertToRecord(Book src_book, List < String > src_lap) {
+        ElapsedRecord userRecord = new ElapsedRecord(src_book, src_lap);//new instance of ElapsedRecord from record made
+        Gson gson = new GsonBuilder().create();
+        return gson.toJson(userRecord, ElapsedRecord.class);
+    }
+    //Calculate a mount of access time
     public void checkTotalBound() {
         String _curPauseTime = myOutput.getText().toString();
         long _curToTimeInMilli = recordTolong(_curPauseTime, "hms");
@@ -362,9 +370,11 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
                     /* ToDo : new ElapsedRecord and Deliver ot SaveNShare */
                     /* ToDo : More arguments are need like 'user' class*/
                     checkTotalBound();
+                    String strRecord = convertToRecord(curBook, listLap);   //convert
+                    System.out.println(">> Record :" + strRecord);
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
                     if (curBook != null) {
-                        transaction.replace(R.id.frag_home_container, FragmentSaveShare.newInstance(strCurBook, IsNewBook));
+                        transaction.replace(R.id.frag_home_container, FragmentSaveShare.newInstance(strRecord, IsNewBook));
                     } else {
                         transaction.replace(R.id.frag_home_container, new FragmentSaveShare());
                     }

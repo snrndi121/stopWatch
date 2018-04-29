@@ -27,7 +27,11 @@ class Book {
     }
     public Book(Book bs)
     {
-        this.category = bs.category;
+        if (bs != null) {
+            this.category = bs.category;
+        } else {
+            category = new String[MAX_CATEGORY];
+        }
     }
     /*TODO : mask flag*/
     //Check a form of book regardless of its title

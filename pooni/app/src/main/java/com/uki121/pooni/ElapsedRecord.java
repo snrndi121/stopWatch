@@ -15,15 +15,17 @@ public class ElapsedRecord {
     private String recordId;
     private float recordAvg;
     private float cutTop10, cutBottom10;
-    ArrayList eachAccess;
-    String strAccess;
+    private ArrayList eachAccess;
+    private String strAccess;
+    private boolean isBookSet = false;
     //method
     public ElapsedRecord() {};
     public ElapsedRecord(Book _bs, List < String > _records) {
-        eachAccess = new ArrayList < String >();
+        if (_bs != null) { isBookSet = true; }
         baseBook = new Book(_bs);
         recordId = new String();
         strAccess = new String();
+        eachAccess = new ArrayList < String >();
         //Set eachRecord
         Iterator < String > it = _records.iterator();
         while (it.hasNext()) {
@@ -33,21 +35,33 @@ public class ElapsedRecord {
     }
     //Set
     public void setBaseBook(Book _bs) { baseBook = _bs;}
-    public void setStrAccess() {
+
+    //Get
+    public boolean IsBookSet() { return isBookSet;}
+    public float getRecAvg() { return recordAvg;}
+    public float getCutTop10() { return cutTop10;}
+    public float getCutBottom10() { return cutBottom10;}
+    public Book getBaseBook() { return baseBook;}
+    public String getStrRecrod() {
+        Iterator < String > it = eachAccess.iterator();
+        StringBuffer res = new StringBuffer();
+        while(it.hasNext()) {
+            res.append(it.next());
+        }
+        return res.toString();
+    }
+    public String getStrAccess() {
         //serialize list 'eachAccess' to string'strAccess'
         StringBuffer src = convertStrAcc();
         if (src != null) {
             Log.i("Record converting", "Done well");
             strAccess = src.toString();
+            return strAccess;
         } else {
             Log.w("Record converting","Err : Check convertStrAcc()");
         }
+        return null;
     }
-    //Get
-    public float getRecAvg() { return recordAvg;}
-    public float getCutTop10() { return cutTop10;}
-    public float getCutBottom10() { return cutBottom10;}
-    public Book getBaseBook() { return baseBook;}
     //Calculate
     private StringBuffer convertStrAcc() {
         //The substring of each string as a unit has a size by 6
