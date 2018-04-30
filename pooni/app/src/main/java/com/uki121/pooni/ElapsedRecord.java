@@ -10,7 +10,7 @@ import java.util.StringTokenizer;
 
 public class ElapsedRecord {
     //var
-    private final int UNIT_SIZE = 6;
+    private final int TOKEN_SIZE = 6;
     private Book baseBook;
     private String recordId;
     private float recordAvg;
@@ -36,13 +36,19 @@ public class ElapsedRecord {
     //Set
     public void setBaseBook(Book _bs) { baseBook = _bs;}
 
+    public void setEachAccess(ArrayList eachAccess) {
+        this.eachAccess = eachAccess;
+    }
+    public void setEachAccess(String _src) {
+        this.eachAccess = convertToRec(_src);
+    }
     //Get
     public boolean IsBookSet() { return isBookSet;}
     public float getRecAvg() { return recordAvg;}
     public float getCutTop10() { return cutTop10;}
     public float getCutBottom10() { return cutBottom10;}
     public Book getBaseBook() { return baseBook;}
-    public String getStrRecrod() {
+    public String getStrRecord() {
         Iterator < String > it = eachAccess.iterator();
         StringBuffer res = new StringBuffer();
         while(it.hasNext()) {
@@ -77,13 +83,25 @@ public class ElapsedRecord {
             for (int i = 0; str.hasMoreTokens(); ) {
                 element.append(str.nextToken());
             }
-            if (element.length() != UNIT_SIZE) {
+            element.append(":");    //delimeter
+            if (element.length() != TOKEN_SIZE) {
                 Log.w("Convert List to String", "String is missing");
                 break;
             }
             res.append(element.toString());
         }
         return res;
+    }
+    public ArrayList convertToRec(String _from) {
+        int strSize = _from.length();
+        System.out.println(">> (Before) String is " + _from);
+        System.out.println(">> (Before)String size : " + strSize);
+        ArrayList < String > list_rec = new ArrayList<>();
+        StringTokenizer str = new StringTokenizer(_from, ":");
+        for (int i = 0; str.hasMoreElements(); ) {
+            list_rec.add(str.nextToken());
+        }
+        return list_rec;
     }
     private void calEachAvg() {
         /* ToDo : It may have a error because of 'round()'*/

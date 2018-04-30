@@ -46,10 +46,10 @@ public class ContractDBinfo {
     public static final String SQL_CREATE_REC ="CREATE TABLE IF NOT EXISTS " + TBL_RECORD +
             "(" +
             COL_RECID + " INTEGER AUTOINCREMENT" + ", " +
-            COL_BOOKID + " INTEGER NOT NULL " + ", " +
-            COL_RECAVG + " INTEGER DEFAULT '0''" + ", " +
-            COL_RECTOP + " INTEGER DEFAULT '0'" + ", " +
-            COL_RECBOT + " INTEGER DEFAULT '0'" + ", " +
+            COL_BOOKID + " INTEGER " + ", " +
+            COL_RECAVG + " REAL DEFAULT '0''" + ", " +
+            COL_RECTOP + " REAL DEFAULT '0'" + ", " +
+            COL_RECBOT + " REAL DEFAULT '0'" + ", " +
             COL_CORRPROB + " INTEGER DEFAULT '0'" + ", " +
             COL_STRACC + " VARCHAR(1024)" + ", " +
             "PRIMARY KEY(" + COL_RECID + ") " + ", " +

@@ -195,8 +195,7 @@ public class HomeActivity extends AppCompatActivity implements onUpdateStateList
     }
     //It will be called from FragmentSaveShare when book setting is saved
     @Override
-    /*ToDo : */
-    public boolean onUpdateBook(String _strUserRec, boolean _IsNewBook) {
+    public boolean onUpdateRecord(String _strUserRec, boolean _IsNewBook) {
         //Convert json format into Elapsed class
         Gson gsonUser = new Gson();
         ElapsedRecord elp = gsonUser.fromJson(_strUserRec, ElapsedRecord.class);
@@ -204,22 +203,24 @@ public class HomeActivity extends AppCompatActivity implements onUpdateStateList
         if (elp.IsBookSet() == true) {
             Book _target = new Book(elp.getBaseBook());
             try {
-                if (_IsNewBook == false) {  //If the setting have already existed
-                    Log.w("Current Book", "Insert unnecessary,instead update its attributes");
-                    //In this method, There is a only change for the number of access now
-                    dbhelper.updateData(ContractDBinfo.COL_NOACC, _target.getNumAcc() + 1, ContractDBinfo.TBL_BOOK);
-                } else {    //If new setting is added
-                    dbhelper.insertData(elp, ContractDBinfo.TBL_BOOK);
-                    dbhelper.insertData(elp, ContractDBinfo.TBL_RECORD);
+                //Update Book info or insert new book
+                if (_IsNewBook == false) {
+                    //case1.update book
+                    Log.i("Current Book", "Insert unnecessary,instead update its attributes");
+                    dbhelper.updateData(ContractDBinfo.COL_NOACC, _target.getNumAcc() + 1, ContractDBinfo.TBL_BOOK);//There is a only change for the number of access now
+                } else {
+                    //case2.new book is added
                     Log.i("Current Book", "Insert sucessful");
+                    dbhelper.insertData(elp, ContractDBinfo.TBL_BOOK);
                 }
-                /* ToDo : update user Table */
+                //Save Record
+                dbhelper.insertData(elp, ContractDBinfo.TBL_RECORD);
                 return true;
             } catch (Exception e) {
                 Log.e("UpdateDB on HomeActivity", e.getMessage());
             }
-        } else {    //No Book is setting then record data
-            /* ToDo : save total info */
+        } else {
+            //No Book is setting then only record data
             Log.w("Update_Book","No Book is founded");
             return false;
         }
@@ -244,7 +245,7 @@ public class HomeActivity extends AppCompatActivity implements onUpdateStateList
         ElapsedRecord elp = gson.fromJson(_strUserRec, ElapsedRecord.class);
         if (elp != null) {
             Intent toggleIntent = new Intent();
-            String shareStr = elp.getStrRecrod();
+            String shareStr = elp.getStrRecord();
             toggleIntent.setAction(Intent.ACTION_SEND);
             toggleIntent.putExtra(Intent.EXTRA_TEXT, shareStr);
             toggleIntent.setType("text/plain");

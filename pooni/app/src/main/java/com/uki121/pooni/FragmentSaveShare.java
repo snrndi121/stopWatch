@@ -64,7 +64,7 @@ public class FragmentSaveShare extends Fragment implements HomeActivity.onKeyBac
         btnShare.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                updateToHomeListener.onUpdateBook(strUserRecord, IsNewBook);
+                updateToHomeListener.onUpdateRecord(strUserRecord, IsNewBook);
                 updateToHomeListener.onSharingSNS(strUserRecord);
             }
         });
@@ -80,7 +80,7 @@ public class FragmentSaveShare extends Fragment implements HomeActivity.onKeyBac
                         .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                             @Override
                             public void onClick(SweetAlertDialog sDialog) {
-                                updateToHomeListener.onUpdateBook(strUserRecord, IsNewBook);
+                                updateToHomeListener.onUpdateRecord(strUserRecord, IsNewBook);
                                 IsSaved = true;
                                 sDialog.dismissWithAnimation();
                             }
@@ -154,6 +154,6 @@ public class FragmentSaveShare extends Fragment implements HomeActivity.onKeyBac
 }
 //private onUpdateStateListener updateStateListener;
 interface onUpdateStateListener {
-    public boolean onUpdateBook(String _strUserRec, boolean _isNewBook);//can be added more parameter
+    public boolean onUpdateRecord(String _strUserRec, boolean _isNewBook);//can be added more parameter
     public boolean onSharingSNS(String _strUserRec);
 }

@@ -100,13 +100,13 @@ public class bookDBHelper extends SQLiteOpenHelper {
                 */
             } else if (_targetTable.equals(ContractDBinfo.TBL_RECORD)) {
                 Book _bs = new Book(elp.getBaseBook());
-                cv.put(ContractDBinfo.COL_BOOKID, getBookId(elp.getBaseBook().getTitle()));
+                int bid = _bs != null ? getBookId(_bs.getTitle()) : -1;
+                cv.put(ContractDBinfo.COL_BOOKID, bid);
                 cv.put(ContractDBinfo.COL_RECAVG, elp.getRecAvg());
                 cv.put(ContractDBinfo.COL_RECTOP, elp.getCutTop10());
                 cv.put(ContractDBinfo.COL_RECBOT, elp.getCutBottom10());
                 cv.put(ContractDBinfo.COL_CORRPROB, _bs.getRestTime());
                 cv.put(ContractDBinfo.COL_STRACC, elp.getStrAccess());
-                //cv.put("num_access", dataC);
                 long newRowid = db.insert(ContractDBinfo.TBL_BOOK, null, cv);
                 System.out.println(" >> newRowId :" + newRowid);
                 return newRowid;
@@ -276,5 +276,44 @@ public class bookDBHelper extends SQLiteOpenHelper {
           return cursor.getInt(0);
         }
         return -1;
+    }
+    public Book findBookByid(int _bookid) {
+        SQLiteDatabase db = getReadableDatabase();
+        StringBuffer sql_find_book = new StringBuffer(ContractDBinfo.SQL_SELECT_BOOK);
+        sql_find_book.append(" where ")
+                    .append("bid=")
+                    .append( _bookid);
+        Cursor cursor = db.rawQuery(sql_find_book.toString(), null);
+        if (cursor.moveToNext()) {
+            Book _book = new Book();
+            _book.setTitle(cursor.getString(1));
+            _book.setToTime(cursor.getString(2));
+            _book.setEachTime(cursor.getString(3));
+            _book.setRestTime(cursor.getString(4));
+            _book.setNumProb(cursor.getString(5));
+            _book.setNumAcc(cursor.getString(6));
+            return _book;
+        }
+        return null;
+    }
+    public ArrayList < ElapsedRecord > getElapsedRecord() {
+        SQLiteDatabase db = getReadableDatabase();
+        StringBuffer sql_select_record = new StringBuffer(ContractDBinfo.SQL_SELECT_RECORD);
+        Cursor cursor = db.rawQuery(sql_select_record.toString(), null);
+        int bookIdx = 0;
+        ArrayList < ElapsedRecord > elplist = new ArrayList< ElapsedRecord>();
+        while (cursor.moveToNext()) {
+            ElapsedRecord elp = new ElapsedRecord();
+            bookIdx = cursor.getInt(1);
+            System.out.println(" >> cursor_book : " + bookIdx);
+            if (bookIdx != -1) {
+                elp.setBaseBook(findBookByid(bookIdx));
+            }
+            elp.setEachAccess(cursor.getString(6));
+            elplist.add(elp);
+        }
+        if (elplist.isEmpty() != false)
+            return elplist;
+        return null;
     }
 }
