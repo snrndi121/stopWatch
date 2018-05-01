@@ -39,18 +39,22 @@ public class ContractDBinfo {
                 " ON DELETE CASCADE" +
             ")" ;
     public static final String TBL_RECORD = "TABLE_RECORD";
-    public static final String COL_RECAVG = "avg";
-    public static final String COL_RECTOP = "cut_top10";
-    public static final String COL_RECBOT = "cut_bottom10";
+    //public static final String COL_RECAVG = "avg";
+    //public static final String COL_RECTOP = "cut_top10";
+    //public static final String COL_RECBOT = "cut_bottom10";
+    public static final String COL_DATE = "data_record";
+    public static final String COL_SOVLED = "numOfsolved";
     public static final String COL_STRACC = "string_access";
     public static final String SQL_CREATE_REC ="CREATE TABLE IF NOT EXISTS " + TBL_RECORD +
             "(" +
             COL_RECID + " INTEGER AUTOINCREMENT" + ", " +
             COL_BOOKID + " INTEGER " + ", " +
-            COL_RECAVG + " REAL DEFAULT '0''" + ", " +
-            COL_RECTOP + " REAL DEFAULT '0'" + ", " +
-            COL_RECBOT + " REAL DEFAULT '0'" + ", " +
-            COL_CORRPROB + " INTEGER DEFAULT '0'" + ", " +
+            //COL_RECAVG + " REAL DEFAULT '0''" + ", " +
+            //COL_RECTOP + " REAL DEFAULT '0'" + ", " +
+            //COL_RECBOT + " REAL DEFAULT '0'" + ", " +
+            COL_DATE + " date('now') " + ", " +
+            COL_SOVLED + " INTEGER DEFALUT '0'" + ", " +
+            //COL_CORRPROB + " INTEGER DEFAULT '0'" + ", " +
             COL_STRACC + " VARCHAR(1024)" + ", " +
             "PRIMARY KEY(" + COL_RECID + ") " + ", " +
             "FOREIGN KEY("  + COL_BOOKID + ")" +
