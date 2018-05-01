@@ -1,13 +1,10 @@
 package com.uki121.pooni;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -17,7 +14,6 @@ import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -36,8 +32,6 @@ import java.util.StringTokenizer;
 /* ToDo : separte some functions from class FragmentLap, too big */
 public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPressedListener {
     //Bundle
-    //private static final String CURB = "current_book_info";
-    //private static final String NEWB = "new_book_info";
     private static final String APPB = "applied_book_info";
     private static String strCurBook;
     private Book curBook;

@@ -1,23 +1,15 @@
 package com.uki121.pooni;
 
-import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
-
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.gson.Gson;
 
 public class FragmentHomeMenu extends Fragment {
@@ -80,15 +72,11 @@ public class FragmentHomeMenu extends Fragment {
         btn_setlog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*
-                Fragment newFragment = new FragmentSetLog();
+                Fragment newFragment = new FragmentSetHistory();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 transaction.replace(R.id.frag_home_container, newFragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
-                */
-                Intent history = new Intent(getActivity(), HistoryActivity.class);
-                startActivity(history);
             }
         });
         return view;

@@ -33,8 +33,8 @@
   <string name="lab_done_share">공유</string>
 
   <!-- activity_setting -->
-  <string name="setting_list">문제집 설정</string>
-
+  <string name="setting_book">문제집 설정</string>
+  <string name="setting_hisotry">기록 보기</string>
   <!-- warnings -->
   <string name="cancel_record">저장되지 않은 Lap 기록이 있습니다. 중지할까요?</string>
   <string name="msg_back">한번 더 뒤로가기 누르면 종료</string>

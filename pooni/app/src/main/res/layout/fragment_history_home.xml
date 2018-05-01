@@ -18,8 +18,8 @@
             app:layout_constraintTop_toTopOf="parent"
             />
         <Button
-            android:id="@+id/btn_setlist"
-            android:text="@string/setting_list"
+            android:id="@+id/btn_setbook"
+            android:text="@string/setting_book"
             android:layout_width="@dimen/middleBtnWidth"
             android:layout_height="@dimen/middleBtnHeight"
             app:layout_constraintHorizontal_bias="0.5"
@@ -29,14 +29,14 @@
             android:layout_marginTop="@dimen/btnMarginwithlogo"
             />
         <Button
-            android:id="@+id/btn_setoption1"
-            android:text="@string/notSet"
+            android:id="@+id/btn_history"
+            android:text="@string/setting_hisotry"
             android:layout_width="@dimen/middleBtnWidth"
             android:layout_height="@dimen/middleBtnHeight"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btn_setlist"
+            app:layout_constraintTop_toBottomOf="@id/btn_setbook"
             android:layout_marginTop="@dimen/middleMarginBtn"
             />
         <Button
@@ -47,7 +47,7 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btn_setoption1"
+            app:layout_constraintTop_toBottomOf="@id/btn_history"
             android:layout_marginTop="@dimen/middleMarginBtn"
             />
 </android.support.constraint.ConstraintLayout>
