@@ -80,11 +80,15 @@ public class FragmentHomeMenu extends Fragment {
         btn_setlog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /*
                 Fragment newFragment = new FragmentSetLog();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 transaction.replace(R.id.frag_home_container, newFragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
+                */
+                Intent history = new Intent(getActivity(), HistoryActivity.class);
+                startActivity(history);
             }
         });
         return view;

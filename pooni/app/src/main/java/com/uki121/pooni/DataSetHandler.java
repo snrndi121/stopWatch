@@ -12,7 +12,6 @@ public class DataSetHandler {
 
     public void lineWithstick() {
         //step1. Read from table_record
-        ArrayList< String > record =
         //step2. calculate the access of each months and its average
     }
 
