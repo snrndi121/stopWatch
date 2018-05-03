@@ -8,6 +8,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.Iterator;
 
 /* TODO : class DBHELPER */
 public class bookDBHelper extends SQLiteOpenHelper {
+    private static final String TAG = "BookDBHelper";
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME ="pooni.db";
 
@@ -61,19 +63,76 @@ public class bookDBHelper extends SQLiteOpenHelper {
         }
 
     }
-
+    public void createTable(String _tablename) {
+        SQLiteDatabase db = getWritableDatabase();
+        switch(_tablename) {
+            case ContractDBinfo.TBL_BOOK :
+                Log.d(TAG, "create table Book");
+                db.execSQL(ContractDBinfo.SQL_CREATE_BOOK);break;
+            case ContractDBinfo.TBL_RECORD :
+                Log.d(TAG, "create table Record");
+                db.execSQL(ContractDBinfo.SQL_CREATE_REC);break;
+            case ContractDBinfo.TBL_USER :
+                Log.d(TAG, "create table User");
+                db.execSQL(ContractDBinfo.SQL_CREATE_USER);break;
+            case ContractDBinfo.TBL_HISTORY_PIE :
+                Log.d(TAG, "create table History");
+                db.execSQL(ContractDBinfo.SQL_CREATE_HISTORY_PIE);break;
+            default :
+                break;
+        }
+    }
     public void init_table(SQLiteDatabase db) {
         System.out.println("###################### Start ######################");
         System.out.println("  Initialize Tables");
         try {
-            db.execSQL(ContractDBinfo.SQL_CREATE_BOOK);
-            db.execSQL(ContractDBinfo.SQL_CREATE_USER);
-            db.execSQL(ContractDBinfo.SQL_CREATE_REC);
+            createTable(ContractDBinfo.TBL_BOOK);
+            createTable(ContractDBinfo.TBL_RECORD);
+            createTable(ContractDBinfo.TBL_USER);
          } catch(SQLException e) {
             Log.d("SQL_onCreate", e.getMessage());
         } finally {
             System.out.println("####################### End #######################");
         }
+    }
+    public Cursor selectFromTable(String _tablename, String _query) {
+        SQLiteDatabase db = getReadableDatabase();
+        switch (_tablename) {
+            case ContractDBinfo.TBL_HISTORY_PIE :
+                Cursor cursor = db.rawQuery(_query, null);
+                return cursor;
+            default:
+                break;
+        }
+        return null;
+    }
+    public long insertData(History history, String _targetTable) {
+        System.out.println("###################### Start ######################");
+        System.out.println(" Insert into history of db");
+        ContentValues cv = new ContentValues();
+        SQLiteDatabase db = getWritableDatabase();
+        try {
+            switch (_targetTable) {
+                case ContractDBinfo.TBL_HISTORY_PIE:
+                    int[] c = history.getHistoryToTal().getData();
+                    cv.put(ContractDBinfo.COL_CATE1, c[0]);
+                    cv.put(ContractDBinfo.COL_CATE1, c[1]);
+                    cv.put(ContractDBinfo.COL_CATE1, c[2]);
+                    cv.put(ContractDBinfo.COL_CATE1, c[3]);
+                    long newRowid = db.insert(ContractDBinfo.TBL_HISTORY_PIE, null, cv);
+                    return newRowid;
+                case ContractDBinfo.TBL_HISTORY_LINE:
+                    break;
+                default:
+                    Log.w(TAG, "There is no such table");
+                    break;
+            }
+        } catch (SQLException e_sql) {
+            Log.e(TAG, e_sql.getMessage());
+        } finally {
+            System.out.println("####################### End #######################");
+        }
+        return -1;
     }
     public long insertData(ElapsedRecord elp, String _targetTable) {
         System.out.println("###################### Start ######################");
@@ -102,14 +161,15 @@ public class bookDBHelper extends SQLiteOpenHelper {
                 Book _bs = new Book(elp.getBaseBook());
                 int bid = _bs != null ? getBookId(_bs.getTitle()) : -1;
                 cv.put(ContractDBinfo.COL_BOOKID, bid);
-                cv.put(ContractDBinfo.COL_RECAVG, elp.getRecAvg());
-                cv.put(ContractDBinfo.COL_RECTOP, elp.getCutTop10());
-                cv.put(ContractDBinfo.COL_RECBOT, elp.getCutBottom10());
-                cv.put(ContractDBinfo.COL_CORRPROB, _bs.getRestTime());
+                cv.put(ContractDBinfo.COL_SOVLED, elp.getNumOfRec());
                 cv.put(ContractDBinfo.COL_STRACC, elp.getStrAccess());
                 long newRowid = db.insert(ContractDBinfo.TBL_BOOK, null, cv);
                 System.out.println(" >> newRowId :" + newRowid);
                 return newRowid;
+            } else if (_targetTable.equals(ContractDBinfo.TBL_HISTORY_PIE)) {
+                cv.put(ContractDBinfo.COL_RECID, elp.getRecordId());
+                cv.put(ContractDBinfo.COL_DATE, elp.getDate());
+                //cv.put(ContractDBinfo.COL_ACCAMOUNT, );
             }
         } catch (SQLException e) {
             Log.e("SQL_INSERT", e.getMessage());
@@ -296,9 +356,11 @@ public class bookDBHelper extends SQLiteOpenHelper {
         }
         return null;
     }
-    public ArrayList < ElapsedRecord > getElapsedRecord() {
+    public ArrayList < ElapsedRecord > getElapsedRecord(StringBuffer _whereQuery) {
         SQLiteDatabase db = getReadableDatabase();
         StringBuffer sql_select_record = new StringBuffer(ContractDBinfo.SQL_SELECT_RECORD);
+        //ToDo : if _whereQuery is null, is it good
+        if (_whereQuery != null) { sql_select_record.append(_whereQuery.toString());}
         Cursor cursor = db.rawQuery(sql_select_record.toString(), null);
         int bookIdx = 0;
         ArrayList < ElapsedRecord > elplist = new ArrayList< ElapsedRecord>();

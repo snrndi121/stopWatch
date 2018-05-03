@@ -73,15 +73,15 @@ public class HomeActivity extends AppCompatActivity implements onUpdateStateList
             } else {
                 strCurBook = null;
             }
-                //Create fragment
-                String tag = "frag_home";
-                FragmentManager fm = getFragmentManager();
-                FragmentTransaction fragmentTransaction = fm.beginTransaction();
-                if (curbook != null) {
-                    fragmentTransaction.add(R.id.frag_home_container, FragmentHomeMenu.newInstance(strCurBook), tag);}
-                else {  //No data in the book shelf
-                    fragmentTransaction.add(R.id.frag_home_container, new FragmentHomeMenu(), tag);}
-                fragmentTransaction.commit();
+            //Create fragment
+            String tag = "frag_home";
+            FragmentManager fm = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fm.beginTransaction();
+            if (curbook != null) {
+                fragmentTransaction.add(R.id.frag_home_container, FragmentHomeMenu.newInstance(strCurBook), tag);}
+            else {  //No data in the book shelf
+                fragmentTransaction.add(R.id.frag_home_container, new FragmentHomeMenu(), tag);}
+            fragmentTransaction.commit();
 
         } catch(Exception e) {
             Log.e("HOME_ERROR", e.getMessage());
@@ -90,8 +90,8 @@ public class HomeActivity extends AppCompatActivity implements onUpdateStateList
     @Override
     protected void onStop() {
         super.onStop();
-        //onSaveInnerData();//preserve current book instance
-        reset();
+        onSaveInnerData();//preserve current book instance
+        //reset();
     }
     protected void onSaveInnerData() {
         try {

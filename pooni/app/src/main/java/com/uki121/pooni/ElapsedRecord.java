@@ -10,44 +10,53 @@ import java.util.StringTokenizer;
 
 public class ElapsedRecord {
     //var
+    private static final String TAG = "ElapsedRecord";
+    private static final int[] time_unit = {3600, 60, 1};//hour, min, secon
     private final int TOKEN_SIZE = 6;
     private Book baseBook;
     private String recordId;
-    private float recordAvg;
-    private float cutTop10, cutBottom10;
-    private ArrayList eachAccess;
+    private String date;
+    private ArrayList eachAccess;//save it as seconds
+    private int num; //acutal size of record
     private String strAccess;
     private boolean isBookSet = false;
+    //private float recordAvg;
+    //private float cutTop10, cutBottom10;
     //method
     public ElapsedRecord() {};
     public ElapsedRecord(Book _bs, List < String > _records) {
         if (_bs != null) { isBookSet = true; }
         baseBook = new Book(_bs);
         recordId = new String();
+        date = new String();
         strAccess = new String();
+        num = _records.size();
         eachAccess = new ArrayList < String >();
         //Set eachRecord
         Iterator < String > it = _records.iterator();
         while (it.hasNext()) {
-            eachAccess.add(it.next());
+            eachAccess.add(getSecond(it.next()));
         }
         Collections.sort(eachAccess);
     }
     //Set
     public void setBaseBook(Book _bs) { baseBook = _bs;}
-
-    public void setEachAccess(ArrayList eachAccess) {
-        this.eachAccess = eachAccess;
-    }
+    public void setDate(String _date) { this.date = _date;}
+    public void setEachAccess(ArrayList eachAccess) { this.eachAccess = eachAccess; }
     public void setEachAccess(String _src) {
         this.eachAccess = convertToRec(_src);
     }
     //Get
     public boolean IsBookSet() { return isBookSet;}
-    public float getRecAvg() { return recordAvg;}
-    public float getCutTop10() { return cutTop10;}
-    public float getCutBottom10() { return cutBottom10;}
+    public String getRecordId() { return recordId;}
+    public String getDate() {return this.date;}
+    public int getNumOfRec() {return num;}
+    //public float getRecAvg() { return recordAvg;}
+    //public float getCutTop10() { return cutTop10;}
+    //public float getCutBottom10() { return cutBottom10;}
     public Book getBaseBook() { return baseBook;}
+    public int getNumOfRecord() {return eachAccess.size();}
+    public ArrayList getEachAccess() { return eachAccess; }
     public String getStrRecord() {
         Iterator < String > it = eachAccess.iterator();
         StringBuffer res = new StringBuffer();
@@ -77,17 +86,17 @@ public class ElapsedRecord {
         while (it.hasNext()) {
             StringBuffer element = new StringBuffer();
             //Extract index
-            int begin = it.next().indexOf(" ");
+            //int begin = it.next().indexOf(" ");
             //Extract Time
-            StringTokenizer str = new StringTokenizer(it.next().substring(begin), ":");
-            for (int i = 0; str.hasMoreTokens(); ) {
-                element.append(str.nextToken());
-            }
+            //StringTokenizer str = new StringTokenizer(it.next().substring(begin), ":");
+            //for (int i = 0; str.hasMoreTokens(); ) {
+            //    element.append(str.nextToken());
+            //}
             element.append(":");    //delimeter
-            if (element.length() != TOKEN_SIZE) {
-                Log.w("Convert List to String", "String is missing");
-                break;
-            }
+            //if (element.length() != TOKEN_SIZE) {
+            //    Log.w("Convert List to String", "String is missing");
+            //    break;
+            //}
             res.append(element.toString());
         }
         return res;
@@ -95,7 +104,7 @@ public class ElapsedRecord {
     public ArrayList convertToRec(String _from) {
         int strSize = _from.length();
         System.out.println(">> (Before) String is " + _from);
-        System.out.println(">> (Before)String size : " + strSize);
+        System.out.println(">> (Before) String size : " + strSize);
         ArrayList < String > list_rec = new ArrayList<>();
         StringTokenizer str = new StringTokenizer(_from, ":");
         for (int i = 0; str.hasMoreElements(); ) {
@@ -103,8 +112,30 @@ public class ElapsedRecord {
         }
         return list_rec;
     }
+    //Each Record date is convert to int as a second
+    public int getSecond(String _record) {
+        Log.d(TAG, "getSeconds");
+        Log.d(TAG, "String : " + _record);
+        int second = 0;
+        StringBuffer element = new StringBuffer();
+        //Extract index
+        int begin = _record.indexOf(" ");
+        //Extract Time
+        StringTokenizer str = new StringTokenizer(_record.substring(begin), ":");
+        //Exception
+        if (str.countTokens() < 3) {
+            Log.w(TAG, "record date has a wrong format");
+            return -1;
+        }
+        for (int i=2; i >= 0; --i) {
+            second += (time_unit[i] * Integer.valueOf(str.nextToken()));
+        }
+        return second;
+    }
+    /*
+    //ToDo : It may have a error because of 'round()'
     private void calEachAvg() {
-        /* ToDo : It may have a error because of 'round()'*/
+
         if (eachAccess.size() > 0) {
             try {
                 int sum = 0;
@@ -133,4 +164,5 @@ public class ElapsedRecord {
             }
         }
     }
+    */
 }

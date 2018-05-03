@@ -364,11 +364,11 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
                     /* ToDo : new ElapsedRecord and Deliver ot SaveNShare */
                     /* ToDo : More arguments are need like 'user' class*/
                     checkTotalBound();
-                    String strRecord = convertToRecord(curBook, listLap);   //convert
-                    System.out.println(">> Record :" + strRecord);
+                    String strElp = convertToRecord(curBook, listLap);   //convert
+                    System.out.println(">> Record :" + strElp);
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
                     if (curBook != null) {
-                        transaction.replace(R.id.frag_home_container, FragmentSaveShare.newInstance(strRecord, IsNewBook));
+                        transaction.replace(R.id.frag_home_container, FragmentSaveShare.newInstance(strElp, IsNewBook));
                     } else {
                         transaction.replace(R.id.frag_home_container, new FragmentSaveShare());
                     }

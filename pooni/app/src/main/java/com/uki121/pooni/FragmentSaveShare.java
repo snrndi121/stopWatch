@@ -33,7 +33,7 @@ public class FragmentSaveShare extends Fragment implements HomeActivity.onKeyBac
 
     public void FragmentSaveShare(){};
     public static FragmentSaveShare newInstance(String _gsonUser, boolean _IsNewSet) {
-        strUserRecord = _gsonUser;
+        strUserRecord = _gsonUser;//pair < book, list < string > > to String
         IsNewBook = _IsNewSet;
         FragmentSaveShare fragment = new FragmentSaveShare();
         Bundle args = new Bundle();
@@ -46,7 +46,7 @@ public class FragmentSaveShare extends Fragment implements HomeActivity.onKeyBac
         super.onCreate(SavedInstancState);
         if (getArguments() != null) {
             strUserRecord = getArguments().getString(APPR);
-                Gson gson = new Gson();
+            Gson gson = new Gson();
             curUserRec = gson.fromJson(strUserRecord, ElapsedRecord.class);
         }
     }
