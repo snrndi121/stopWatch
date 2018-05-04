@@ -29,9 +29,10 @@ public class FragmentTotalHistory extends Fragment {
     private static final int NUM_CATEGORY = 4;
     //var
     private PieChart chartTotalHistory;
+    private DataTotal totalhistory;
     private static final String[] pie_category = {"1분 미만", "2분 미만", "4분 미만", "기타"};
     private static float[] pie_value = {1.0f, 2.0f, 93.0f, 4.0f};//defalut
-    private DataTotal totalhistory;
+    private int[] pie_raw_value;
     private static boolean IsSetHistory = false;
 
     public FragmentTotalHistory (){};
@@ -50,9 +51,11 @@ public class FragmentTotalHistory extends Fragment {
         if (getArguments() != null) {
             String str = getArguments().getString(ARG);
             totalhistory = new DataTotal(str);
+            pie_raw_value = totalhistory.getData();
             IsSetHistory = true;
             Log.d(TAG,"History is active");
         } else {
+            IsSetHistory = false;
             totalhistory = null;
             Log.d(TAG,"History is null now");
         }
@@ -88,9 +91,15 @@ public class FragmentTotalHistory extends Fragment {
                 Log.d(TAG, "onValueSelected: Value select from chart.");
                 Log.d(TAG, "onValueSelected: " + e.toString());
                 Log.d(TAG, "onValueSelected: " + h.toString());
-
                 int pos = (int) h.getX();
-                Toast.makeText(getActivity(), "카테고리 " + pie_category[pos] + "\n" + "data: " + pie_value[pos], Toast.LENGTH_LONG).show();
+                //If history is set, then show the number of value of each category and its percent
+                if (IsSetHistory == true) {
+                    Toast.makeText(getActivity(), "카테고리:" + pie_category[pos] + "\n" + "수치: " + pie_value[pos] + "% (" + pie_raw_value[pos] + "개)", Toast.LENGTH_LONG).show();
+                }
+                //If a default history is set, then show its percent
+                else {
+                    Toast.makeText(getActivity(), "카테고리:" + pie_category[pos] + "\n" + "수치: " + pie_value[pos] + "%", Toast.LENGTH_LONG).show();
+                }
             }
             @Override
             public void onNothingSelected() {
