@@ -25,6 +25,7 @@ public class FragmentTotalHistory extends Fragment {
     //def
     private static String TAG = "FragmentTotalHistory";
     private static final String ARG = "total_history";
+    private static final String HISTORY_PIE = "총 풀이 기록";
     private static final int NUM_CATEGORY = 4;
     //var
     private PieChart chartTotalHistory;
@@ -73,7 +74,7 @@ public class FragmentTotalHistory extends Fragment {
         //pieChart.setCenterTextColor(Color.BLACK);
         chartTotalHistory.setHoleRadius(25f);
         chartTotalHistory.setTransparentCircleAlpha(0);
-        chartTotalHistory.setCenterText("Super Cool Chart");
+        chartTotalHistory.setCenterText(HISTORY_PIE);
         chartTotalHistory.setCenterTextSize(10);
         //pieChart.setDrawEntryLabels(true);
         //pieChart.setEntryLabelTextSize(20);
@@ -88,21 +89,11 @@ public class FragmentTotalHistory extends Fragment {
                 Log.d(TAG, "onValueSelected: " + e.toString());
                 Log.d(TAG, "onValueSelected: " + h.toString());
 
-                int pos1 = e.toString().indexOf("(sum): ");
-                String sales = e.toString().substring(pos1 + 4);
-
-                for(int i = 0; i < pie_value.length; i++){
-                    if(pie_value[i] == Float.parseFloat(sales)){
-                        pos1 = i;
-                        break;
-                    }
-                }
-                String cate = pie_category[pos1 + 1];
-                Toast.makeText(getActivity(), "카테고리 " + cate + "\n" + "Sales: $" + sales + "K", Toast.LENGTH_LONG).show();
+                int pos = (int) h.getX();
+                Toast.makeText(getActivity(), "카테고리 " + pie_category[pos] + "\n" + "data: " + pie_value[pos], Toast.LENGTH_LONG).show();
             }
             @Override
             public void onNothingSelected() {
-
             }
         });
     }
@@ -115,7 +106,7 @@ public class FragmentTotalHistory extends Fragment {
                 pie_value[i] = val[i] / total;
             }
         } else {
-            Log.w(TAG, "Default pite data will be load");
+            Log.w(TAG, "Default pie data will be loaded");
         }
     }
     public void addDataSet() {
@@ -127,9 +118,8 @@ public class FragmentTotalHistory extends Fragment {
             value_name.add(pie_category[i]);
         }
         //ToDo : value is load by historyActivity and need to be delivered
-
         for (int i=0; i<pie_category.length; ++i) {
-            value.add(new PieEntry(pie_value[i] , i));
+            value.add(new PieEntry(pie_value[i] , value_name.get(i)));
         }
         //create the data set
         PieDataSet pieDataSet = new PieDataSet(value, "전체 기록");
@@ -137,15 +127,14 @@ public class FragmentTotalHistory extends Fragment {
         pieDataSet.setValueTextSize(12);
 
         //add colors to dataset
-        ArrayList<Integer> colors = new ArrayList<>();
-        //colors.add(Color.GRAY);
+        ArrayList <Integer> colors = new ArrayList<>();
         colors.add(Color.BLUE);
-        //colors.add(Color.RED);
         colors.add(Color.GREEN);
         colors.add(Color.CYAN);
-        //colors.add(Color.YELLOW);
         colors.add(Color.MAGENTA);
-
+        //colors.add(Color.GRAY);
+        //colors.add(Color.RED);
+        //colors.add(Color.YELLOW);
         pieDataSet.setColors(colors);
 
         //add legend to chart
