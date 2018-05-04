@@ -47,13 +47,12 @@ public class ContractDBinfo {
     public static final String COL_STRACC = "string_access";
     public static final String SQL_CREATE_REC ="CREATE TABLE IF NOT EXISTS " + TBL_RECORD +
             "(" +
-            COL_RECID + " INTEGER AUTOINCREMENT" + ", " +
+            COL_RECID + " INTEGER PRIMARY KEY AUTOINCREMENT" + ", " +
             COL_BOOKID + " INTEGER " + ", " +
-            COL_DATE + " TEXT DEFAULT 'DATE('now')' " + ", " +
+            COL_DATE + " TEXT DEFAULT 'DATE(now)' " + ", " +
             COL_SOVLED + " INTEGER DEFALUT '0'" + ", " +
             COL_STRACC + " VARCHAR(1024)" + ", " +
-            "PRIMARY KEY(" + COL_RECID + ") " + ", " +
-            "FOREIGN KEY("  + COL_BOOKID + ")" +
+            "FOREIGN KEY("  + COL_BOOKID + ") " +
             "REFERENCES " + TBL_BOOK + "(" + COL_ID + ")" +
             " ON DELETE CASCADE" +
             ")" ;
@@ -64,7 +63,7 @@ public class ContractDBinfo {
     public static final String COL_CATE4 = "out_of_time";
     public static final String SQL_CREATE_HISTORY_PIE = "CREATE TABLE IF NOT EXISTS " + TBL_HISTORY_PIE +
             "(" +
-            COL_DATE + " TEXT DEFALUT 'DATE('now')'" + ", " +
+            COL_DATE + " TEXT DEFALUT 'DATE(now)'" + ", " +
             COL_CATE1 + " INTEGER DEFALUT '0'" + ", " +
             COL_CATE2 + " INTEGER DEFALUT '0'" + ", " +
             COL_CATE3 + " INTEGER DEFALUT '0'" + ", " +

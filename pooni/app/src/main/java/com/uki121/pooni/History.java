@@ -11,10 +11,14 @@ public class History {
     private final String TOTAL_HISOTRY = "total_history";
     private final String MONTH_HISTORY = "month_history";
     //var
-    private DataTotal total_history;
-    private DataMonth month_history;
+    private DataTotal total_history = null;
+    private DataMonth month_history = null;
     //Constructor
     public History() {}
+    public History(History history) {
+        this.total_history = history.getHistoryToTal();
+        this.month_history = history.getHistoryMonth();
+    }
     public History(ArrayList < ElapsedRecord > _elpList) {
         total_history = new DataTotal();
         setTotal_history(_elpList);
@@ -35,6 +39,25 @@ public class History {
         Iterator < ElapsedRecord > it = _elpList.iterator();
         while(it.hasNext()) {
             total_history.setData(it.next());
+        }
+    }
+    public void setTotal(int[] _data) { total_history.setData(_data);}
+    public void setHistory(History _history) {
+        if (_history != null) {
+            if (_history.getHistoryToTal() != null) {
+                Log.d(TAG, "setHistory() has Total data");
+                this.total_history = _history.getHistoryToTal();
+            } else {
+                Log.d(TAG, "setHistory() has no Data");
+            }
+            if (_history.getHistoryMonth() != null) {
+                Log.d(TAG, "setHistory() has Month data");
+                this.month_history = _history.getHistoryMonth();
+            } else {
+                Log.d(TAG, "setHistory() has no Month data");
+            }
+        } else {
+            Log.d(TAG, "setHistory() has null history now");
         }
     }
     public void setMonth_history(ArrayList < ElapsedRecord> _elpList) {}

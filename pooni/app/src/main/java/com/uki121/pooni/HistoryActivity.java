@@ -16,18 +16,18 @@ import java.util.Map;
 import java.util.Set;
 
 
-public class HistoryActivity extends AppCompatActivity implements historyDBHandler {
+public class HistoryActivity extends AppCompatActivity{
     //Debug
     private static final String TAG = "HistoryActivity";
     //DB
-    private historyDBHandler hhandler;
     private bookDBHelper dbhelper;
     private ArrayList< ElapsedRecord > newRecord;
+    private History history;
     //SharedPreference
     private static final String SYNC_DATE = "date synchronized";
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     private String sync_date;
-    private boolean IsSyncDate = false, //Is set Synchronized date
+    private boolean IsSetSync = false, //Is set Synchronized date
                     IsSyncRequest = false;//request from other fragment
     //Tab-Fragment
     private HistoryAdapter hisAdapter;
@@ -41,19 +41,22 @@ public class HistoryActivity extends AppCompatActivity implements historyDBHandl
         init();
     }
     public void init() {
-        //assignment
-        sync_date = new String();
-
         //db create and open
         dbhelper = new bookDBHelper(HistoryActivity.this);
         dbhelper.createTable(ContractDBinfo.TBL_HISTORY_PIE);
-
-        //sharedPreferences
-        onLoadSyncDate();
-        onLoadRecord();
+        //assignment
+        sync_date = new String();
+        history = new History();
+        //load
+        onLoadSyncDate();//from sharedPreferences
+        onLoadRecord(); //from db
 
         //set up viewpager and tab_layout
-        hisAdapter = new HistoryAdapter(getSupportFragmentManager(), newRecord);//view pager
+        if (IsSetSync != true) {
+            hisAdapter = new HistoryAdapter(getSupportFragmentManager(), newRecord);//view pager
+        } else {
+            hisAdapter = new HistoryAdapter(getSupportFragmentManager(), history);
+        }
         viewpager = (ViewPager) findViewById(R.id.viewpager_history);
         viewpager.setAdapter(hisAdapter);
         histab = (TabLayout) findViewById(R.id.tab_history);//tab layout
@@ -64,38 +67,58 @@ public class HistoryActivity extends AppCompatActivity implements historyDBHandl
         super.finish();
         this.overridePendingTransition(R.anim.end_enter, R.anim.end_exit);
     }
+    //Load elapsed record from db
     public void onLoadRecord() {
+        //no synchronized information then read all elapsed records from db
         if (sync_date == null) {
             newRecord = dbhelper.getElapsedRecord(null);
-        } else {
+        }
+        //if there is a history of scnchronizing, then read history data
+        else {
             newRecord = null;
+            history = onLoadHistory(ContractDBinfo.TBL_HISTORY_PIE, ContractDBinfo.SQL_SELECT_HISTORY_PIE);
+            //ToDo : month data
+            //maybe like this
+            //history.setHistory(onLoadHistory(ContractDBinfo.TBL_HISTORY_LINE, ContractDBinfo.SQL_SELECT_HISTORY_LINE));
         }
     }
+    //Load synchronized date from sharedPrefereces
     private void onLoadSyncDate() {
         SharedPreferences sp = getSharedPreferences(SYNC_DATE, 0);
         sync_date = sp.getString(SYNC_DATE, "");
-        if (sync_date.equals("") != true) {
-            IsSyncDate = false;
+        if (sync_date.equals("") == true) {
+            IsSetSync = false;
             Log.d(TAG, "There is no synchronized date.");
         } else {
-            IsSyncDate = true;
+            IsSetSync = true;
             Log.d(TAG, "Synchronized date : " + sync_date);
         }
     }
-    @Override
     public History onLoadHistory(String _table, String _query) {
         Cursor cursor = dbhelper.selectFromTable(_table, _query);
-        cursor.moveToLast();
-        if (_table.equals(ContractDBinfo.TBL_HISTORY_PIE)) {
-            int[] c = new int[4];
-            for (int i=0; i<4; ++i) {
-                c[i] = cursor.getInt(i);
+        if (cursor != null && cursor.moveToNext()) {
+            cursor.moveToLast();
+            if (_table.equals(ContractDBinfo.TBL_HISTORY_PIE)) {
+                Log.d(TAG, "Load history_pie table");
+                int[] c = new int[4];
+                for (int i=0; i<4; ++i) {
+                    c[i] = cursor.getInt(i);
+                }
+                return new History(new DataTotal(c), null);
+            } else if (_table.equals(ContractDBinfo.TBL_HISTORY_LINE)){
+                //ToDo
+                Log.d(TAG, "Load history_line table");
+                //TBL_HISTORY_LINE
             }
-            return new History(new DataTotal(c), null);
-        } else {
-
         }
+        Log.d(TAG, "Loading target is empty");
         return null;
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onSume");
+
     }
     private void onUpdateSyncDate() {
         //if (IsSyncRequest == true) {

@@ -32,7 +32,6 @@ public class bookDBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         init_table(sqLiteDatabase);
     }
-
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldversion, int newversion)
     {
@@ -46,23 +45,21 @@ public class bookDBHelper extends SQLiteOpenHelper {
             Log.d("SQL_onUpgrade", e.getMessage());
         }
     }
-
-    public void dropTable(String _table)
-    {
+    //init
+    public void init_table(SQLiteDatabase db) {
         System.out.println("###################### Start ######################");
-        System.out.println(" Drop table and Recreate");
-        SQLiteDatabase db = getWritableDatabase();
+        System.out.println("  Initialize Tables");
         try {
-            StringBuffer sql_drop_table = new StringBuffer(ContractDBinfo.SQL_DROP_TBL)
-                    .append(_table);
-            db.execSQL(sql_drop_table.toString());
-        } catch (SQLException e) {
-            Log.d("SQL_DROP", e.getMessage());
+            createTable(ContractDBinfo.TBL_BOOK);
+            createTable(ContractDBinfo.TBL_RECORD);
+            createTable(ContractDBinfo.TBL_USER);
+        } catch(SQLException e) {
+            Log.d("SQL_onCreate", e.getMessage());
         } finally {
             System.out.println("####################### End #######################");
         }
-
     }
+    //create
     public void createTable(String _tablename) {
         SQLiteDatabase db = getWritableDatabase();
         switch(_tablename) {
@@ -82,19 +79,7 @@ public class bookDBHelper extends SQLiteOpenHelper {
                 break;
         }
     }
-    public void init_table(SQLiteDatabase db) {
-        System.out.println("###################### Start ######################");
-        System.out.println("  Initialize Tables");
-        try {
-            createTable(ContractDBinfo.TBL_BOOK);
-            createTable(ContractDBinfo.TBL_RECORD);
-            createTable(ContractDBinfo.TBL_USER);
-         } catch(SQLException e) {
-            Log.d("SQL_onCreate", e.getMessage());
-        } finally {
-            System.out.println("####################### End #######################");
-        }
-    }
+    //select
     public Cursor selectFromTable(String _tablename, String _query) {
         SQLiteDatabase db = getReadableDatabase();
         switch (_tablename) {
@@ -106,6 +91,7 @@ public class bookDBHelper extends SQLiteOpenHelper {
         }
         return null;
     }
+    //insert
     public long insertData(History history, String _targetTable) {
         System.out.println("###################### Start ######################");
         System.out.println(" Insert into history of db");
@@ -179,6 +165,45 @@ public class bookDBHelper extends SQLiteOpenHelper {
         }
         return -1;
     }
+    //drop
+    public void dropTable(String _table)
+    {
+        System.out.println("###################### Start ######################");
+        System.out.println(" Drop table and Recreate");
+        SQLiteDatabase db = getWritableDatabase();
+        try {
+            StringBuffer sql_drop_table = new StringBuffer(ContractDBinfo.SQL_DROP_TBL)
+                    .append(_table);
+            db.execSQL(sql_drop_table.toString());
+        } catch (SQLException e) {
+            Log.d("SQL_DROP", e.getMessage());
+        } finally {
+            System.out.println("####################### End #######################");
+        }
+
+    }
+    /*
+    public void insertAllDatas(ArrayList <Book> bs) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
+        Iterator<Book> it = bs.iterator();
+        try {
+            while (it.hasNext()) {
+                ContentValues cv = new ContentValues();
+                cv.put("title", it.next().getTitle());
+                cv.put("total_time", it.next().getToTime());
+                cv.put("each_titme", it.next().getEachTime());
+                cv.put("rest_time", it.next().getRestTime());
+                cv.put("prob_num", it.next().getNumProb());
+                //cv.put("num_access", dataC);
+                db.insert(ContractDBinfo.TBL_BOOK, null, cv);
+            }
+            db.setTransactionSuccessful();
+        } finally {
+        }
+    }
+    */
+    //update
     public void updateData(String _attr, String _whereArgs, String _targetTable) {
         System.out.println("###################### Start ######################");
         System.out.println(" Update into db");
@@ -241,28 +266,7 @@ public class bookDBHelper extends SQLiteOpenHelper {
             System.out.println("####################### End #######################");
         }
     }
-    /*
-    public void insertAllDatas(ArrayList <Book> bs) {
-        SQLiteDatabase db = getWritableDatabase();
-        db.beginTransaction();
-        Iterator<Book> it = bs.iterator();
-        try {
-            while (it.hasNext()) {
-                ContentValues cv = new ContentValues();
-                cv.put("title", it.next().getTitle());
-                cv.put("total_time", it.next().getToTime());
-                cv.put("each_titme", it.next().getEachTime());
-                cv.put("rest_time", it.next().getRestTime());
-                cv.put("prob_num", it.next().getNumProb());
-                //cv.put("num_access", dataC);
-                db.insert(ContractDBinfo.TBL_BOOK, null, cv);
-            }
-            db.setTransactionSuccessful();
-        } finally {
-        }
-    }
-    */
-
+    //option
     public void showTable(String _table)
     {
         System.out.println("###################### Start ######################");

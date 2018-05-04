@@ -26,8 +26,6 @@ public class FragmentTotalHistory extends Fragment {
     private static String TAG = "FragmentTotalHistory";
     private static final String ARG = "total_history";
     private static final int NUM_CATEGORY = 4;
-    //db
-    private bookDBHelper dbhelper;
     //var
     private PieChart chartTotalHistory;
     private static final String[] pie_category = {"1분 미만", "2분 미만", "4분 미만", "기타"};
@@ -66,12 +64,6 @@ public class FragmentTotalHistory extends Fragment {
         return view;
     }
     public void init(View view) {
-        //db
-        dbhelper = new bookDBHelper(getActivity());
-        if (IsSetHistory == true) {
-            dbhelper.insertData(new History(totalhistory, null), ContractDBinfo.TBL_HISTORY_PIE);
-        }
-        //
         Log.d(TAG, "onCreate: starting to create chart");
         chartTotalHistory = (PieChart) view.findViewById(R.id.piechart_total_history);
         //chartTotalHistory.setDescription("Sales by employee (In Thousands $");
@@ -122,6 +114,8 @@ public class FragmentTotalHistory extends Fragment {
             for (int i=0; i<NUM_CATEGORY; ++i) {
                 pie_value[i] = val[i] / total;
             }
+        } else {
+            Log.w(TAG, "Default pite data will be load");
         }
     }
     public void addDataSet() {

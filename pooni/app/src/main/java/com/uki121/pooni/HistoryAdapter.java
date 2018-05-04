@@ -2,6 +2,7 @@ package com.uki121.pooni;
 
 
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -11,8 +12,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class HistoryAdapter extends FragmentPagerAdapter {
-    //db
-    private historyDBHandler hisHander;
     //var
     private static final String TAG = "HistoryAdapter";
     private final int FRAG_NUM = 2;
@@ -21,15 +20,26 @@ public class HistoryAdapter extends FragmentPagerAdapter {
 
     public HistoryAdapter(FragmentManager fragmentmanager, ArrayList < ElapsedRecord > _elp) {
         super(fragmentmanager);
-
         if (_elp != null) {
-            Log.d(TAG, "Elp is valid");
+            Log.d(TAG, "constructor(1)_Elp is valid");
             curElp = new ArrayList<>(_elp);
             history = new History(_elp);
         } else {
-            Log.d(TAG, "Elp is empty");
+            Log.d(TAG, "constructor(1)_Elp is empty");
             curElp = null;
-            history = hisHander.onLoadHistory(ContractDBinfo.TBL_HISTORY_PIE, ContractDBinfo.SQL_SELECT_HISTORY_PIE);//ToDo : Record //
+            history = null;
+        }
+    };
+    public HistoryAdapter(FragmentManager fragmentmanager, History _history) {
+        super(fragmentmanager);
+        if (_history != null) {
+            Log.d(TAG, "constructor(2)_History is set");
+            history = new History(_history);
+            curElp = null;
+        } else {
+            Log.d(TAG, "constructor(2)_History is empty");
+            history = null;
+            curElp = null;
         }
     };
     @Override
@@ -64,7 +74,4 @@ public class HistoryAdapter extends FragmentPagerAdapter {
                 return "NULL";
         }
     }
-}
-interface historyDBHandler {
-    public History onLoadHistory(String _tablename, String _query);
 }

@@ -52,6 +52,15 @@ public class DataTotal {
         }
         setTotalNum();
     }
+    public void setData(int[] _data) {
+        if (_data != null) {
+            for (int i = 0; i < NUM_CATE; ++i) {
+                this.category[i] = _data[i];
+            }
+        } else {
+            Log.w(TAG, "the argument of setData is null");
+        }
+    }
     private void setTotalNum() {
         if (category != null) {
             for (int i = 0; i < NUM_CATE; ++i) {
