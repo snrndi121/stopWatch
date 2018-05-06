@@ -29,8 +29,8 @@
   <string name="todo">TODO</string>
 
   <!-- activity_lab_done -->
-  <string name="lab_done_save">저장</string>
-  <string name="lab_done_share">공유</string>
+  <string name="save">저장</string>
+  <string name="share">공유</string>
 
   <!-- activity_setting -->
   <string name="setting_book">문제집 설정</string>
@@ -38,7 +38,7 @@
   <!-- warnings -->
   <string name="cancel_record">저장되지 않은 Lap 기록이 있습니다. 중지할까요?</string>
   <string name="msg_back">한번 더 뒤로가기 누르면 종료</string>
-
+  <string name="saveAfteraccum">기록을 누적하고 새로운 설정은 저장합니다.</string>
   <!-- noraml notification -->
   <string name="agree">확인</string>
   <string name="disagree">취소</string>

@@ -73,7 +73,7 @@ public class HistoryActivity extends AppCompatActivity{
         if (sync_date == null) {
             newRecord = dbhelper.getElapsedRecord(null);
         }
-        //if there is a history of scnchronizing, then read history data
+        //if there is a history of synchronizing, then read history data
         else {
             newRecord = null;
             history = onLoadHistory(ContractDBinfo.TBL_HISTORY_PIE, ContractDBinfo.SQL_SELECT_HISTORY_PIE);

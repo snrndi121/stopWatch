@@ -74,9 +74,9 @@ public class FragmentSaveShare extends Fragment implements HomeActivity.onKeyBac
             public void onClick(View view) {
                 SweetAlertDialog sweetdialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE);
                 /*ToDo : 저장항목을 선택가능하도록 */
-                sweetdialog.setTitleText("저장")
-                        .setContentText("기록을 누적하고 새로운 설정은 저장합니다.")
-                        .setConfirmText("확인")
+                sweetdialog.setTitleText(getResources().getString(R.string.save))
+                        .setContentText(getResources().getString(R.string.saveAfteraccum))
+                        .setConfirmText(getResources().getString(R.string.agree))
                         .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                             @Override
                             public void onClick(SweetAlertDialog sDialog) {
@@ -85,7 +85,7 @@ public class FragmentSaveShare extends Fragment implements HomeActivity.onKeyBac
                                 sDialog.dismissWithAnimation();
                             }
                         })
-                        .setCancelButton("취소", new SweetAlertDialog.OnSweetClickListener() {
+                        .setCancelButton(getResources().getString(R.string.disagree), new SweetAlertDialog.OnSweetClickListener() {
                             @Override
                             public void onClick(SweetAlertDialog sDialog) {
                                 sDialog.dismissWithAnimation();

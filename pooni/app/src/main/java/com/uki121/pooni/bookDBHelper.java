@@ -102,9 +102,9 @@ public class bookDBHelper extends SQLiteOpenHelper {
                 case ContractDBinfo.TBL_HISTORY_PIE:
                     int[] c = history.getHistoryToTal().getData();
                     cv.put(ContractDBinfo.COL_CATE1, c[0]);
-                    cv.put(ContractDBinfo.COL_CATE1, c[1]);
-                    cv.put(ContractDBinfo.COL_CATE1, c[2]);
-                    cv.put(ContractDBinfo.COL_CATE1, c[3]);
+                    cv.put(ContractDBinfo.COL_CATE2, c[1]);
+                    cv.put(ContractDBinfo.COL_CATE3, c[2]);
+                    cv.put(ContractDBinfo.COL_CATE4, c[3]);
                     long newRowid = db.insert(ContractDBinfo.TBL_HISTORY_PIE, null, cv);
                     return newRowid;
                 case ContractDBinfo.TBL_HISTORY_LINE:
@@ -152,10 +152,8 @@ public class bookDBHelper extends SQLiteOpenHelper {
                 long newRowid = db.insert(ContractDBinfo.TBL_BOOK, null, cv);
                 System.out.println(" >> newRowId :" + newRowid);
                 return newRowid;
-            } else if (_targetTable.equals(ContractDBinfo.TBL_HISTORY_PIE)) {
-                cv.put(ContractDBinfo.COL_RECID, elp.getRecordId());
-                cv.put(ContractDBinfo.COL_DATE, elp.getDate());
-                //cv.put(ContractDBinfo.COL_ACCAMOUNT, );
+            } else {
+                Log.d(TAG, "No such table in Db");
             }
         } catch (SQLException e) {
             Log.e("SQL_INSERT", e.getMessage());
