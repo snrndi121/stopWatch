@@ -47,14 +47,18 @@ public class HistoryAdapter extends FragmentPagerAdapter {
         switch(position) {
             case 0:
                 Log.d(TAG, "TotalHistory");
-                if (history != null) {
+                if (history.IsTotalHistory() == true) {
                     return FragmentTotalHistory.newInstance(history.getHistoryToTal().ToString());
                 } else {
                     return FragmentTotalHistory.newInstance(null);
                 }
             case 1:
-                Log.d(TAG, "MonthHistory");
-                return FragmentMonthHistory.newInstance();
+                Log.d(TAG, "MonthHistory")
+                if (history.IsMonthHistory() == true) {
+                    return FragmentMonthHistory.newInstance(history.getHistoryMonth().ToString());
+                } else {
+                    return FragmentMonthHistory.newInstance(null);
+                }
             default :
                 return null;
         }

@@ -73,21 +73,32 @@ public class bookDBHelper extends SQLiteOpenHelper {
                 Log.d(TAG, "create table User");
                 db.execSQL(ContractDBinfo.SQL_CREATE_USER);break;
             case ContractDBinfo.TBL_HISTORY_PIE :
-                Log.d(TAG, "create table History");
+                Log.d(TAG, "create table History_pie");
                 db.execSQL(ContractDBinfo.SQL_CREATE_HISTORY_PIE);break;
+            case ContractDBinfo.TBL_HISTORY_LINE :
+                Log.d(TAG, "create table History_line");
+                db.execSQL(ContractDBinfo.SQL_CREATE_HISTORY_LINE);break;
             default :
+                Log.w(TAG, "The reqested talbe '" + _tablename + "' has no registered in command lines");
                 break;
         }
     }
     //select
     public Cursor selectFromTable(String _tablename, String _query) {
         SQLiteDatabase db = getReadableDatabase();
-        switch (_tablename) {
-            case ContractDBinfo.TBL_HISTORY_PIE :
-                Cursor cursor = db.rawQuery(_query, null);
-                return cursor;
-            default:
-                break;
+        try {
+            switch (_tablename) {
+                case ContractDBinfo.TBL_HISTORY_PIE:
+                    Cursor cursor1 = db.rawQuery(_query, null);
+                    return cursor1;
+                case ContractDBinfo.TBL_HISTORY_LINE:
+                    Cursor cursor2 = db.rawQuery(_query, null);
+                    return cursor2;
+                default:
+                    break;
+            }
+        } catch (SQLException e) {
+            Log.e(TAG, e.getMessage());
         }
         return null;
     }

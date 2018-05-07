@@ -2,44 +2,50 @@ package com.uki121.pooni;
 
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.util.ArrayList;
+
 public class DataMonth
 {
     //def
-    private String TAG = "DataMonth";
+    private final String TAG = "Data Month";
     //var
-    private String name;//month
-    private int totalExcess;//total amount of access in this month
-    private int numOfprob;//total amount of problems solved in this month
-    private int numOfbook;//total amount of booked solved in this month
+    private int num; //the number of month
+    private Month[] data;
 
-    //constructort
-    public DataMonth() {}
-    //set
-    private float setAvg(String _by) {
-        //exception
-        if (this.numOfbook == 0 || this.numOfprob == 0) {
-            throw new NullPointerException();
+    public DataMonth(){};
+    public DataMonth(int _num) {
+        this.num = _num;
+        data = new Month[_num];
+    }
+    public DataMonth(Month[] _month) {
+        if (_month != null) {
+            this.num = _month.length;
+            this.data = _month;
         }
+    }
+    public DataMonth(ArrayList < Month > _month) {
+        int sz = _month.size();
         try {
-            switch (_by) {
-                case "prob":
-                    return this.totalExcess / this.numOfprob;
-                case "book":
-                    return this.totalExcess / this.numOfbook;
-                default:
-                    Log.e(TAG, "In setAvg() in error");
-                    break;
+            if (sz > 0) {
+                this.num = sz;
+                this.data = new Month[sz];
+                for (int i = 0; i < sz; ++i) {
+                    data[i] = _month.get(i);
+                }
             }
         } catch(Exception e) {
             Log.e(TAG, e.getMessage());
         }
-        return -1;
     }
-    //get
-    public String getName() { return this.name;}
-    public int getTotalExcess() { return this.totalExcess;}
-    public int getNumOfprob() { return this.numOfprob;}
-    public int getNumOfbook() {return this.numOfbook;}
-    public float getAvgByprob() { return setAvg("prob");}
-    public float getAvgBybook() { return setAvg("book");}
+    public String ToString() {
+        Gson gson = new GsonBuilder().create();
+        return gson.toJson(this, DataMonth.class);
+    }
+    public static DataMonth ToClass(String _str) {
+        Gson gson = new Gson();
+        return gson.fromJson(_str, DataMonth.class);
+    }
 }

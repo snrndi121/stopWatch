@@ -44,6 +44,7 @@ public class HistoryActivity extends AppCompatActivity{
         //db create and open
         dbhelper = new bookDBHelper(HistoryActivity.this);
         dbhelper.createTable(ContractDBinfo.TBL_HISTORY_PIE);
+        dbhelper.createTable(ContractDBinfo.TBL_HISTORY_LINE);
         //assignment
         sync_date = new String();
         history = new History();
@@ -51,6 +52,7 @@ public class HistoryActivity extends AppCompatActivity{
         onLoadSyncDate();//from sharedPreferences
         onLoadRecord(); //from db
 
+        //Todo : reinforcement selective because of addtion of DataMonth
         //set up viewpager and tab_layout
         if (IsSetSync != true) {
             hisAdapter = new HistoryAdapter(getSupportFragmentManager(), newRecord);//view pager
@@ -69,6 +71,7 @@ public class HistoryActivity extends AppCompatActivity{
     }
     //Load elapsed record from db
     public void onLoadRecord() {
+        //part1.history total setting
         //no synchronized information then read all elapsed records from db
         if (sync_date == null) {
             newRecord = dbhelper.getElapsedRecord(null);
@@ -76,11 +79,11 @@ public class HistoryActivity extends AppCompatActivity{
         //if there is a history of synchronizing, then read history data
         else {
             newRecord = null;
-            history = onLoadHistory(ContractDBinfo.TBL_HISTORY_PIE, ContractDBinfo.SQL_SELECT_HISTORY_PIE);
-            //ToDo : month data
-            //maybe like this
-            //history.setHistory(onLoadHistory(ContractDBinfo.TBL_HISTORY_LINE, ContractDBinfo.SQL_SELECT_HISTORY_LINE));
+            history.setHistory(onLoadHistory(ContractDBinfo.TBL_HISTORY_PIE, ContractDBinfo.SQL_SELECT_HISTORY_PIE));
         }
+        //Todo : reinforcement of selection
+        //part2.history month setting
+        history.setHistory(onLoadHistory(ContractDBinfo.TBL_HISTORY_LINE, ContractDBinfo.SQL_SELECT_HISTORY_LINE));
     }
     //Load synchronized date from sharedPrefereces
     private void onLoadSyncDate() {
@@ -96,30 +99,43 @@ public class HistoryActivity extends AppCompatActivity{
     }
     public History onLoadHistory(String _table, String _query) {
         Cursor cursor = dbhelper.selectFromTable(_table, _query);
-        if (cursor != null && cursor.moveToNext()) {
-            cursor.moveToLast();
+        if (cursor != null && cursor.moveToFirst()) {
+            Log.d(TAG, "onLoadHistory - " + _table + " table is loading now...");
             if (_table.equals(ContractDBinfo.TBL_HISTORY_PIE)) {
-                Log.d(TAG, "Load history_pie table");
-                int[] c = new int[4];
+
+                //set DataTotal
+                int[] _contents = new int[4];
                 for (int i=0; i<4; ++i) {
-                    c[i] = cursor.getInt(i);
+                    _contents[i] = cursor.getInt(i);
                 }
-                return new History(new DataTotal(c), null);
+                return new History(new DataTotal(_contents), null);
             } else if (_table.equals(ContractDBinfo.TBL_HISTORY_LINE)){
-                //ToDo
-                Log.d(TAG, "Load history_line table");
-                //TBL_HISTORY_LINE
-            }
+                ArrayList < Month > _month = new ArrayList<>();
+                while (cursor.moveToNext()) {
+                    //set DataMonth
+                    String _name = new String(cursor.getString(0));
+                    int[] _contents = new int[3];
+                    for (int i = 0; i < 3; ++i) {
+                        _contents[i] = cursor.getInt(i);
+                    }
+                    //add to arraylist
+                    _month.add(new Month(_name, _contents));
+                }
+                return new History(null, new DataMonth(_month));
+            } else {;}
+        } else {
+            Log.w(TAG, "onLoadHistory - " + _table + " table is empty");
         }
-        Log.d(TAG, "Loading target is empty");
         return null;
     }
+    /*Todo : get rid of it
     @Override
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onSume");
 
     }
+    */
     private void onUpdateSyncDate() {
         //if (IsSyncRequest == true) {
             SharedPreferences spf = getSharedPreferences(SYNC_DATE, 0);

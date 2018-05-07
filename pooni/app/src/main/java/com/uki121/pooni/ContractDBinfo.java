@@ -70,23 +70,38 @@ public class ContractDBinfo {
             COL_CATE4 + " INTEGER DEFALUT '0'" +
             ")" ;
     public static final String TBL_HISTORY_LINE = "TABLE_HISTORY_LINE";
+    public static final String COL_MONTH = "which_month";
+    public static final String COL_EXCESS = "howmuch_excess";
+    public static final String COL_NUM_BOOKS = "howmany_books";
+    public static final String COL_NUM_SOLVED = "howmany_solved";
+    public static final String SQL_CREATE_HISTORY_LINE = "CREATE TABLE IF NOT EXISTS " + TBL_HISTORY_LINE +
+            "(" +
+            COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT " + ", " +
+            COL_MONTH + " TEXT DEFALUT 'DATE(now)'" + ", " +
+            COL_EXCESS + " INTEGER DEFALUT '0'" + ", " +
+            COL_NUM_BOOKS + " INTEGER DEFALUT '0'" + ", " +
+            COL_NUM_SOLVED + " INTEGER DEFALUT '0'" +
+            ")" ;
     //Drop
     public static final String SQL_DROP_TBL = "DROP TABLE IF EXISTS ";
     public static final String SQL_DROP_TBL_BOOK = "DROP TABLE IF EXISTS " + TBL_BOOK;
     public static final String SQL_DROP_TBL_USER = "DROP TABLE IF EXISTS " + TBL_USER;
     public static final String SQL_DROP_TBL_RECORD = "DROP TABLE IF EXISTS " + TBL_RECORD;
-    public static final String SQL_DROP_TBL_HISTORY = "DROP TABLE IF EXISTS " + TBL_HISTORY_PIE;
+    public static final String SQL_DROP_TBL_HISTORY_PIE = "DROP TABLE IF EXISTS " + TBL_HISTORY_PIE;
+    public static final String SQL_DROP_TBL_HISTORY_LINE = "DROP TABLE IF EXISTS " + TBL_HISTORY_LINE;
     //Select
     public static final String SQL_SELECT = "SELECT * FROM ";
     public static final String SQL_SELECT_BOOK = "SELECT * FROM " + TBL_BOOK;
     public static final String SQL_SELECT_USER = "SELECT * FROM " + TBL_USER;
     public static final String SQL_SELECT_RECORD = "SELECT * FROM " + TBL_RECORD;
     public static final String SQL_SELECT_HISTORY_PIE = "SELECT * FROM " + TBL_HISTORY_PIE;
+    public static final String SQL_SELECT_HISTORY_LINE = "SELECT * FROM " + TBL_HISTORY_LINE;
     //Insert
     public static final String SQL_INSERT_BOOK = "INSERT OR REPLACE INTO " + TBL_BOOK + " VALUES ";
     public static final String SQL_INSERT_USER = "INSERT OR REPLACE INTO " + TBL_USER + " VALUES ";
     public static final String SQL_INSERT_RECORD = "INSERT OR REPLACE INTO " + TBL_RECORD + " VALUES ";
     public static final String SQL_INSERT_HISTORY_PIE = "INSERT OR REPLACE INTO " + TBL_HISTORY_PIE + " VALUES ";
+    public static final String SQL_INSERT_HISTORY_LINE = "INSERT OR REPLACE INTO " + TBL_HISTORY_LINE + " VALUES ";
     public static final String SQL_DELETE = "DELETE FROM ";
     //Update
     public static final String WHERE_TITLE = "title=?";    //Book

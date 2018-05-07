@@ -13,11 +13,14 @@ public class History {
     //var
     private DataTotal total_history = null;
     private DataMonth month_history = null;
+    private boolean isDataTotal = false , isDataMonth = false;
     //Constructor
     public History() {}
     public History(History history) {
         this.total_history = history.getHistoryToTal();
         this.month_history = history.getHistoryMonth();
+        isDataTotal = this.total_history != null ? true : false;
+        isDataMonth = this.month_history != null ? true : false;
     }
     public History(ArrayList < ElapsedRecord > _elpList) {
         total_history = new DataTotal();
@@ -27,14 +30,20 @@ public class History {
     }
     public History(DataTotal _datatotal, DataMonth _datamonth) {
         try {
-            this.total_history = _datatotal;
-            this.month_history = _datamonth;
+            //selective assignment
+            this.total_history = _datatotal != null ? _datatotal : null;
+            this.month_history = _datamonth != null ? _datamonth : null;
         } catch(Exception e) {
             Log.e(TAG, e.getMessage());
         }
     }
     //set
     public void setTotal_history(ArrayList < ElapsedRecord > _elpList){
+        if (_elpList.isEmpty()) {
+            Log.w(TAG, "setTotal_history() has 0 size list");
+            return;
+        }
+        isDataTotal = true;
         int[] res = new int[4];
         Iterator < ElapsedRecord > it = _elpList.iterator();
         while(it.hasNext()) {
@@ -47,12 +56,14 @@ public class History {
             if (_history.getHistoryToTal() != null) {
                 Log.d(TAG, "setHistory() has Total data");
                 this.total_history = _history.getHistoryToTal();
+                isDataTotal = true;
             } else {
                 Log.d(TAG, "setHistory() has no Data");
             }
             if (_history.getHistoryMonth() != null) {
                 Log.d(TAG, "setHistory() has Month data");
                 this.month_history = _history.getHistoryMonth();
+                isDataMonth = true;
             } else {
                 Log.d(TAG, "setHistory() has no Month data");
             }
@@ -64,4 +75,6 @@ public class History {
     //get
     public DataTotal getHistoryToTal() {return total_history;}
     public DataMonth getHistoryMonth() {return month_history;}
+    public boolean IsTotalHistory() { return isDataTotal;}
+    public boolean IsMonthHistory() { return isDataMonth;}
 }

@@ -49,15 +49,15 @@ public class FragmentTotalHistory extends Fragment {
     public void onCreate(Bundle SavedInstancState) {
         super.onCreate(SavedInstancState);
         if (getArguments() != null) {
+            Log.d(TAG,"History is active");
             String str = getArguments().getString(ARG);
             totalhistory = new DataTotal(str);
             pie_raw_value = totalhistory.getData();
             IsSetHistory = true;
-            Log.d(TAG,"History is active");
         } else {
+            Log.d(TAG,"History is null now");
             IsSetHistory = false;
             totalhistory = null;
-            Log.d(TAG,"History is null now");
         }
     }
     @Override
