@@ -4,8 +4,12 @@ package com.uki121.pooni;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 
 import com.github.mikephil.charting.charts.CombinedChart;
@@ -46,6 +50,9 @@ public class FragmentMonthHistory extends Fragment {
     //chart
     private CombinedChart combinedchart;
     private final int itemcount = 12;
+    protected String[] mMonths = new String[] {
+            "Jan", "Feb", "Mar", "Apr", "May", "June", "July","Aug", "Sep", "Oct", "Nov", "Dec"
+    };
 
     public FragmentMonthHistory() {};
     public static FragmentMonthHistory newInstance(String _monthHistory) {
@@ -87,15 +94,16 @@ public class FragmentMonthHistory extends Fragment {
         combinedchart.setHighlightFullBarEnabled(false);
         // draw bars behind lines
         combinedchart.setDrawOrder(new CombinedChart.DrawOrder[]{
-                DrawOrder.BAR, DrawOrder.BUBBLE, DrawOrder.CANDLE, DrawOrder.LINE, DrawOrder.SCATTER
+                DrawOrder.BAR, DrawOrder.LINE
         });
+        //legend
         Legend l = combinedchart.getLegend();
         l.setWordWrapEnabled(true);
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
         l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
         l.setDrawInside(false);
-
+        //Axis : set Axis position to left or right or both
         YAxis rightAxis = combinedchart.getAxisRight();
         rightAxis.setDrawGridLines(false);
         rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
@@ -103,7 +111,7 @@ public class FragmentMonthHistory extends Fragment {
         YAxis leftAxis = combinedchart.getAxisLeft();
         leftAxis.setDrawGridLines(false);
         leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
-
+        //set X-Axis lables
         XAxis xAxis = combinedchart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTH_SIDED);
         xAxis.setAxisMinimum(0f);
@@ -114,14 +122,11 @@ public class FragmentMonthHistory extends Fragment {
                 return mMonths[(int) value % mMonths.length];
             }
         });
+        //create CombinedData object to set the LineData and BarData object
         CombinedData data = new CombinedData();
 
         data.setData(generateLineData());
         data.setData(generateBarData());
-        data.setData(generateBubbleData());
-        data.setData(generateScatterData());
-        data.setData(generateCandleData());
-        data.setValueTypeface(mTfLight);
 
         xAxis.setAxisMaximum(data.getXMax() + 0.25f);
 
@@ -129,6 +134,70 @@ public class FragmentMonthHistory extends Fragment {
         combinedchart.invalidate();
 
     }
+    private LineData generateLineData() {
+
+        LineData d = new LineData();
+
+        ArrayList<Entry> entries = new ArrayList<Entry>();
+
+        entries = getLineEntriesData(entries);
+
+        LineDataSet set = new LineDataSet(entries, "Line");
+        //set.setColor(Color.rgb(240, 238, 70));
+        set.setColors(ColorTemplate.COLORFUL_COLORS);
+        set.setLineWidth(2.5f);
+        set.setCircleColor(Color.rgb(240, 238, 70));
+        set.setCircleRadius(5f);
+        set.setFillColor(Color.rgb(240, 238, 70));
+        set.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+        set.setDrawValues(true);
+        set.setValueTextSize(10f);
+        set.setValueTextColor(Color.rgb(240, 238, 70));
+
+        set.setAxisDependency(YAxis.AxisDependency.LEFT);
+        d.addDataSet(set);
+
+        return d;
+    }
+    private BarData generateBarData() {
+
+        ArrayList<BarEntry> entries = new ArrayList<BarEntry>();
+        entries = getBarEnteries(entries);
+
+        BarDataSet set1 = new BarDataSet(entries, "Bar");
+        //set1.setColor(Color.rgb(60, 220, 78));
+        set1.setColors(ColorTemplate.COLORFUL_COLORS);
+        set1.setValueTextColor(Color.rgb(60, 220, 78));
+        set1.setValueTextSize(10f);
+        set1.setAxisDependency(YAxis.AxisDependency.LEFT);
+
+        float barWidth = 0.45f; // x2 dataset
+
+
+        BarData d = new BarData(set1);
+        d.setBarWidth(barWidth);
+
+
+        return d;
+    }
+    private ArrayList<Entry> getLineEntriesData(ArrayList<Entry> entries){
+        entries.add(new Entry(1, 20));
+        entries.add(new Entry(2, 10));
+        entries.add(new Entry(3, 8));
+        entries.add(new Entry(4, 40));
+        entries.add(new Entry(5, 37));
+        return entries;
+    }
+    private ArrayList<BarEntry> getBarEnteries(ArrayList<BarEntry> entries){
+        entries.add(new BarEntry(1, 25));
+        entries.add(new BarEntry(2, 30));
+        entries.add(new BarEntry(3, 38));
+        entries.add(new BarEntry(4, 10));
+        entries.add(new BarEntry(5, 15));
+
+        return  entries;
+    }
+    /* ver1.0
     private LineData generateLineData() {
 
         LineData d = new LineData();
@@ -154,7 +223,6 @@ public class FragmentMonthHistory extends Fragment {
 
         return d;
     }
-
     private BarData generateBarData() {
 
         ArrayList<BarEntry> entries1 = new ArrayList<BarEntry>();
@@ -193,74 +261,7 @@ public class FragmentMonthHistory extends Fragment {
 
         return d;
     }
-
-    protected ScatterData generateScatterData() {
-
-        ScatterData d = new ScatterData();
-
-        ArrayList<Entry> entries = new ArrayList<Entry>();
-
-        for (float index = 0; index < itemcount; index += 0.5f)
-            entries.add(new Entry(index + 0.25f, getRandom(10, 55)));
-
-        ScatterDataSet set = new ScatterDataSet(entries, "Scatter DataSet");
-        set.setColors(ColorTemplate.MATERIAL_COLORS);
-        set.setScatterShapeSize(7.5f);
-        set.setDrawValues(false);
-        set.setValueTextSize(10f);
-        d.addDataSet(set);
-
-        return d;
-    }
-
-    protected CandleData generateCandleData() {
-
-        CandleData d = new CandleData();
-
-        ArrayList<CandleEntry> entries = new ArrayList<CandleEntry>();
-
-        for (int index = 0; index < itemcount; index += 2)
-            entries.add(new CandleEntry(index + 1f, 90, 70, 85, 75f));
-
-        CandleDataSet set = new CandleDataSet(entries, "Candle DataSet");
-        set.setDecreasingColor(Color.rgb(142, 150, 175));
-        set.setShadowColor(Color.DKGRAY);
-        set.setBarSpace(0.3f);
-        set.setValueTextSize(10f);
-        set.setDrawValues(false);
-        d.addDataSet(set);
-
-        return d;
-    }
-
-    protected BubbleData generateBubbleData() {
-
-        BubbleData bd = new BubbleData();
-
-        ArrayList<BubbleEntry> entries = new ArrayList<BubbleEntry>();
-
-        for (int index = 0; index < itemcount; index++) {
-            float y = getRandom(10, 105);
-            float size = getRandom(100, 105);
-            entries.add(new BubbleEntry(index + 0.5f, y, size));
-        }
-
-        BubbleDataSet set = new BubbleDataSet(entries, "Bubble DataSet");
-        set.setColors(ColorTemplate.VORDIPLOM_COLORS);
-        set.setValueTextSize(10f);
-        set.setValueTextColor(Color.WHITE);
-        set.setHighlightCircleWidth(1.5f);
-        set.setDrawValues(true);
-        bd.addDataSet(set);
-
-        return bd;
-    }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.combined, menu);
-        return true;
-    }
-
+    */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -269,7 +270,6 @@ public class FragmentMonthHistory extends Fragment {
                     if (set instanceof LineDataSet)
                         set.setDrawValues(!set.isDrawValuesEnabled());
                 }
-
                 combinedchart.invalidate();
                 break;
             }
