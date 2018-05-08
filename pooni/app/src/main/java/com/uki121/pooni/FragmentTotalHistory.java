@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.Entry;
@@ -17,9 +16,7 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-
 import java.util.ArrayList;
-import java.util.List;
 
 public class FragmentTotalHistory extends Fragment {
     //def
@@ -115,7 +112,7 @@ public class FragmentTotalHistory extends Fragment {
                 pie_value[i] = val[i] / total;
             }
         } else {
-            Log.w(TAG, "Default pie data will be loaded");
+            Log.w(TAG, "Default data mode active");
         }
     }
     public void addDataSet() {

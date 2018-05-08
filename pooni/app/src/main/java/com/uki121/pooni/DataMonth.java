@@ -40,6 +40,14 @@ public class DataMonth
             Log.e(TAG, e.getMessage());
         }
     }
+    //get
+    public Month getMonth(int _index) {
+        if (num < _index) {
+            Log.e(TAG, "Array index overflow");
+            return null;
+        }
+        return data[_index];
+    }
     public String ToString() {
         Gson gson = new GsonBuilder().create();
         return gson.toJson(this, DataMonth.class);
