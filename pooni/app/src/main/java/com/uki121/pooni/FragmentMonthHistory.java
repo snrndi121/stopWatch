@@ -123,16 +123,15 @@ public class FragmentMonthHistory extends Fragment {
             }
         });
         //create CombinedData object to set the LineData and BarData object
-        CombinedData data = new CombinedData();
+        CombinedData comboined_data = new CombinedData();
 
-        data.setData(generateLineData());
-        data.setData(generateBarData());
+        comboined_data.setData(generateLineData());
+        comboined_data.setData(generateBarData());
 
-        xAxis.setAxisMaximum(data.getXMax() + 0.25f);
+        xAxis.setAxisMaximum(comboined_data.getXMax() + 0.25f);
 
-        combinedchart.setData(data);
+        combinedchart.setData(comboined_data);
         combinedchart.invalidate();
-
     }
     private LineData generateLineData() {
 
@@ -150,6 +149,7 @@ public class FragmentMonthHistory extends Fragment {
         set.setCircleRadius(5f);
         set.setFillColor(Color.rgb(240, 238, 70));
         set.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+
         set.setDrawValues(true);
         set.setValueTextSize(10f);
         set.setValueTextColor(Color.rgb(240, 238, 70));
@@ -158,44 +158,6 @@ public class FragmentMonthHistory extends Fragment {
         d.addDataSet(set);
 
         return d;
-    }
-    private BarData generateBarData() {
-
-        ArrayList<BarEntry> entries = new ArrayList<BarEntry>();
-        entries = getBarEnteries(entries);
-
-        BarDataSet set1 = new BarDataSet(entries, "Bar");
-        //set1.setColor(Color.rgb(60, 220, 78));
-        set1.setColors(ColorTemplate.COLORFUL_COLORS);
-        set1.setValueTextColor(Color.rgb(60, 220, 78));
-        set1.setValueTextSize(10f);
-        set1.setAxisDependency(YAxis.AxisDependency.LEFT);
-
-        float barWidth = 0.45f; // x2 dataset
-
-
-        BarData d = new BarData(set1);
-        d.setBarWidth(barWidth);
-
-
-        return d;
-    }
-    private ArrayList<Entry> getLineEntriesData(ArrayList<Entry> entries){
-        entries.add(new Entry(1, 20));
-        entries.add(new Entry(2, 10));
-        entries.add(new Entry(3, 8));
-        entries.add(new Entry(4, 40));
-        entries.add(new Entry(5, 37));
-        return entries;
-    }
-    private ArrayList<BarEntry> getBarEnteries(ArrayList<BarEntry> entries){
-        entries.add(new BarEntry(1, 25));
-        entries.add(new BarEntry(2, 30));
-        entries.add(new BarEntry(3, 38));
-        entries.add(new BarEntry(4, 10));
-        entries.add(new BarEntry(5, 15));
-
-        return  entries;
     }
     /* ver1.0
     private LineData generateLineData() {
@@ -223,6 +185,67 @@ public class FragmentMonthHistory extends Fragment {
 
         return d;
     }
+    */
+    private BarData generateBarData() {
+
+        ArrayList<BarEntry> entries1 = new ArrayList<BarEntry>();
+        ArrayList<BarEntry> entries2 = new ArrayList<BarEntry>();
+
+        for (int index = 0; index < itemcount; index++) {
+            entries1.add(new BarEntry(0, getRandom(25, 25)));
+
+            // stacked
+            //entries2.add(new BarEntry(0, new float[]{getRandom(13, 12), getRandom(13, 12)}));
+        }
+
+        BarDataSet set1 = new BarDataSet(entries1, "Bar 1");
+        set1.setColor(Color.rgb(60, 220, 78));
+        set1.setValueTextColor(Color.rgb(60, 220, 78));
+        set1.setValueTextSize(10f);
+        set1.setAxisDependency(YAxis.AxisDependency.LEFT);
+
+        BarDataSet set2 = new BarDataSet(entries2, "");
+        set2.setStackLabels(new String[]{"Stack 1", "Stack 2"});
+        set2.setColors(new int[]{Color.rgb(61, 165, 255), Color.rgb(23, 197, 255)});
+        set2.setValueTextColor(Color.rgb(61, 165, 255));
+        set2.setValueTextSize(10f);
+        set2.setAxisDependency(YAxis.AxisDependency.LEFT);
+
+        float groupSpace = 0.06f;
+        float barSpace = 0.02f; // x2 dataset
+        float barWidth = 0.45f; // x2 dataset
+        // (0.45 + 0.02) * 2 + 0.06 = 1.00 -> interval per "group"
+
+        BarData d = new BarData(set1, set2);
+        d.setBarWidth(barWidth);
+
+        // make this BarData object grouped
+        d.groupBars(0, groupSpace, barSpace); // start at x = 0
+
+        return d;
+    }
+    /*
+    private BarData generateBarData() {
+
+        ArrayList<BarEntry> entries = new ArrayList<BarEntry>();
+        entries = getBarEnteries(entries);
+
+        BarDataSet set1 = new BarDataSet(entries, "Bar");
+        //set1.setColor(Color.rgb(60, 220, 78));
+        set1.setColors(ColorTemplate.COLORFUL_COLORS);
+        set1.setValueTextColor(Color.rgb(60, 220, 78));
+        set1.setValueTextSize(10f);
+        set1.setAxisDependency(YAxis.AxisDependency.LEFT);
+
+        float barWidth = 0.45f; // x2 dataset
+        BarData d = new BarData(set1);
+        d.setBarWidth(barWidth);
+
+        return d;
+    }
+
+     */
+    /*
     private BarData generateBarData() {
 
         ArrayList<BarEntry> entries1 = new ArrayList<BarEntry>();
@@ -262,6 +285,18 @@ public class FragmentMonthHistory extends Fragment {
         return d;
     }
     */
+    private ArrayList<Entry> getLineEntriesData(ArrayList<Entry> entries){
+        for (int index = 0; index < itemcount; index++) {
+            entries.add(new Entry(index + 0.5f, getRandom(15, 5)));
+        }
+        return entries;
+    }
+    private ArrayList<BarEntry> getBarEnteries(ArrayList<BarEntry> entries){
+        for (int index = 0; index < itemcount; index++) {
+            entries.add(new BarEntry(0, getRandom(25, 25)));
+        }
+        return  entries;
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
