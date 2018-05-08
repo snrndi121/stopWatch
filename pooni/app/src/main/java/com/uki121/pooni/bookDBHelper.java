@@ -14,7 +14,6 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-/* TODO : class DBHELPER */
 public class bookDBHelper extends SQLiteOpenHelper {
     private static final String TAG = "BookDBHelper";
     public static final int DATABASE_VERSION = 1;

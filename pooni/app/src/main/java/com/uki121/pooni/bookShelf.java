@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
-/* ToDo : Add attribute of the numbfer of access each book, is it need?*/
 public class bookShelf extends AppCompatActivity {
     final int MAX_BOOKS = 100;
     private List < Book > books;

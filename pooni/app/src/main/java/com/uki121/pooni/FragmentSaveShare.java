@@ -20,7 +20,6 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class FragmentSaveShare extends Fragment implements HomeActivity.onKeyBackPressedListener {
     //Bundle
-    //Todo : 3 variables need : for current book if it is new, for personal record data, for elapsed time
     //for current book
     private static final String APPR = "applied_record_info";
     private static String strUserRecord;

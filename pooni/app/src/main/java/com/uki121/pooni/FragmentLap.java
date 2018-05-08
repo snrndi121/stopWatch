@@ -361,7 +361,7 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
                     break;
                 }
                 case R.id.btn_end: {
-                    /* ToDo : new ElapsedRecord and Deliver ot SaveNShare */
+                    /* ToDo : new ElapsedRecord and Deliver or SaveNShare */
                     /* ToDo : More arguments are need like 'user' class*/
                     checkTotalBound();
                     String strElp = convertToRecord(curBook, listLap);   //convert

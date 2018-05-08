@@ -123,7 +123,6 @@ public class FragmentTotalHistory extends Fragment {
         for (int i=0; i<pie_category.length; ++i) {
             value_name.add(pie_category[i]);
         }
-        //ToDo : value is load by historyActivity and need to be delivered
         for (int i=0; i<pie_category.length; ++i) {
             value.add(new PieEntry(pie_value[i] , value_name.get(i)));
         }

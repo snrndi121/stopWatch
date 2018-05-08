@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.charts.CombinedChart.DrawOrder;
@@ -24,7 +25,10 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IDataSet;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+
 import java.util.ArrayList;
 
 public class FragmentMonthHistory extends Fragment {
@@ -74,6 +78,28 @@ public class FragmentMonthHistory extends Fragment {
     }
     public void init(View view) {
         setup_chart(view);
+        combinedchart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                Log.d(TAG, "onValueSelected: Value select from chart.");
+                Log.d(TAG, "onValueSelected: " + e.toString());
+                Log.d(TAG, "onValueSelected: " + h.toString());
+                if (isMonthhistory != false) { //history data-set
+                    int pos = (int) h.getX();
+                    int numOfprob = monthhistory.getMonth(pos).getNumOfprob(),
+                        monthExcess = monthhistory.getMonth(pos).getTotalExcess()/60;
+                    float monthAvg = monthhistory.getMonth(pos).getAvgByprob();
+                    Toast.makeText(getActivity(), "이달 푼 문제수 :" + numOfprob + "\n" + "총 초과량 : " + monthExcess + "분\n 평균 초과량 : " + monthAvg + "분", Toast.LENGTH_LONG).show();
+                } else { //default data-mode
+
+                }
+            }
+
+            @Override
+            public void onNothingSelected() {
+
+            }
+        });
     }
     private void setup_chart(View view) {
         combinedchart = (CombinedChart) view.findViewById(R.id.combined_chart_month_history);
