@@ -46,8 +46,8 @@ public class bookDBHelper extends SQLiteOpenHelper {
     }
     //init
     public void init_table(SQLiteDatabase db) {
-        System.out.println("###################### Start ######################");
-        System.out.println("  Initialize Tables");
+        Log.d(TAG, "###################### Start ######################");
+        Log.d(TAG, "  Initialize Tables");
         try {
             createTable(ContractDBinfo.TBL_BOOK);
             createTable(ContractDBinfo.TBL_RECORD);
@@ -55,7 +55,7 @@ public class bookDBHelper extends SQLiteOpenHelper {
         } catch(SQLException e) {
             Log.d("SQL_onCreate", e.getMessage());
         } finally {
-            System.out.println("####################### End #######################");
+            Log.d(TAG, "####################### End #######################");
         }
     }
     //create
@@ -103,8 +103,8 @@ public class bookDBHelper extends SQLiteOpenHelper {
     }
     //insert
     public long insertData(History history, String _targetTable) {
-        System.out.println("###################### Start ######################");
-        System.out.println(" Insert into history of db");
+        Log.d(TAG, "###################### Start ######################");
+        Log.d(TAG, " Insert into history of db");
         ContentValues cv = new ContentValues();
         SQLiteDatabase db = getWritableDatabase();
         try {
@@ -126,13 +126,14 @@ public class bookDBHelper extends SQLiteOpenHelper {
         } catch (SQLException e_sql) {
             Log.e(TAG, e_sql.getMessage());
         } finally {
-            System.out.println("####################### End #######################");
+            db.close();
+            Log.d(TAG, "####################### End #######################");
         }
         return -1;
     }
     public long insertData(ElapsedRecord elp, String _targetTable) {
-        System.out.println("###################### Start ######################");
-        System.out.println(" Insert into db");
+        Log.d(TAG, "###################### Start ######################");
+        Log.d(TAG, " Insert into " + _targetTable);
 
         ContentValues cv = new ContentValues();
         SQLiteDatabase db = getWritableDatabase();
@@ -147,20 +148,18 @@ public class bookDBHelper extends SQLiteOpenHelper {
                 cv.put(ContractDBinfo.COL_NOACC, 1);
                 //cv.put("num_access", dataC);
                 long newRowid = db.insert(ContractDBinfo.TBL_BOOK, null, cv);
-                System.out.println(" >> newRowId :" + newRowid);
+                Log.d(TAG, " >> newRowId :" + newRowid);
                 return newRowid;
             } else if (_targetTable.equals(ContractDBinfo.TBL_USER)) {
                 /*
                 return getWritableDatabase().insert(ContractDBinfo.TBL_USER, null, cv);
                 */
             } else if (_targetTable.equals(ContractDBinfo.TBL_RECORD)) {
-                Book _bs = new Book(elp.getBaseBook());
-                int bid = _bs != null ? getBookId(_bs.getTitle()) : -1;
-                cv.put(ContractDBinfo.COL_BOOKID, bid);
+                cv.put(ContractDBinfo.COL_BOOKID, Integer.parseInt(elp.getBookId()));
                 cv.put(ContractDBinfo.COL_SOVLED, elp.getNumOfRec());
-                cv.put(ContractDBinfo.COL_STRACC, elp.getStrAccess());
-                long newRowid = db.insert(ContractDBinfo.TBL_BOOK, null, cv);
-                System.out.println(" >> newRowId :" + newRowid);
+                cv.put(ContractDBinfo.COL_STRACC, elp.getStrExcess());
+                long newRowid = db.insert(ContractDBinfo.TBL_RECORD, null, cv);
+                Log.d(TAG, " >> newRowId :" + newRowid);
                 return newRowid;
             } else {
                 Log.d(TAG, "No such table in Db");
@@ -169,15 +168,16 @@ public class bookDBHelper extends SQLiteOpenHelper {
             Log.e("SQL_INSERT", e.getMessage());
             return -1;
         } finally {
-            System.out.println("####################### End #######################");
+            db.close();
+            Log.d(TAG, "####################### End #######################");
         }
         return -1;
     }
     //drop
     public void dropTable(String _table)
     {
-        System.out.println("###################### Start ######################");
-        System.out.println(" Drop table and Recreate");
+        Log.d(TAG, "###################### Start ######################");
+        Log.d(TAG, " Drop table and Recreate");
         SQLiteDatabase db = getWritableDatabase();
         try {
             StringBuffer sql_drop_table = new StringBuffer(ContractDBinfo.SQL_DROP_TBL)
@@ -186,7 +186,8 @@ public class bookDBHelper extends SQLiteOpenHelper {
         } catch (SQLException e) {
             Log.d("SQL_DROP", e.getMessage());
         } finally {
-            System.out.println("####################### End #######################");
+            db.close();
+            Log.d(TAG, "####################### End #######################");
         }
 
     }
@@ -212,7 +213,7 @@ public class bookDBHelper extends SQLiteOpenHelper {
     }
     */
     //update
-    public void updateData(String _attr, String _whereArgs, String _targetTable) {
+    public int updateData(String _attr, String _whereArgs, String _targetTable) {
         System.out.println("###################### Start ######################");
         System.out.println(" Update into db");
 
@@ -223,47 +224,38 @@ public class bookDBHelper extends SQLiteOpenHelper {
                 switch(_attr) {
                     case ContractDBinfo.COL_TITLE :
                         cv.put(ContractDBinfo.COL_TITLE, _whereArgs);
-                        db.update(_targetTable, cv, ContractDBinfo.WHERE_TITLE, new String[]{_whereArgs});
-                        break;
+                        return db.update(_targetTable, cv, ContractDBinfo.WHERE_TITLE, new String[]{_whereArgs});
                     case ContractDBinfo.COL_TOTIME  :
                         cv.put(ContractDBinfo.COL_TOTIME, _whereArgs);
-                        db.update(_targetTable, cv, ContractDBinfo.WHERE_TITLE, new String[]{_whereArgs});
-                        break;
+                        return db.update(_targetTable, cv, ContractDBinfo.WHERE_TITLE, new String[]{_whereArgs});
                     case ContractDBinfo.COL_EATIME  :
                         cv.put(ContractDBinfo.COL_EATIME, _whereArgs);
-                        db.update(_targetTable, cv, ContractDBinfo.WHERE_TITLE, new String[]{_whereArgs});
-                        break;
+                        return db.update(_targetTable, cv, ContractDBinfo.WHERE_TITLE, new String[]{_whereArgs});
                     case ContractDBinfo.COL_RETIME  :
                         cv.put(ContractDBinfo.COL_RETIME, _whereArgs);
-                        db.update(_targetTable, cv, ContractDBinfo.WHERE_TITLE, new String[]{_whereArgs});
-                        break;
+                        return db.update(_targetTable, cv, ContractDBinfo.WHERE_TITLE, new String[]{_whereArgs});
                     case ContractDBinfo.COL_NOPROB  :
                         cv.put(ContractDBinfo.COL_NOPROB, _whereArgs);
-                        db.update(_targetTable, cv, ContractDBinfo.WHERE_TITLE, new String[]{_whereArgs});
-                        break;
+                        return db.update(_targetTable, cv, ContractDBinfo.WHERE_TITLE, new String[]{_whereArgs});
                     case ContractDBinfo.COL_NOACC  :
                         cv.put(ContractDBinfo.COL_NOACC, _whereArgs);
-                        db.update(_targetTable, cv, ContractDBinfo.WHERE_TITLE, new String[]{_whereArgs});
-                        break;
+                        return db.update(_targetTable, cv, ContractDBinfo.WHERE_TITLE, new String[]{_whereArgs});
                     default :
-                        break;
+                        return -1;
                 }
             } else if (_targetTable.equals(ContractDBinfo.TBL_USER)) {
                 switch(_attr) {
                     case ContractDBinfo.COL_EXECPROB :
                         cv.put(ContractDBinfo.COL_EXECPROB, _whereArgs);
-                        db.update(_targetTable, cv, ContractDBinfo.WHERE_EXECPROB, new String[]{_whereArgs});
-                        break;
+                        return db.update(_targetTable, cv, ContractDBinfo.WHERE_EXECPROB, new String[]{_whereArgs});
                     case ContractDBinfo.COL_SOLVEDPROB  :
                         cv.put(ContractDBinfo.COL_SOLVEDPROB, _whereArgs);
-                        db.update(_targetTable, cv, ContractDBinfo.WHERE_SOLVEDPROB, new String[]{_whereArgs});
-                        break;
+                        return db.update(_targetTable, cv, ContractDBinfo.WHERE_SOLVEDPROB, new String[]{_whereArgs});
                     case ContractDBinfo.COL_CORRPROB  :
                         cv.put(ContractDBinfo.COL_CORRPROB, _whereArgs);
-                        db.update(_targetTable, cv, ContractDBinfo.WHERE_CORRPROB, new String[]{_whereArgs});
-                        break;
+                        return db.update(_targetTable, cv, ContractDBinfo.WHERE_CORRPROB, new String[]{_whereArgs});
                     default :
-                        break;
+                        return -1;
                 }/*
                 return getWritableDatabase().insert(ContractDBinfo.TBL_USER, null, cv);
                 */
@@ -273,6 +265,7 @@ public class bookDBHelper extends SQLiteOpenHelper {
         } finally {
             System.out.println("####################### End #######################");
         }
+        return -1;
     }
     //option
     public void showTable(String _table)
@@ -383,7 +376,7 @@ public class bookDBHelper extends SQLiteOpenHelper {
             if (bookIdx != -1) {
                 elp.setBaseBook(findBookByid(bookIdx));
             }
-            elp.setEachAccess(cursor.getString(6));
+            elp.setEachExcess(cursor.getString(6));
             elplist.add(elp);
         }
         if (elplist.isEmpty() != false)

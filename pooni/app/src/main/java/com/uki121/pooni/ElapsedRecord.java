@@ -10,11 +10,11 @@ import java.util.StringTokenizer;
 
 public class ElapsedRecord {
     //var
-    private static final String TAG = "ElapsedRecord";
-    private static final int[] time_unit = {3600, 60, 1};//hour, min, secon
+    private final String TAG = "ElapsedRecord";
+    private final int[] time_unit = {3600, 60, 1};//hour, min, secon
     private final int TOKEN_SIZE = 6;
     private Book baseBook;
-    private String recordId;
+    private String bookid, recordid;
     private String date;
     private ArrayList eachExcess;//save it as seconds
     private int num; //acutal size of record
@@ -27,10 +27,11 @@ public class ElapsedRecord {
     public ElapsedRecord(Book _bs, List < String > _records) {
         if (_bs != null) {
             isBookSet = true;
+            baseBook = new Book(_bs);
         }
-        baseBook = new Book(_bs);
         num = _records.size();
-        recordId = new String();
+        recordid = new String();
+        bookid = new String();
         date = new String();
         strExcess = new String();
         eachExcess = new ArrayList < String >();
@@ -46,21 +47,22 @@ public class ElapsedRecord {
     public void setBaseBook(Book _bs) { baseBook = _bs;}
     public void setDate(String _date) { this.date = _date;}
     public void setEachExcess(ArrayList eachAccess) { this.eachExcess = eachExcess; }
-    public void setEachAccess(String _src) {
-        this.eachExcess = convertToRec(_src);
+    public void setEachExcess(String _src) {
+        this.eachExcess = convertStrTolist(_src);
     }
+    public void setBookId(String _bid) { this.bookid = _bid;}
     //Get
     public boolean IsBookSet() { return isBookSet;}
-    public String getRecordId() { return recordId;}
+    public String getBookId() { return this.bookid;}
+    public String getRecordId() { return recordid;}
     public String getDate() {return this.date;}
     public int getNumOfRec() {return num;}
     //public float getRecAvg() { return recordAvg;}
     //public float getCutTop10() { return cutTop10;}
     //public float getCutBottom10() { return cutBottom10;}
     public Book getBaseBook() { return baseBook;}
-    public int getNumOfRecord() {return eachExcess.size();}
     public ArrayList getEachAccess() { return eachExcess; }
-    public String getStrRecord() {
+    public String getRecord() {
         Iterator < String > it = eachExcess.iterator();
         StringBuffer res = new StringBuffer();
         while(it.hasNext()) {
@@ -68,9 +70,11 @@ public class ElapsedRecord {
         }
         return res.toString();
     }
-    public String getStrAccess() {
-        //serialize list 'eachAccess' to string'strAccess'
-        StringBuffer src = convertStrAcc();
+    public String getStrExcess() {
+        if (strExcess != null) { return this.strExcess; }
+        //serialize list 'eachExcess' to string'strExcess'
+        StringBuffer src = convertListTostr();
+        Log.d(TAG, "getStrExcess : " + src.toString());
         if (src != null) {
             Log.i("Record converting", "Done well");
             strExcess = src.toString();
@@ -82,38 +86,26 @@ public class ElapsedRecord {
     }
     public void getInfo(){
         System.out.println("date : " + date);
-        System.out.println("Record id : " + recordId);
+        System.out.println("Record id : " + recordid);
         System.out.println("isBookSet : " + isBookSet);
         System.out.println("Book : " + baseBook.getTitle());
     }
     //Calculate
-    private StringBuffer convertStrAcc() {
+    private StringBuffer convertListTostr() {
         //The substring of each string as a unit has a size by 6
         //The basic string format is like "1. 00:00:00", and it would be cut out, 000000.
         StringBuffer res = new StringBuffer();
         Iterator < String > it = eachExcess.iterator();
         while (it.hasNext()) {
-            StringBuffer element = new StringBuffer();
-            //Extract index
-            //int begin = it.next().indexOf(" ");
-            //Extract Time
-            //StringTokenizer str = new StringTokenizer(it.next().substring(begin), ":");
-            //for (int i = 0; str.hasMoreTokens(); ) {
-            //    element.append(str.nextToken());
-            //}
-            element.append(":");    //delimeter
-            //if (element.length() != TOKEN_SIZE) {
-            //    Log.w("Convert List to String", "String is missing");
-            //    break;
-            //}
-            res.append(element.toString());
+            res.append(it.next());
+            if (it.hasNext()) { res.append(":"); }    //delimeter
         }
         return res;
     }
-    public ArrayList convertToRec(String _from) {
+    public ArrayList convertStrTolist(String _from) {
         int strSize = _from.length();
-        System.out.println(">> (Before) String is " + _from);
-        System.out.println(">> (Before) String size : " + strSize);
+        Log.d(TAG, ">> (Before) String is " + _from);
+        Log.d(TAG, ">> (Before) String size : " + strSize);
         ArrayList < String > list_rec = new ArrayList<>();
         StringTokenizer str = new StringTokenizer(_from, ":");
         for (int i = 0; str.hasMoreElements(); ) {
@@ -130,14 +122,15 @@ public class ElapsedRecord {
         //Extract index
         int begin = _record.indexOf(" ") + 1;//ex) 1. 00:06:66
         //Extract Time
-        StringTokenizer str = new StringTokenizer(_record.substring(begin), ":");//ex) 00:06:66
+        StringTokenizer str = new StringTokenizer(_record.substring(begin, begin + 7), ":");//ex) 00:06:66
         //Exception
         if (str.countTokens() < 3) {
             Log.w(TAG, "Record date has a wrong format");
             return -1;
         }
+        //Todo : split(":"), is it more efficient?
         for (int i = 2; i >= 0; --i) {
-            second += (time_unit[i] * Integer.valueOf(str.nextToken()));
+            second += (time_unit[i] * Integer.parseInt(str.nextToken()));
         }
         if (second < 0) {
             Log.d(TAG, "current record has no excess time");

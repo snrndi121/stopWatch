@@ -72,9 +72,11 @@ public class HistoryActivity extends AppCompatActivity{
     //Load elapsed record from db
     public void onLoadRecord() {
         if (sync_date == null) {
+            Log.d(TAG, "Load ElpRecord from db");
             //no synchronized information then read all elapsed records from db
             newRecord = dbhelper.getElapsedRecord(null);
         } else {
+            Log.d(TAG, "Load ElpRecord from db");
             //if there is a history of synchronizing, then read history data
             newRecord = null;
             history.setHistory(onLoadHistory(ContractDBinfo.TBL_HISTORY_PIE, ContractDBinfo.SQL_SELECT_HISTORY_PIE));//history total setting

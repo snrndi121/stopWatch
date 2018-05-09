@@ -196,23 +196,25 @@ public class HomeActivity extends AppCompatActivity implements onUpdateStateList
     //It will be called from FragmentSaveShare when book setting is saved
     @Override
     public boolean onUpdateRecord(String _strUserRec, boolean _IsNewBook) {
-        //Convert json format into Elapsed class
+        //Convert json format into ElapsedRecord class
         Gson gsonUser = new Gson();
         ElapsedRecord elp = gsonUser.fromJson(_strUserRec, ElapsedRecord.class);
         ///If book is set
         if (elp.IsBookSet() == true) {
+            int bid = -1;
             Book _target = new Book(elp.getBaseBook());
             try {
                 //Update Book info or insert new book
                 if (_IsNewBook == false) {
                     //case1.update book
                     Log.i("Current Book", "Insert unnecessary,instead update its attributes");
-                    dbhelper.updateData(ContractDBinfo.COL_NOACC, _target.getNumAcc() + 1, ContractDBinfo.TBL_BOOK);//There is a only change for the number of access now
+                    bid = dbhelper.updateData(ContractDBinfo.COL_NOACC, _target.getNumAcc() + 1, ContractDBinfo.TBL_BOOK);//There is a only change for the number of access now
                 } else {
                     //case2.new book is added
-                    Log.i("Current Book", "Insert sucessful");
-                    dbhelper.insertData(elp, ContractDBinfo.TBL_BOOK);
+                    Log.i("Current Book", "New book is inserted sucessfully");
+                    bid = (int) dbhelper.insertData(elp, ContractDBinfo.TBL_BOOK);
                 }
+                elp.setBookId(String.valueOf(bid));
                 //Save Record
                 dbhelper.insertData(elp, ContractDBinfo.TBL_RECORD);
                 return true;
@@ -245,7 +247,7 @@ public class HomeActivity extends AppCompatActivity implements onUpdateStateList
         ElapsedRecord elp = gson.fromJson(_strUserRec, ElapsedRecord.class);
         if (elp != null) {
             Intent toggleIntent = new Intent();
-            String shareStr = elp.getStrRecord();
+            String shareStr = elp.getRecord();
             toggleIntent.setAction(Intent.ACTION_SEND);
             toggleIntent.putExtra(Intent.EXTRA_TEXT, shareStr);
             toggleIntent.setType("text/plain");

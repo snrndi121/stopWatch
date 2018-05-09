@@ -91,9 +91,8 @@ public class History {
                 _elp.getInfo();
                 //step2.classify their month
                 //step2.1.find target as month "05" and extract (int)5 from (string)05
-                String _src = new String(_elp.getDate());
-                int _pos = _src.indexOf("-") + 1;//ex) 2018-05-11, 05 is a target.
-                int _mkey = Integer.parseInt(_src.substring(_pos, _pos + 1));
+                String[] _src = _elp.getDate().split("-");//ex) 2018, 05, 11, 05 is a target.
+                int _mkey = Integer.parseInt(_src[1]);
                 //step2.2.put that position as key and mMonth[position] as value into map
                 if (_mMap.containsKey(_mkey) != true) {//New month
                     Month _mval = new Month(_elp);
