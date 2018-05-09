@@ -25,17 +25,20 @@ public class ElapsedRecord {
     //method
     public ElapsedRecord() {};
     public ElapsedRecord(Book _bs, List < String > _records) {
-        if (_bs != null) { isBookSet = true; }
+        if (_bs != null) {
+            isBookSet = true;
+        }
         baseBook = new Book(_bs);
+        num = _records.size();
         recordId = new String();
         date = new String();
         strExcess = new String();
-        num = _records.size();
         eachExcess = new ArrayList < String >();
         //Set eachRecord
         Iterator < String > it = _records.iterator();
         while (it.hasNext()) {
-            eachExcess.add(getSecond(it.next()));
+            int _item = getSecond(it.next());
+            if (_item > 0) { eachExcess.add(_item);}
         }
         Collections.sort(eachExcess);
     }
@@ -125,16 +128,20 @@ public class ElapsedRecord {
         int second = 0;
         StringBuffer element = new StringBuffer();
         //Extract index
-        int begin = _record.indexOf(" ");
+        int begin = _record.indexOf(" ") + 1;//ex) 1. 00:06:66
         //Extract Time
-        StringTokenizer str = new StringTokenizer(_record.substring(begin), ":");
+        StringTokenizer str = new StringTokenizer(_record.substring(begin), ":");//ex) 00:06:66
         //Exception
         if (str.countTokens() < 3) {
-            Log.w(TAG, "record date has a wrong format");
+            Log.w(TAG, "Record date has a wrong format");
             return -1;
         }
-        for (int i=2; i >= 0; --i) {
+        for (int i = 2; i >= 0; --i) {
             second += (time_unit[i] * Integer.valueOf(str.nextToken()));
+        }
+        if (second < 0) {
+            Log.d(TAG, "current record has no excess time");
+            return 0;
         }
         return second;
     }

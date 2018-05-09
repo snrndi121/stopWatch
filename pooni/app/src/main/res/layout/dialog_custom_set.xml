@@ -30,6 +30,8 @@
         android:id="@+id/setting_totime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:inputType="numberSigned"
+        android:hint="@string/hint_min"
         />
 
     <TextView
@@ -43,6 +45,8 @@
         android:id="@+id/setting_maxtime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:inputType="numberSigned"
+        android:hint="@string/hint_second"
         />
 
     <TextView
@@ -56,6 +60,8 @@
         android:id="@+id/setting_rest"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:inputType="numberSigned"
+        android:hint="@string/hint_min"
         />
 
     <TextView
@@ -69,7 +75,6 @@
         android:id="@+id/setting_count"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:inputType="numberSigned"
         />
-
-
 </LinearLayout>

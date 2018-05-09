@@ -50,8 +50,8 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
     //Setting book in Time handler
     long total_time, each_time;
     //user
-    int access_prob = 0;
-    long access_time = 0;
+    int excess_prob = 0;
+    long excess_time = 0;
 
     public void FragmentLap(){ };
     public static FragmentLap newInstance(String _gsonBook, boolean _isNewBook) {
@@ -104,11 +104,10 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
         btnEnd.setOnClickListener(btnOnClickListener);
 
         /* [ToDo] : each time is considered as min. If not, it will cause error and bug */
-        /* [ToDo] Now the back event from FragmentSaveShare has error in "getEachtime()' caused by curBook is null */
         //apply current book's setting to count time
         if (curBook != null)
         {
-            each_time = Integer.parseInt(curBook.getEachTime())  * 60000; //considered this as min
+            each_time = Integer.parseInt(curBook.getEachTime())  * 1000; //considered this as second
             total_time = Integer.parseInt(curBook.getToTime()) * 60000; //considered this as min
             if (IsNewBook == false) {
                 Log.i("Book_SettingInLap", "Existing setting is applied");
@@ -266,12 +265,12 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
         backDialog.show();
     }
     //Count the number of access if a current elapsed time exceed its each Bound time.
-    public void checkEachBound(String _laptime) {
-        long lapInMilli = recordTolong(_laptime, "msms");
-        if (each_time < lapInMilli) {
-            access_prob++;
+    public void checkEachBound(String _curLaptime) {
+        long _inMilli = recordTolong(_curLaptime, "msms");
+        if (each_time < _inMilli) {
+            excess_prob++;
         }
-        Log.i("Access_problem", String.valueOf(access_prob));
+        Log.i("Excess_problem", String.valueOf(excess_prob));
     }
     public String convertToRecord(Book src_book, List < String > src_lap) {
         ElapsedRecord userRecord = new ElapsedRecord(src_book, src_lap);//new instance of ElapsedRecord from record made
@@ -282,8 +281,8 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
     public void checkTotalBound() {
         String _curPauseTime = myOutput.getText().toString();
         long _curToTimeInMilli = recordTolong(_curPauseTime, "hms");
-        access_time = _curToTimeInMilli - total_time;
-        Log.i("Access_time", String.valueOf(access_time));
+        excess_time = _curToTimeInMilli - total_time;
+        Log.i("Access_time", String.valueOf(excess_time));
     }
     class BtnOnClickListener implements Button.OnClickListener {
         final String LAP_RECORD = "elapsed_record";

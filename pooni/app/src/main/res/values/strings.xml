@@ -11,7 +11,8 @@
   <string name="setting_maxtime">문제당 최대 시간</string>
   <string name="setting_count">(옵션)총 문제 개수</string>
   <string name="setting_rest">(옵션)쉬는 시간 기입</string>
-
+  <string name="hint_min">분단위로 입력 </string>
+  <string name="hint_second">초단위로 입력</string>
   <!-- setting_prefill -->
   <string name="name_prefill">ibk_ncs2018</string>
   <string name="maxtime_prefill">분 단위 입력</string>

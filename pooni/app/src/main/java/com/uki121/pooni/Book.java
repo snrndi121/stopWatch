@@ -14,9 +14,9 @@ class Book {
     {
         try {
            category = new String[]{_data[TITLE],
-                                    _data[TOTAL_TIME],
-                                    _data[EACH_TIME],
-                                    _data[REST_TIME],
+                                    _data[TOTAL_TIME],//min
+                                    _data[EACH_TIME],//second
+                                    _data[REST_TIME],//min
                                     _data[NUM_PROB],
                                     _data[NUM_ACC]};
         } catch (Exception e) {
