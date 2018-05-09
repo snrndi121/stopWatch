@@ -16,7 +16,7 @@ public class ElapsedRecord {
     private Book baseBook;
     private String recordId;
     private String date;
-    private ArrayList eachAccess;//save it as seconds
+    private ArrayList eachExcess;//save it as seconds
     private int num; //acutal size of record
     private String strAccess;
     private boolean isBookSet = false;
@@ -31,20 +31,20 @@ public class ElapsedRecord {
         date = new String();
         strAccess = new String();
         num = _records.size();
-        eachAccess = new ArrayList < String >();
+        eachExcess = new ArrayList < String >();
         //Set eachRecord
         Iterator < String > it = _records.iterator();
         while (it.hasNext()) {
-            eachAccess.add(getSecond(it.next()));
+            eachExcess.add(getSecond(it.next()));
         }
-        Collections.sort(eachAccess);
+        Collections.sort(eachExcess);
     }
     //Set
     public void setBaseBook(Book _bs) { baseBook = _bs;}
     public void setDate(String _date) { this.date = _date;}
-    public void setEachAccess(ArrayList eachAccess) { this.eachAccess = eachAccess; }
+    public void setEachAccess(ArrayList eachAccess) { this.eachExcess = eachExcess; }
     public void setEachAccess(String _src) {
-        this.eachAccess = convertToRec(_src);
+        this.eachExcess = convertToRec(_src);
     }
     //Get
     public boolean IsBookSet() { return isBookSet;}
@@ -55,10 +55,10 @@ public class ElapsedRecord {
     //public float getCutTop10() { return cutTop10;}
     //public float getCutBottom10() { return cutBottom10;}
     public Book getBaseBook() { return baseBook;}
-    public int getNumOfRecord() {return eachAccess.size();}
-    public ArrayList getEachAccess() { return eachAccess; }
+    public int getNumOfRecord() {return eachExcess.size();}
+    public ArrayList getEachAccess() { return eachExcess; }
     public String getStrRecord() {
-        Iterator < String > it = eachAccess.iterator();
+        Iterator < String > it = eachExcess.iterator();
         StringBuffer res = new StringBuffer();
         while(it.hasNext()) {
             res.append(it.next());
@@ -82,7 +82,7 @@ public class ElapsedRecord {
         //The substring of each string as a unit has a size by 6
         //The basic string format is like "1. 00:00:00", and it would be cut out, 000000.
         StringBuffer res = new StringBuffer();
-        Iterator < String > it = eachAccess.iterator();
+        Iterator < String > it = eachExcess.iterator();
         while (it.hasNext()) {
             StringBuffer element = new StringBuffer();
             //Extract index

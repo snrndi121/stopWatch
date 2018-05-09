@@ -71,19 +71,15 @@ public class HistoryActivity extends AppCompatActivity{
     }
     //Load elapsed record from db
     public void onLoadRecord() {
-        //part1.history total setting
-        //no synchronized information then read all elapsed records from db
         if (sync_date == null) {
+            //no synchronized information then read all elapsed records from db
             newRecord = dbhelper.getElapsedRecord(null);
-        }
-        //if there is a history of synchronizing, then read history data
-        else {
+        } else {
+            //if there is a history of synchronizing, then read history data
             newRecord = null;
-            history.setHistory(onLoadHistory(ContractDBinfo.TBL_HISTORY_PIE, ContractDBinfo.SQL_SELECT_HISTORY_PIE));
+            history.setHistory(onLoadHistory(ContractDBinfo.TBL_HISTORY_PIE, ContractDBinfo.SQL_SELECT_HISTORY_PIE));//history total setting
+            history.setHistory(onLoadHistory(ContractDBinfo.TBL_HISTORY_LINE, ContractDBinfo.SQL_SELECT_HISTORY_LINE));//history month setting
         }
-        //Todo : reinforcement of selection
-        //part2.history month setting
-        history.setHistory(onLoadHistory(ContractDBinfo.TBL_HISTORY_LINE, ContractDBinfo.SQL_SELECT_HISTORY_LINE));
     }
     //Load synchronized date from sharedPrefereces
     private void onLoadSyncDate() {
@@ -102,7 +98,6 @@ public class HistoryActivity extends AppCompatActivity{
         if (cursor != null && cursor.moveToFirst()) {
             Log.d(TAG, "onLoadHistory - " + _table + " table is loading now...");
             if (_table.equals(ContractDBinfo.TBL_HISTORY_PIE)) {
-
                 //set DataTotal
                 int[] _contents = new int[4];
                 for (int i=0; i<4; ++i) {
@@ -118,8 +113,7 @@ public class HistoryActivity extends AppCompatActivity{
                     for (int i = 0; i < 3; ++i) {
                         _contents[i] = cursor.getInt(i);
                     }
-                    //add to arraylist
-                    _month.add(new Month(_name, _contents));
+                    _month.add(new Month(_name, _contents));//add to Arraylist
                 }
                 return new History(null, new DataMonth(_month));
             } else {;}
@@ -133,7 +127,6 @@ public class HistoryActivity extends AppCompatActivity{
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onSume");
-
     }
     */
     private void onUpdateSyncDate() {

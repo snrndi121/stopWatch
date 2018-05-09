@@ -13,7 +13,6 @@ public class Month {
     private int totalExcess;//total amount of access in this month
     private int numOfprob;//total amount of problems solved in this month
     private int numOfbook;//total amount of booked solved in this month
-    private int numOfmonth;
 
     //constructort
     public Month() {}
