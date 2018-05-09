@@ -18,7 +18,7 @@ public class ElapsedRecord {
     private String date;
     private ArrayList eachExcess;//save it as seconds
     private int num; //acutal size of record
-    private String strAccess;
+    private String strExcess;
     private boolean isBookSet = false;
     //private float recordAvg;
     //private float cutTop10, cutBottom10;
@@ -29,7 +29,7 @@ public class ElapsedRecord {
         baseBook = new Book(_bs);
         recordId = new String();
         date = new String();
-        strAccess = new String();
+        strExcess = new String();
         num = _records.size();
         eachExcess = new ArrayList < String >();
         //Set eachRecord
@@ -42,7 +42,7 @@ public class ElapsedRecord {
     //Set
     public void setBaseBook(Book _bs) { baseBook = _bs;}
     public void setDate(String _date) { this.date = _date;}
-    public void setEachAccess(ArrayList eachAccess) { this.eachExcess = eachExcess; }
+    public void setEachExcess(ArrayList eachAccess) { this.eachExcess = eachExcess; }
     public void setEachAccess(String _src) {
         this.eachExcess = convertToRec(_src);
     }
@@ -70,12 +70,18 @@ public class ElapsedRecord {
         StringBuffer src = convertStrAcc();
         if (src != null) {
             Log.i("Record converting", "Done well");
-            strAccess = src.toString();
-            return strAccess;
+            strExcess = src.toString();
+            return strExcess;
         } else {
             Log.w("Record converting","Err : Check convertStrAcc()");
         }
         return null;
+    }
+    public void getInfo(){
+        System.out.println("date : " + date);
+        System.out.println("Record id : " + recordId);
+        System.out.println("isBookSet : " + isBookSet);
+        System.out.println("Book : " + baseBook.getTitle());
     }
     //Calculate
     private StringBuffer convertStrAcc() {

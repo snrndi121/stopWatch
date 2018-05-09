@@ -3,14 +3,17 @@ package com.uki121.pooni;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class History {
     //def
     private final String TAG = "History";
     private final String TOTAL_HISOTRY = "total_history";
     private final String MONTH_HISTORY = "month_history";
-    //var
+   //var
     private DataTotal total_history = null;
     private DataMonth month_history = null;
     private boolean isDataTotal = false , isDataMonth = false;
@@ -25,8 +28,7 @@ public class History {
     public History(ArrayList < ElapsedRecord > _elpList) {
         total_history = new DataTotal();
         month_history = new DataMonth();
-        setTotal_history(_elpList);
-        //Todo : month_history later
+        setHistory(_elpList);
     }
     public History(DataTotal _datatotal, DataMonth _datamonth) {
         try {
@@ -38,19 +40,7 @@ public class History {
         }
     }
     //set
-    public void setTotal_history(ArrayList < ElapsedRecord > _elpList){
-        if (_elpList.isEmpty()) {
-            Log.w(TAG, "setTotal_history() has 0 size list");
-            return;
-        }
-        isDataTotal = true;
-        int[] res = new int[4];
-        Iterator < ElapsedRecord > it = _elpList.iterator();
-        while(it.hasNext()) {
-            total_history.setData(it.next());
-        }
-    }
-    public void setTotal(int[] _data) { total_history.setData(_data);}
+    //set History by History class
     public void setHistory(History _history) {
         if (_history != null) {
             if (_history.getHistoryToTal() != null) {
@@ -71,35 +61,57 @@ public class History {
             Log.d(TAG, "setHistory() has null history now");
         }
     }
-    public void setMonth_history(ArrayList < ElapsedRecord> _elpList) {
-        //DataMonth :
-        //      private int num; //the number of month
-        //    private Month[] data;
-        /*
-        //Month
-            private String name;//month
-            private int totalExcess;//total amount of access in this month
-            private int numOfprob;//total amount of problems solved in this month
-            private int numOfbook;//total amount of booked solved in this month
-            private int numOfmonth;
-         *//*
-         *      private static final String TAG = "ElapsedRecord";
-                private static final int[] time_unit = {3600, 60, 1};//hour, min, secon
-                private final int TOKEN_SIZE = 6;
-                private Book baseBook;
-                private String recordId;
-                private String date;
-                private ArrayList eachAccess;//save it as seconds
-                private int num; //acutal size of record
-                private String strAccess;
-         * /
-        //.기록된 데이터들이 몇개월의 데이터 인지 확인하고
-        Map < String, int > indextable = new Hashmap<>();
-        Iterator < ElapsedRecrod > it = _elpList.iterator();
-        while(it.hasNext()) {
-
+    //set History by ElapsedRecord class
+    public void setHistory(ArrayList < ElapsedRecord > _elpList) {
+        setTotal_history(_elpList);
+        setMonth_history(_elpList);
+    }
+    //set TotalHistory
+    private void setTotal_history(ArrayList < ElapsedRecord > _elpList){
+        if (_elpList.isEmpty()) {
+            Log.w(TAG, "setTotal_history() has 0 size list");
+            return;
         }
-        // 각 레코드별로 같은 월이면 해당 데이터 먼스값 추가
+        isDataTotal = true;
+        int[] res = new int[4];
+        Iterator < ElapsedRecord > it = _elpList.iterator();
+        while(it.hasNext()) {
+            total_history.setData(it.next());
+        }
+    }
+    //set MonthHistory
+    private void setMonth_history(ArrayList < ElapsedRecord> _elpList) {
+        try {
+            //part1.create Month
+            Map < Integer, Month > _mMap = new HashMap<>();
+            Iterator < ElapsedRecord > it = _elpList.iterator();
+            while(it.hasNext()) {
+                ElapsedRecord _elp = it.next();
+                //step1.check a infomation of elp elements
+                _elp.getInfo();
+                //step2.classify their month
+                //step2.1.find target as month "05" and extract (int)5 from (string)05
+                String _src = new String(_elp.getDate());
+                int _pos = _src.indexOf("-") + 1;//ex) 2018-05-11, 05 is a target.
+                int _mkey = Integer.parseInt(_src.substring(_pos, _pos + 1));
+                //step2.2.put that position as key and mMonth[position] as value into map
+                if (_mMap.containsKey(_mkey) != true) {//New month
+                    Month _mval = new Month(_elp);
+                    _mMap.put(_mkey, _mval);
+                } else {//already exists
+                    Month _mnew = _mMap.get(_mkey), _mdata = new Month(_elp);
+                    _mnew.accumMonth(_mdata);
+                    _mMap.put(_mkey, _mnew);
+                }
+            }
+            //part2.create DataMonth based on Month
+            Map < Integer, Month > _months = new TreeMap<>(_mMap);
+            Month[] arg_months = (Month[])_months.values().toArray();
+            this.month_history.setData(new DataMonth(arg_months));
+        } catch (Exception e) {
+            Log.w(TAG, "constructor of Month class : " + e.getMessage());
+        }
+
     }
     //get
     public DataTotal getHistoryToTal() {return total_history;}

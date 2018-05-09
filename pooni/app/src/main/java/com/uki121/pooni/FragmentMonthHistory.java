@@ -41,6 +41,8 @@ public class FragmentMonthHistory extends Fragment {
     //chart
     private CombinedChart combinedchart;
     private final int itemcount = 12;
+    private ArrayList< Entry > lineEntries;
+    private ArrayList< BarEntry > barEntries;
     protected String[] mMonths = new String[] {
             "Jan", "Feb", "Mar", "Apr", "May", "June", "July","Aug", "Sep", "Oct", "Nov", "Dec"
     };
@@ -86,18 +88,15 @@ public class FragmentMonthHistory extends Fragment {
                 Log.d(TAG, "onValueSelected: " + h.toString());
                 if (isMonthhistory != false) { //history data-set
                     int pos = (int) h.getX();
-                    int numOfprob = monthhistory.getMonth(pos).getNumOfprob(),
-                        monthExcess = monthhistory.getMonth(pos).getTotalExcess()/60;
-                    float monthAvg = monthhistory.getMonth(pos).getAvgByprob();
-                    Toast.makeText(getActivity(), "이달 푼 문제수 :" + numOfprob + "\n" + "총 초과량 : " + monthExcess + "분\n 평균 초과량 : " + monthAvg + "분", Toast.LENGTH_LONG).show();
+                    int numOfprob = monthhistory.getMonth(pos).getNumOfprob();
+                    Toast.makeText(getActivity(), "이달 푼 문제수 :" + numOfprob + "\n" + "총 초과량 : " + barEntries.get(pos) + "초\n 평균 초과량 : " + lineEntries.get(pos) + "분", Toast.LENGTH_LONG).show();
                 } else { //default data-mode
-
+                    Toast.makeText(getActivity(), "This is default mode.\nNo data found ", Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onNothingSelected() {
-
             }
         });
     }
@@ -150,11 +149,11 @@ public class FragmentMonthHistory extends Fragment {
     }
     private LineData generateLineData() {
         LineData d = new LineData();
+        lineEntries = new ArrayList<Entry>();
+        //initialize entry set
+        lineEntries = getLineEntriesData(lineEntries);
 
-        ArrayList<Entry> entries = new ArrayList<Entry>();
-        entries = getLineEntriesData(entries);
-
-        LineDataSet set = new LineDataSet(entries, "Line DataSet");
+        LineDataSet set = new LineDataSet(lineEntries, "Line DataSet");
         set.setColor(Color.rgb(213, 45, 23));
         set.setLineWidth(2.5f);
         set.setCircleColor(Color.rgb(213, 45, 23));
@@ -170,10 +169,11 @@ public class FragmentMonthHistory extends Fragment {
         return d;
     }
     private BarData generateBarData() {
-        ArrayList<BarEntry> entries = new ArrayList<BarEntry>();
-        entries = getBarEnteries(entries);
+        barEntries = new ArrayList<BarEntry>();
+        //initialize entry set
+        barEntries = getBarEnteries(barEntries);
 
-        BarDataSet set1 = new BarDataSet(entries, "BarEntry");
+        BarDataSet set1 = new BarDataSet(barEntries, "BarEntry");
         set1.setColor(Color.rgb(50, 143, 70));
         set1.setValueTextColor(Color.rgb(60, 220, 78));
         set1.setValueTextSize(10f);
@@ -185,9 +185,9 @@ public class FragmentMonthHistory extends Fragment {
 
         return d;
     }
+    //initialize chart data : line chart
     private ArrayList<Entry> getLineEntriesData(ArrayList<Entry> entries) {
-        //default-mode
-        if (isMonthhistory == false) {
+        if (isMonthhistory == false) {//default-mode
             for (int index = 0; index < itemcount; index++) {
                 entries.add(new Entry(index, getRandom(15, 5)));
             }
@@ -199,9 +199,9 @@ public class FragmentMonthHistory extends Fragment {
         }
         return entries;
     }
+    //initialize chart data : bar chart
     private ArrayList<BarEntry> getBarEnteries(ArrayList<BarEntry> entries) {
-        //default-mode
-        if (isMonthhistory == false) {
+        if (isMonthhistory == false) {//default-mode
             Log.w(TAG, "Default data mode active");
             for (int index = 0; index < itemcount; index++) {
                 entries.add(new BarEntry(index, getRandom(25, 25)));
@@ -231,12 +231,10 @@ public class FragmentMonthHistory extends Fragment {
                     if (set instanceof BarDataSet)
                         set.setDrawValues(!set.isDrawValuesEnabled());
                 }
-
                 combinedchart.invalidate();
                 break;
             }
             case R.id.actionRemoveDataSet: {
-
                 int rnd = (int) getRandom(combinedchart.getData().getDataSetCount(), 0);
                 combinedchart.getData().removeDataSet(combinedchart.getData().getDataSetByIndex(rnd));
                 combinedchart.getData().notifyDataChanged();
