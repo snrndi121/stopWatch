@@ -40,6 +40,7 @@ public class HistoryActivity extends AppCompatActivity{
         setContentView(R.layout.fragment_container_history);
         init();
     }
+    // Todo : current db don't operate now
     public void init() {
         //db create and open
         dbhelper = new bookDBHelper(HistoryActivity.this);
@@ -82,6 +83,8 @@ public class HistoryActivity extends AppCompatActivity{
             history.setHistory(onLoadHistory(ContractDBinfo.TBL_HISTORY_PIE, ContractDBinfo.SQL_SELECT_HISTORY_PIE));//history total setting
             history.setHistory(onLoadHistory(ContractDBinfo.TBL_HISTORY_LINE, ContractDBinfo.SQL_SELECT_HISTORY_LINE));//history month setting
         }
+        //load check
+
     }
     //Load synchronized date from sharedPrefereces
     private void onLoadSyncDate() {
