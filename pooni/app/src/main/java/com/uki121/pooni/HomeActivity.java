@@ -178,7 +178,7 @@ public class HomeActivity extends AppCompatActivity implements onUpdateStateList
                     abook.setRestTime(String.valueOf(cursor.getInt(4)));
                     abook.setNumProb(String.valueOf(cursor.getInt(5)));
                     abook.getBook();
-                    bookshelf.AddBooks(abook);
+                    bookshelf.AddBooks(abook);/* ToDo : If the return value is false, then delete from db */
                 }
             }
         } catch (SQLException e) {

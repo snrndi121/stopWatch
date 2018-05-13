@@ -6,8 +6,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
 class Book {
+    //def
+    private final String TAG = "Book";
     private final int TITLE = 0, TOTAL_TIME = 1, EACH_TIME = 2, REST_TIME = 3, NUM_PROB = 4, NUM_ACC = 5;
     private final int MAX_CATEGORY = 6;
+    //var
     public String[] category;
     public Book(){ category = new String[MAX_CATEGORY];};
     public Book(String[] _data)
@@ -35,10 +38,16 @@ class Book {
     }
     //Check a form of book regardless of its title
     final public boolean IsBookValid() {
-        boolean ttflag = category[TOTAL_TIME] != null ? IsNumber(category[TOTAL_TIME]) : false,
-                mptflag = category[TOTAL_TIME] != null ? IsRangeOf(category[TOTAL_TIME], category[EACH_TIME]) : false,
-                rtflag = category[TOTAL_TIME] != null ? IsRangeOf(category[TOTAL_TIME], category[REST_TIME]) : true,
+        boolean ttflag = category[TOTAL_TIME] != null ? IsNumber(category[TOTAL_TIME]) : false,//format check of total_time
+                mptflag = category[TOTAL_TIME] != null ? IsRangeOf(category[TOTAL_TIME], category[EACH_TIME]) : false,//range check
+                rtflag = category[TOTAL_TIME] != null ? IsRangeOf(category[TOTAL_TIME], category[REST_TIME]) : true,//range check
                 nopflag = category[NUM_PROB] != null ? IsValidNum(category[NUM_PROB]) : true;
+        /*
+        Log.d(TAG, "total_time : " + ttflag);
+        Log.d(TAG, "each_time : " + mptflag);
+        Log.d(TAG, "rest_time : " + rtflag);
+        Log.d(TAG, "prob_num : " + nopflag);
+        */
         return ttflag && mptflag && rtflag && nopflag;
     }
     //Check whether it is a number
@@ -51,11 +60,11 @@ class Book {
             return false;
         }
     }
-    public boolean IsRangeOf(String base, String target)
+    public boolean IsRangeOf(String base, String target)//convert base to second
     {
         try {
-            int a = Integer.parseInt(base), b = Integer.parseInt(target);
-            boolean c1 = IsNumber(target), c2 = a > b;
+            int _base = Integer.parseInt(base) * 60, _tar = Integer.parseInt(target);
+            boolean c1 = IsNumber(target), c2 = _base > _tar;
             //c1 is true -> baseTime is number
             //c2 is true -> baseTime > targetTime
             return c1 && c2;

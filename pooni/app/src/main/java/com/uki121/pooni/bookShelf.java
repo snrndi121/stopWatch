@@ -12,6 +12,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
 public class bookShelf extends AppCompatActivity {
+    //def
+    private final String TAG = "bookshelf";
     final int MAX_BOOKS = 100;
     private List < Book > books;
     private int numOfbooks = 0;
@@ -25,22 +27,25 @@ public class bookShelf extends AppCompatActivity {
     //Add book by Book
     public boolean AddBooks(Book bs) {
         try {
-            if (books.size() > MAX_BOOKS && IsDupBooks(bs)) {
-                Log.w("AddBooks_fail", "cause by booksize or duplication");
+            if (IsDupBooks(bs)) {
+                Log.w(TAG, "AddBooks failed : cause by duplication");
                 return false;
+            } else {
+              Log.d(TAG, "AddBooks success: size and dup passed");
             }
             if (bs.IsBookValid()) {
                 Log.i("Book_Valid"," passed");
-                books.add(new Book(bs));
+                books.add(bs);
                 numOfbooks++;
                 return true;
+            } else {
+                Log.w(TAG, " valid failed");
             }
         } catch (ArrayIndexOutOfBoundsException e) {
             Log.e("ADD_BBOK_ARR", e.getMessage());
         } catch (Exception e) {
             Log.e("ADD_BOOK_EXC", e.getMessage());
         }
-        Log.w("Book_Valid", "failed");
         return false;
     }
     //Add book by Book[]
@@ -61,7 +66,8 @@ public class bookShelf extends AppCompatActivity {
     //Check whether newtitle is duplicated
     private boolean IsDupName(String _bTitle) {
         for (Book b : books) {
-            if (b.getBook().equals(_bTitle) == true) {
+            if (b.getTitle().equals(_bTitle) == true) {
+                Log.d(TAG, "This book is duplicated");
                 return true;
             }
         }
