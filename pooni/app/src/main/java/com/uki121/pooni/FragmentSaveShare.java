@@ -32,8 +32,8 @@ public class FragmentSaveShare extends Fragment implements HomeActivity.onKeyBac
 
     public void FragmentSaveShare(){};
     public static FragmentSaveShare newInstance(String _gsonUser, boolean _IsNewSet) {
-        strUserRecord = _gsonUser;//pair < book, list < string > > to String
         IsNewBook = _IsNewSet;
+        //strUserRecord = _gsonUser;//pair < book, list < string > > to String Todo : delete
         FragmentSaveShare fragment = new FragmentSaveShare();
         Bundle args = new Bundle();
         args.putString(APPR, _gsonUser);

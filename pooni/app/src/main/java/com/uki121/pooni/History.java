@@ -73,7 +73,6 @@ public class History {
             return;
         }
         isDataTotal = true;
-        int[] res = new int[4];
         Iterator < ElapsedRecord > it = _elpList.iterator();
         while(it.hasNext()) {
             total_history.setData(it.next());

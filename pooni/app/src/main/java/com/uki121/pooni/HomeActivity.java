@@ -30,6 +30,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 /**
@@ -37,7 +40,10 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
  */
 
 public class HomeActivity extends AppCompatActivity implements onUpdateStateListener {
+    //def
+    private final String TAG = "HomeActivity";
     private final long FINISH_INTERVAL_TIME = 2000;
+    //var
     private long backPressedTime = 0;
     private onKeyBackPressedListener mOnKeyBackPressedListener;
     private bookShelf bookshelf;
@@ -45,6 +51,7 @@ public class HomeActivity extends AppCompatActivity implements onUpdateStateList
     //SharedPreferences
     private final String sharedCurBook = "shared_cur_book";
     private final String sharedKey = "cur_book_info";
+    //var
     private Book curbook;
     private boolean IsSharedPref = false;
     //Bundle
@@ -62,7 +69,7 @@ public class HomeActivity extends AppCompatActivity implements onUpdateStateList
         bookshelf = new bookShelf();
         dbhelper = new bookDBHelper(HomeActivity.this);
 
-        LoadBookShelf();//Load books' info from database
+        onLoadBookShelf();//Load books' info from database
         onSearchInnerData();//Load a basic book setting user sets in the sharedPreferences before
         //Inflate HomeFragment
         try {
@@ -157,7 +164,7 @@ public class HomeActivity extends AppCompatActivity implements onUpdateStateList
         }
     }
     //Load book data from Database
-    public void LoadBookShelf() {
+    public void onLoadBookShelf() {
         System.out.println("###################### Start ######################");
         System.out.println(" Load Book DB");
         SQLiteDatabase db = dbhelper.getReadableDatabase();
@@ -190,7 +197,6 @@ public class HomeActivity extends AppCompatActivity implements onUpdateStateList
             System.out.println("###################### Ends ######################");
         }
     }
-
     public void loadBookUser() {
 
     }
@@ -198,6 +204,8 @@ public class HomeActivity extends AppCompatActivity implements onUpdateStateList
     @Override
     public boolean onUpdateRecord(String _strUserRec, boolean _IsNewBook) {
         //Convert json format into ElapsedRecord class
+        Log.d(TAG, " onUpdateRecord start");
+        Log.d(TAG, " strUserRec : " + _strUserRec);
         Gson gsonUser = new Gson();
         ElapsedRecord elp = gsonUser.fromJson(_strUserRec, ElapsedRecord.class);
         ///If book is set
@@ -217,6 +225,7 @@ public class HomeActivity extends AppCompatActivity implements onUpdateStateList
                 }
                 elp.setBookId(String.valueOf(bid));
                 //Save Record
+                elp.getInfo();
                 dbhelper.insertData(elp, ContractDBinfo.TBL_RECORD);
                 return true;
             } catch (Exception e) {
@@ -225,6 +234,7 @@ public class HomeActivity extends AppCompatActivity implements onUpdateStateList
         } else {
             //No Book is setting then only record data
             Log.w("Update_Book","No Book is founded");
+            //ToDo : record insert without bookId
             return false;
         }
         return false;

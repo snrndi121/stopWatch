@@ -157,7 +157,7 @@ public class bookDBHelper extends SQLiteOpenHelper {
             } else if (_targetTable.equals(ContractDBinfo.TBL_RECORD)) {
                 cv.put(ContractDBinfo.COL_BOOKID, Integer.parseInt(elp.getBookId()));
                 cv.put(ContractDBinfo.COL_SOVLED, elp.getNumOfRec());
-                cv.put(ContractDBinfo.COL_STRACC, elp.getStrExcess());
+                cv.put(ContractDBinfo.COL_STRLAP, elp.getStrData("lap"));
                 long newRowid = db.insert(ContractDBinfo.TBL_RECORD, null, cv);
                 Log.d(TAG, " >> newRowId :" + newRowid);
                 return newRowid;
@@ -346,10 +346,12 @@ public class bookDBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         StringBuffer sql_find_book = new StringBuffer(ContractDBinfo.SQL_SELECT_BOOK);
         sql_find_book.append(" where ")
-                    .append("bid=")
+                    .append("id=")
                     .append( _bookid);
         Cursor cursor = db.rawQuery(sql_find_book.toString(), null);
-        if (cursor.moveToNext()) {
+        if (cursor != null & cursor.getCount() != 0) {
+            Log.d(TAG, "findBookById has valid cursor");
+            cursor.moveToFirst();
             Book _book = new Book();
             _book.setTitle(cursor.getString(1));
             _book.setToTime(cursor.getString(2));
@@ -364,23 +366,32 @@ public class bookDBHelper extends SQLiteOpenHelper {
     public ArrayList < ElapsedRecord > getElapsedRecord(StringBuffer _whereQuery) {
         SQLiteDatabase db = getReadableDatabase();
         StringBuffer sql_select_record = new StringBuffer(ContractDBinfo.SQL_SELECT_RECORD);
-        //ToDo : if _whereQuery is null, is it good
+        //ToDo : if _whereQuery is null, is it good?
         if (_whereQuery != null) { sql_select_record.append(_whereQuery.toString());}
         Cursor cursor = db.rawQuery(sql_select_record.toString(), null);
-        int bookIdx = 0;
-        ArrayList < ElapsedRecord > elplist = new ArrayList< ElapsedRecord>();
-        while (cursor.moveToNext()) {
-            ElapsedRecord elp = new ElapsedRecord();
-            bookIdx = cursor.getInt(1);
-            System.out.println(" >> cursor_book : " + bookIdx);
-            if (bookIdx != -1) {
-                elp.setBaseBook(findBookByid(bookIdx));
-            }
-            elp.setEachExcess(cursor.getString(6));
-            elplist.add(elp);
+        //searching cursor
+        if (cursor != null && cursor.getCount() != 0) {
+            int bookIdx = 0;
+            ArrayList < ElapsedRecord > elplist = new ArrayList< ElapsedRecord>();
+            Log.d(TAG, " >> cursor count : " + cursor.getCount());
+            cursor.moveToFirst();
+            do {
+                ElapsedRecord elp = new ElapsedRecord();
+                bookIdx = cursor.getInt(1);
+                Log.d(TAG, "  >> Book index : " + bookIdx);
+                //set book
+                if (bookIdx != -1) {
+                    elp.setBaseBook(findBookByid(bookIdx));
+                } else {
+                    throw new SQLException();
+                }
+                elp.setDate(cursor.getString(2));
+                elp.setEachExcess(cursor.getString(4));
+                elplist.add(elp);
+            } while(cursor.moveToNext());
+            if (elplist.isEmpty() != true)
+                return elplist;
         }
-        if (elplist.isEmpty() != false)
-            return elplist;
         return null;
     }
 }

@@ -44,14 +44,14 @@ public class ContractDBinfo {
     //public static final String COL_RECBOT = "cut_bottom10";
     public static final String COL_DATE = "date_record";
     public static final String COL_SOVLED = "numOfsolved";
-    public static final String COL_STRACC = "string_access";
+    public static final String COL_STRLAP = "string_laptime";
     public static final String SQL_CREATE_REC ="CREATE TABLE IF NOT EXISTS " + TBL_RECORD +
             "(" +
             COL_RECID + " INTEGER PRIMARY KEY AUTOINCREMENT" + ", " +
             COL_BOOKID + " INTEGER " + ", " +
             COL_DATE + " TEXT DEFAULT 'DATE(now)' " + ", " +
             COL_SOVLED + " INTEGER DEFALUT '0'" + ", " +
-            COL_STRACC + " VARCHAR(1024)" + ", " +
+            COL_STRLAP + " VARCHAR(2048)" + ", " +
             "FOREIGN KEY("  + COL_BOOKID + ") " +
             "REFERENCES " + TBL_BOOK + "(" + COL_ID + ")" +
             " ON DELETE CASCADE" +

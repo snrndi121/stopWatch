@@ -15,33 +15,35 @@ public class HistoryAdapter extends FragmentPagerAdapter {
     //var
     private static final String TAG = "HistoryAdapter";
     private final int FRAG_NUM = 2;
-    private ArrayList< ElapsedRecord > curElp;
+    private ArrayList < ElapsedRecord > curElp;//Todo : delete
     private History history;
 
     public HistoryAdapter(FragmentManager fragmentmanager, ArrayList < ElapsedRecord > _elp) {
         super(fragmentmanager);
+        Log.d(TAG, "constructor(1) is active");
         if (_elp != null) {
             Log.d(TAG, "constructor(1)_Elp is valid");
-            curElp = new ArrayList<>(_elp);
+            //curElp = new ArrayList<>(_elp);
             history = new History(_elp);
         } else {
             Log.d(TAG, "constructor(1)_Elp is empty");
-            curElp = null;
+            //curElp = null;
             history = null;
         }
-    };
+    }
     public HistoryAdapter(FragmentManager fragmentmanager, History _history) {
         super(fragmentmanager);
+        Log.d(TAG, "constructor(2) is active");
         if (_history != null) {
             Log.d(TAG, "constructor(2)_History is set");
             history = new History(_history);
-            curElp = null;
+            //curElp = null;
         } else {
             Log.d(TAG, "constructor(2)_History is empty");
             history = null;
-            curElp = null;
+            //curElp = null;
         }
-    };
+    }
     @Override
     public Fragment getItem(int position) {
         switch(position) {
