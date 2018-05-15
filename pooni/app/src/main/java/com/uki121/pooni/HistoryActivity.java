@@ -85,7 +85,9 @@ public class HistoryActivity extends AppCompatActivity {
             //Todo : delete
             Iterator <ElapsedRecord> it = newRecord.iterator();
             while (it.hasNext()) {
-                it.next().getInfo();
+                ElapsedRecord _elp = it.next();
+                _elp.getInfo();
+                _elp.getBaseBook().getBook();
             }
             if (newRecord != null) {
                 //lap to excess
@@ -110,6 +112,8 @@ public class HistoryActivity extends AppCompatActivity {
         Iterator <ElapsedRecord> it = newRecord.iterator();
         while (it.hasNext()) {
             ElapsedRecord _elp = new ElapsedRecord(it.next());
+            //Error here
+            //the upper module can call book setting, but this module could not, why?
             _elp.setEachExcess();
             _elp.getInfo();//Todo :delete
         }
