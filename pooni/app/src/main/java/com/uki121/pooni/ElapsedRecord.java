@@ -56,21 +56,28 @@ public class ElapsedRecord {
     public void setBaseBook(Book _bs) { this.baseBook = new Book(_bs);}
     public void setDate(String _date) { this.date = _date;}
     public void setEachExcess() {
+        Log.d(TAG, " #### START : setEachExcess #### ");
         //eachLaptime -> eachExcess
         if (baseBook == null) {
             Log.w(TAG, "There is no book setting in Elp");
+            Log.d(TAG, " #### END : setEachExcess #### ");
             return ;
         }
         if (eachLaptime == null) {
             Log.w(TAG, "There is no eachLapTime in Elp");
+            Log.d(TAG, " #### END : setEachExcess #### ");
             return ;
         }
         int standard = Integer.parseInt(baseBook.getEachTime()) * 1000;//milli
         Iterator < String > it = eachLaptime.iterator();
+        Log.d(TAG, " >> eachLaptime size : " + eachLaptime.size());
         while(it.hasNext()) {
             int _excess = Integer.parseInt(it.next()) - standard;
+            Log.d(TAG, " >> CONVERTING string to (int)excess time : " + _excess);
             eachExcess.add(String.valueOf(_excess));
         }
+        Log.d(TAG, " >> RESULT : eachExcess size : " + eachExcess.size());
+        Log.d(TAG, " #### END : setEachExcess #### ");
     }
     public void setEachExcess(String _src) {
         this.eachExcess = convertStrTolist(_src);

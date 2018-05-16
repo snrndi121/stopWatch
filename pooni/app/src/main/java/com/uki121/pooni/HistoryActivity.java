@@ -76,14 +76,19 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
     //Load elapsed record from db
+    //ToDo : 전체적으로 난잡한 코드
+    //현재 getInfo 작업에서 isBookset = false, strLap 부분이 null값이 등장.
+    // 제대로 다 받아오고 있지 못학 있는데, 저장된 값을 다시 클래스로 넣는 작업이 제대로 안되는 듯
     public void onLoadRecord() {
         System.out.println("onLoadRecord_syncDate : " + sync_date);
+        //처음 실행되었을 경우 : 프로그램 전체적으로 한번 실행될 판단문
         if (sync_date.equals("") == true) {
             Log.d(TAG, "Load ElpRecord from db");
             //no synchronized information then read all elapsed records from db
             newRecord = new ArrayList<>(dbhelper.getElapsedRecord(null));
             //Todo : delete
             Iterator <ElapsedRecord> it = newRecord.iterator();
+            System.out.println(" >> newRecord size is " + newRecord.size());
             while (it.hasNext()) {
                 ElapsedRecord _elp = it.next();
                 _elp.getInfo();
@@ -98,7 +103,7 @@ public class HistoryActivity extends AppCompatActivity {
                 Log.d(TAG, "Record from db is null");
                 newRecord = null;
             }
-        } else {
+        } else {//동기화 날짜가 존재하는 경우 = history 영역이 존재 한다고 일맥 상통?
             Log.d(TAG, "Load History from db");
             //if there is a history of synchronizing, then read history data
             newRecord = null;
@@ -106,9 +111,9 @@ public class HistoryActivity extends AppCompatActivity {
             history.setHistory(onLoadHistory(ContractDBinfo.TBL_HISTORY_LINE, ContractDBinfo.SQL_SELECT_HISTORY_LINE));//history month setting
         }
     }
-
     public void setExcessFromLap() {
         Log.d(TAG, "############### start ###############");
+        System.out.println(" >> newRecord size is " + newRecord.size());
         Iterator <ElapsedRecord> it = newRecord.iterator();
         while (it.hasNext()) {
             ElapsedRecord _elp = new ElapsedRecord(it.next());
@@ -119,7 +124,6 @@ public class HistoryActivity extends AppCompatActivity {
         }
         Log.d(TAG, "############### end ###############");
     }
-
     //Load synchronized date from sharedPrefereces
     private void onLoadSyncDate() {
         SharedPreferences sp = getSharedPreferences(SYNC_DATE, 0);
@@ -132,7 +136,6 @@ public class HistoryActivity extends AppCompatActivity {
             Log.d(TAG, "Synchronized date : " + sync_date);
         }
     }
-
     public History onLoadHistory(String _table, String _query) {
         Cursor cursor = dbhelper.selectFromTable(_table, _query);
         if (cursor != null && cursor.moveToFirst()) {
