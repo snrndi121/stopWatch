@@ -52,6 +52,7 @@ public class ElapsedRecord {
         setStrData("lap");
     }
     //Set
+    public void setRecordId(String _rid) { this.recordid = _rid;}
     public void setBookId(String _bid) { this.bookid = _bid;}
     public void setBaseBook(Book _bs) { this.baseBook = new Book(_bs);}
     public void setDate(String _date) { this.date = _date;}
@@ -79,16 +80,33 @@ public class ElapsedRecord {
         Log.d(TAG, " >> RESULT : eachExcess size : " + eachExcess.size());
         Log.d(TAG, " #### END : setEachExcess #### ");
     }
+    public void setEachLaptime(String _src) {
+        this.eachLaptime = convertStrTolist(_src);
+    }
     public void setEachExcess(String _src) {
         this.eachExcess = convertStrTolist(_src);
+    }
+    //Todo : usless delete
+    public void setExcessFromLap() {
+        Log.d(TAG, "############### start ###############");
+        System.out.println(" >> newRecord size is " + newRecord.size());
+        Iterator <ElapsedRecord> it = newRecord.iterator();
+        while (it.hasNext()) {
+            ElapsedRecord _elp = new ElapsedRecord(it.next());
+            //Error here
+            //the upper module can call book setting, but this module could not, why?
+            _elp.setEachExcess();
+            _elp.getInfo();//Todo :delete
+        }
+        Log.d(TAG, "############### end ###############");
     }
     private void setStrData(String _targetname) {
         String src = convertListTostr(_targetname);
         //exception
         if (src != null) {
-            Log.i("Record converting", "Done well");
+            Log.i("Record converting", ">> Done well");
         } else {
-            Log.w("Record converting","Err");
+            Log.w("Record converting",">> Err");
             return ;
         }
         switch(_targetname) {
@@ -174,12 +192,12 @@ public class ElapsedRecord {
         }
         return res.toString();
     }
-    public ArrayList convertStrTolist(String _strname) {
-        int strSize = _strname.length();
-        Log.d(TAG, ">> (Before) String is " + _strname);
+    public ArrayList convertStrTolist(String _str) {
+        int strSize = _str.length();
+        Log.d(TAG, ">> (Before) String is " + _str);
         Log.d(TAG, ">> (Before) String size : " + strSize);
         ArrayList < String > list_rec = new ArrayList<>();
-        StringTokenizer str = new StringTokenizer(_strname, ":");
+        StringTokenizer str = new StringTokenizer(_str, ":");
         for (int i = 0; str.hasMoreElements(); ) {
             list_rec.add(str.nextToken());
         }

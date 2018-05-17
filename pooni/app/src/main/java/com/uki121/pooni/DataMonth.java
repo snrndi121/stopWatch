@@ -11,11 +11,14 @@ public class DataMonth
 {
     //def
     private final String TAG = "Data Month";
+    private final int MONTH_NUM = 12;
     //var
     private int num; //the number of month
     private Month[] months;
 
-    public DataMonth(){};
+    public DataMonth(){
+        months = new Month[MONTH_NUM];
+    }
     public DataMonth(int _num) {
         this.num = _num;
         months = new Month[_num];
@@ -44,6 +47,22 @@ public class DataMonth
     public void setData(DataMonth _src) {
         this.num = _src.getNum();
         this.months = _src.getMonth();
+    }
+    public void setData(ElapsedRecord _src) {
+        //set new month
+        Month _month = new Month(_src);
+        int _pos = _month.getKey();//find index of month
+
+        //size check
+        if (months == null) {
+            this.num = _pos + 1;
+            months = new Month[this.num];
+        }
+        if (months.length < _pos + 1) {
+            Log.e(TAG, "setData() has fatal error");
+        }
+        //accumulate it into an origin
+        months[_pos].accumMonth(_month);
     }
     //get
     public Month getMonth(int _index) {

@@ -363,34 +363,46 @@ public class bookDBHelper extends SQLiteOpenHelper {
         }
         return null;
     }
-    public ArrayList < ElapsedRecord > getElapsedRecord(StringBuffer _whereQuery) {
-        SQLiteDatabase db = getReadableDatabase();
-        StringBuffer sql_select_record = new StringBuffer(ContractDBinfo.SQL_SELECT_RECORD);
-        //ToDo : if _whereQuery is null, is it good?
-        if (_whereQuery != null) { sql_select_record.append(_whereQuery.toString());}
-        Cursor cursor = db.rawQuery(sql_select_record.toString(), null);
-        //searching cursor
-        if (cursor != null && cursor.getCount() != 0) {
-            int bookIdx = 0;
-            ArrayList < ElapsedRecord > elplist = new ArrayList< ElapsedRecord>();
-            Log.d(TAG, " >> cursor count : " + cursor.getCount());
-            cursor.moveToFirst();
-            do {
-                ElapsedRecord elp = new ElapsedRecord();
-                bookIdx = cursor.getInt(1);
-                Log.d(TAG, "  >> Book index : " + bookIdx);
-                //set book
-                if (bookIdx != -1) {
-                    elp.setBaseBook(findBookByid(bookIdx));
-                } else {
-                    throw new SQLException();
-                }
-                elp.setDate(cursor.getString(2));
-                elp.setEachExcess(cursor.getString(4));
-                elplist.add(elp);
-            } while(cursor.moveToNext());
-            if (elplist.isEmpty() != true)
-                return elplist;
+    public ArrayList < ElapsedRecord > getElapsedRecord(StringBuffer _whereQuery, boolean _switch) {
+        if (_switch != false) {
+            //init datebase
+            SQLiteDatabase db = getReadableDatabase();
+            StringBuffer sql_select_record = new StringBuffer(ContractDBinfo.SQL_SELECT_RECORD);
+            //set 'where query' right back into 'where' clause
+            if (_whereQuery != null) {
+                sql_select_record.append(" where ")
+                        .append(_whereQuery.toString());
+            }
+            //execute cursor
+            Cursor cursor = db.rawQuery(sql_select_record.toString(), null);
+            //checking exception
+            if (cursor != null && cursor.getCount() != 0) {
+                int bookIdx = 0;
+                ArrayList<ElapsedRecord> elplist = new ArrayList<ElapsedRecord>();
+                Log.d(TAG, " >> cursor count : " + cursor.getCount());
+                cursor.moveToFirst();
+                //checking whether a cusor is laset
+                do {
+                    ElapsedRecord elp = new ElapsedRecord();//new item
+                    //elp.recid
+                    elp.setRecordId(String.valueOf(cursor.getInt(0)));
+                    //elp.book & bookid
+                    bookIdx = cursor.getInt(1);
+                    if (bookIdx != -1) {
+                        elp.setBookId(String.valueOf(bookIdx));
+                        elp.setBaseBook(findBookByid(bookIdx));
+                    } else {
+                        throw new SQLException();
+                    }
+                    //elp.date
+                    elp.setDate(cursor.getString(2));
+                    //elp.strLap
+                    elp.setEachLaptime(cursor.getString(4));
+                    elplist.add(elp);
+                } while (cursor.moveToNext());
+                if (elplist.isEmpty() != true)
+                    return elplist;
+            }
         }
         return null;
     }

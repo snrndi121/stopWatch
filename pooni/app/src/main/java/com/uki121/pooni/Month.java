@@ -12,14 +12,16 @@ public class Month {
     private final String TAG = "Month";
     //var
     private String name;//month
-    private int totalExcess;//total amount of access in this month
-    private int numOfprob;//total amount of problems solved in this month
-    private int numOfbook;//total amount of booked solved in this month
+    private int totalExcess = 0;//total amount of access in this month
+    private int numOfprob = 0;//total amount of problems solved in this month
+    private int numOfbook = 0;//total amount of booked solved in this month
     protected final String[] mMonths = new String[] {
             "Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
     //constructort
-    public Month() {}
+    public Month() {
+        this.name = new String("");
+    }
     public Month(String _name, int[] _val) {
         this.name = _name;
         if (_val != null) {
@@ -70,6 +72,12 @@ public class Month {
     }
     //get
     public String getName() { return this.name;}
+    public int getKey() {
+        for (int i = 0; i < mMonths.length; ++i) {
+            if (this.name.equals(mMonths[i])) { return i;}
+        }
+        return -1;
+    }
     public int getTotalExcess() { return this.totalExcess;}
     public int getNumOfprob() { return this.numOfprob;}
     public int getNumOfbook() {return this.numOfbook;}

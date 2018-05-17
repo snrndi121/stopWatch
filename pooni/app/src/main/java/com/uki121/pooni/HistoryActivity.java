@@ -17,7 +17,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-
 public class HistoryActivity extends AppCompatActivity {
     //Debug
     private static final String TAG = "HistoryActivity";
@@ -26,11 +25,10 @@ public class HistoryActivity extends AppCompatActivity {
     private ArrayList<ElapsedRecord> newRecord;
     private History history;
     //SharedPreference
-    private final String SYNC_DATE = "date_synchronized";
+    private final String SYNC_DATE = "date_synchronized", SYNC_REINDX = "recindex_synchronized";
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    private String sync_date;
-    private boolean IsSetSync = false, //Is set Synchronized date
-            IsSyncRequest = false;//request from other fragment
+    private String sync_date, sync_reindx;
+    private boolean IsNeedSync = false; //to define whether a synchronization is needed
     //Tab-Fragment
     private HistoryAdapter hisAdapter;
     private ViewPager viewpager;
@@ -53,12 +51,14 @@ public class HistoryActivity extends AppCompatActivity {
         //assignment
         history = new History();
         //load
-        onLoadSyncDate();//from sharedPreferences
-        onLoadRecord(); //from db
+        onLoadSyncInfo();//from sharedPreferences
+        onLoadHistory();//read history table
+        onLoadRecord(); //read record table
 
+        //결과적으로 history만 주면 되도록, activity에서 세팅을 마치도록 할
         //Todo : reinforcement selective because of addtion of DataMonth
         //set up viewpager and tab_layout
-        if (IsSetSync != true) {//no sync date
+        if (IsNeedSync != true) {//no sync date
             hisAdapter = new HistoryAdapter(getSupportFragmentManager(), newRecord);//view pager
         } else {//if history data are set
             hisAdapter = new HistoryAdapter(getSupportFragmentManager(), history);
@@ -81,11 +81,13 @@ public class HistoryActivity extends AppCompatActivity {
     // 제대로 다 받아오고 있지 못학 있는데, 저장된 값을 다시 클래스로 넣는 작업이 제대로 안되는 듯
     public void onLoadRecord() {
         System.out.println("onLoadRecord_syncDate : " + sync_date);
-        //처음 실행되었을 경우 : 프로그램 전체적으로 한번 실행될 판단문
-        if (sync_date.equals("") == true) {
-            Log.d(TAG, "Load ElpRecord from db");
-            //no synchronized information then read all elapsed records from db
-            newRecord = new ArrayList<>(dbhelper.getElapsedRecord(null));
+        if (IsNeedSync != false) { //have to be update
+            //where Query
+            StringBuffer _where_reindx = new StringBuffer(ContractDBinfo.COL_RECID);
+            _where_reindx.append(">")
+                         .append(sync_reindx);
+            //dbhelper
+            newRecord = new ArrayList<>(dbhelper.getElapsedRecord(_where_reindx, true));
             //Todo : delete
             Iterator <ElapsedRecord> it = newRecord.iterator();
             System.out.println(" >> newRecord size is " + newRecord.size());
@@ -94,49 +96,40 @@ public class HistoryActivity extends AppCompatActivity {
                 _elp.getInfo();
                 _elp.getBaseBook().getBook();
             }
-            if (newRecord != null) {
-                //lap to excess
-                setExcessFromLap();
-                //update sync date
-                onUpdateSyncDate();
-            } else {
-                Log.d(TAG, "Record from db is null");
-                newRecord = null;
-            }
-        } else {//동기화 날짜가 존재하는 경우 = history 영역이 존재 한다고 일맥 상통?
-            Log.d(TAG, "Load History from db");
-            //if there is a history of synchronizing, then read history data
-            newRecord = null;
-            history.setHistory(onLoadHistory(ContractDBinfo.TBL_HISTORY_PIE, ContractDBinfo.SQL_SELECT_HISTORY_PIE));//history total setting
-            history.setHistory(onLoadHistory(ContractDBinfo.TBL_HISTORY_LINE, ContractDBinfo.SQL_SELECT_HISTORY_LINE));//history month setting
+            setExcessFromLap();//lap to excess
+            onUpdateSyncDate();//update sync date
         }
-    }
-    public void setExcessFromLap() {
-        Log.d(TAG, "############### start ###############");
-        System.out.println(" >> newRecord size is " + newRecord.size());
-        Iterator <ElapsedRecord> it = newRecord.iterator();
-        while (it.hasNext()) {
-            ElapsedRecord _elp = new ElapsedRecord(it.next());
-            //Error here
-            //the upper module can call book setting, but this module could not, why?
-            _elp.setEachExcess();
-            _elp.getInfo();//Todo :delete
-        }
-        Log.d(TAG, "############### end ###############");
+        //update history by updated record
+        history.onUpdateByrecord(newRecord);
     }
     //Load synchronized date from sharedPrefereces
-    private void onLoadSyncDate() {
-        SharedPreferences sp = getSharedPreferences(SYNC_DATE, 0);
-        sync_date = new String(sp.getString(SYNC_DATE, ""));
-        if (sync_date.equals("") == true) {
-            IsSetSync = false;
-            Log.d(TAG, "There is no synchronized date.");
+    private boolean onLoadSyncInfo() {
+        //saved synchronized date
+        SharedPreferences sp_date = getSharedPreferences(SYNC_DATE, 0),
+                sp_reindx = getSharedPreferences(SYNC_REINDX, 0);
+        sync_date = new String(sp_date.getString(SYNC_DATE, ""));
+        sync_reindx = new String(sp_reindx.getString(SYNC_REINDX, ""));
+        //current date in Record table
+        StringBuffer _where_reindx = new StringBuffer(ContractDBinfo.COL_RECID)
+                                    .append("=")
+                                    .append(sync_reindx);
+        ArrayList <ElapsedRecord> lastitem = dbhelper.getElapsedRecord(_where_reindx, true);
+        //define whether it will be updated
+        if (lastitem.size() <= 1) {
+            IsNeedSync = false;
+            Log.d(TAG, "A synchronized date would not be updated");
         } else {
-            IsSetSync = true;
-            Log.d(TAG, "Synchronized date : " + sync_date);
+            IsNeedSync = true;
+            Log.d(TAG, "Synchronized date can be updated");
         }
+        return IsNeedSync;
     }
-    public History onLoadHistory(String _table, String _query) {
+    public void onLoadHistory() {
+        history.setHistory(LoadHistory(ContractDBinfo.TBL_HISTORY_PIE, ContractDBinfo.SQL_SELECT_HISTORY_PIE));//history total setting
+        history.setHistory(LoadHistory(ContractDBinfo.TBL_HISTORY_LINE, ContractDBinfo.SQL_SELECT_HISTORY_LINE));//history month setting
+
+    }
+    private History LoadHistory(String _table, String _query) {
         Cursor cursor = dbhelper.selectFromTable(_table, _query);
         if (cursor != null && cursor.moveToFirst()) {
             Log.d(TAG, "onLoadHistory - " + _table + " table is loading now...");
