@@ -383,21 +383,19 @@ public class bookDBHelper extends SQLiteOpenHelper {
                 cursor.moveToFirst();
                 //checking whether a cusor is laset
                 do {
-                    ElapsedRecord elp = new ElapsedRecord();//new item
-                    //elp.recid
-                    elp.setRecordId(String.valueOf(cursor.getInt(0)));
-                    //elp.book & bookid
-                    bookIdx = cursor.getInt(1);
+                    //new item
+                    ElapsedRecord elp = new ElapsedRecord();
+                    elp.setRecordId(String.valueOf(cursor.getInt(0)));//elp.recid
+                    bookIdx = cursor.getInt(1);//elp.book & bookid
                     if (bookIdx != -1) {
                         elp.setBookId(String.valueOf(bookIdx));
                         elp.setBaseBook(findBookByid(bookIdx));
                     } else {
                         throw new SQLException();
                     }
-                    //elp.date
-                    elp.setDate(cursor.getString(2));
-                    //elp.strLap
-                    elp.setEachLaptime(cursor.getString(4));
+                    elp.setDate(cursor.getString(2));//elp.date
+                    elp.setEachLaptime(cursor.getString(4));//elp.eachLap
+                    elp.setExcessFromLap();//elp.eachExcess
                     elplist.add(elp);
                 } while (cursor.moveToNext());
                 if (elplist.isEmpty() != true)

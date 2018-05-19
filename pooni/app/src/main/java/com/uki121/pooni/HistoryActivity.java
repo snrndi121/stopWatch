@@ -76,16 +76,16 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
     //Load elapsed record from db
-    //ToDo : 전체적으로 난잡한 코드
-    //현재 getInfo 작업에서 isBookset = false, strLap 부분이 null값이 등장.
-    // 제대로 다 받아오고 있지 못학 있는데, 저장된 값을 다시 클래스로 넣는 작업이 제대로 안되는 듯
     public void onLoadRecord() {
         System.out.println("onLoadRecord_syncDate : " + sync_date);
         if (IsNeedSync != false) { //have to be update
             //where Query
-            StringBuffer _where_reindx = new StringBuffer(ContractDBinfo.COL_RECID);
-            _where_reindx.append(">")
-                         .append(sync_reindx);
+            StringBuffer _where_reindx = null;
+            if (sync_reindx.equals("") != true) {
+                _where_reindx = new StringBuffer(ContractDBinfo.COL_RECID);
+                _where_reindx.append(">")
+                        .append(sync_reindx);
+            }
             //dbhelper
             newRecord = new ArrayList<>(dbhelper.getElapsedRecord(_where_reindx, true));
             //Todo : delete
@@ -96,7 +96,6 @@ public class HistoryActivity extends AppCompatActivity {
                 _elp.getInfo();
                 _elp.getBaseBook().getBook();
             }
-            setExcessFromLap();//lap to excess
             onUpdateSyncDate();//update sync date
         }
         //update history by updated record
@@ -110,9 +109,14 @@ public class HistoryActivity extends AppCompatActivity {
         sync_date = new String(sp_date.getString(SYNC_DATE, ""));
         sync_reindx = new String(sp_reindx.getString(SYNC_REINDX, ""));
         //current date in Record table
-        StringBuffer _where_reindx = new StringBuffer(ContractDBinfo.COL_RECID)
-                                    .append("=")
-                                    .append(sync_reindx);
+        StringBuffer _where_reindx = null;
+        Log.d(TAG, " >> sync_date : " + sync_date);
+        Log.d(TAG, " >> sync_reindex : " + sync_reindx);
+        if (sync_reindx.equals("") != true) {
+            _where_reindx = new StringBuffer(ContractDBinfo.COL_RECID)
+                    .append("=")
+                    .append(sync_reindx);
+        }
         ArrayList <ElapsedRecord> lastitem = dbhelper.getElapsedRecord(_where_reindx, true);
         //define whether it will be updated
         if (lastitem.size() <= 1) {

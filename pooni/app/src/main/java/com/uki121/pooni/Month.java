@@ -34,14 +34,14 @@ public class Month {
         int _pos = _elp.getDate().indexOf("-") + 1;
         int _key = Integer.parseInt(_elp.getDate().substring(_pos, _pos + 1));
         this.name = new String(mMonths[_key]);
-        Iterator<String> it = _elp.getEachAccess().iterator();
+        Iterator<String> it = _elp.getEachExcess().iterator();
         while (it.hasNext()) {
             int _oneExcess = Integer.parseInt(it.next());
             if (_oneExcess > 0) {
                 this.totalExcess += _oneExcess;
             }
         }
-        this.numOfprob += Integer.valueOf(_elp.getEachAccess().size());
+        this.numOfprob += Integer.valueOf(_elp.getEachExcess().size());
         this.numOfbook = 1;
     }
     //set

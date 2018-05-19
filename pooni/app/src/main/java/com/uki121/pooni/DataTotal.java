@@ -35,7 +35,7 @@ public class DataTotal {
     }
     //set
     public void setData(ElapsedRecord _elp) {
-        ArrayList < String > lap = _elp.getEachAccess();
+        ArrayList < String > lap = _elp.getEachExcess();
         int taken_time, gap;
         for (int i = 0; i < lap.size(); ++i) {
             taken_time = Integer.parseInt(lap.get(i));

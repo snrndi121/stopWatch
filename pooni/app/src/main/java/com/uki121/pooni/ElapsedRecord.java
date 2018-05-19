@@ -27,9 +27,17 @@ public class ElapsedRecord {
     //private float cutTop10, cutBottom10;
     //private float recordAvg;
     //method
-    public ElapsedRecord() {};
+    public ElapsedRecord() {
+        eachLaptime = new ArrayList(){};
+        eachExcess = new ArrayList(){};
+    };
     public ElapsedRecord(ElapsedRecord _elp) {
-
+        baseBook = _elp.getBaseBook();
+        bookid = _elp.getBookId();
+        recordid = _elp.getRecordId();
+        date = _elp.getDate();
+        eachLaptime = _elp.getEachLaptime();
+        eachExcess = _elp.getEachExcess();
     }
     public ElapsedRecord(Book _bs, List < String > _records) {//used by FragmentLap
         //book setting
@@ -56,7 +64,7 @@ public class ElapsedRecord {
     public void setBookId(String _bid) { this.bookid = _bid;}
     public void setBaseBook(Book _bs) { this.baseBook = new Book(_bs);}
     public void setDate(String _date) { this.date = _date;}
-    public void setEachExcess() {
+    public void setExcessFromLap() {
         Log.d(TAG, " #### START : setEachExcess #### ");
         //eachLaptime -> eachExcess
         if (baseBook == null) {
@@ -69,36 +77,23 @@ public class ElapsedRecord {
             Log.d(TAG, " #### END : setEachExcess #### ");
             return ;
         }
-        int standard = Integer.parseInt(baseBook.getEachTime()) * 1000;//milli
+        //standard time from basebook
+        int standard = Integer.parseInt(baseBook.getEachTime()) * 1000;//convert second into milli
+        Log.d(TAG, " >> Standard for (int)excess time : " + standard);
         Iterator < String > it = eachLaptime.iterator();
         Log.d(TAG, " >> eachLaptime size : " + eachLaptime.size());
         while(it.hasNext()) {
             int _excess = Integer.parseInt(it.next()) - standard;
             Log.d(TAG, " >> CONVERTING string to (int)excess time : " + _excess);
-            eachExcess.add(String.valueOf(_excess));
+            if ( _excess > 0) {
+                eachExcess.add(String.valueOf(_excess));
+            }
         }
         Log.d(TAG, " >> RESULT : eachExcess size : " + eachExcess.size());
         Log.d(TAG, " #### END : setEachExcess #### ");
     }
     public void setEachLaptime(String _src) {
         this.eachLaptime = convertStrTolist(_src);
-    }
-    public void setEachExcess(String _src) {
-        this.eachExcess = convertStrTolist(_src);
-    }
-    //Todo : usless delete
-    public void setExcessFromLap() {
-        Log.d(TAG, "############### start ###############");
-        System.out.println(" >> newRecord size is " + newRecord.size());
-        Iterator <ElapsedRecord> it = newRecord.iterator();
-        while (it.hasNext()) {
-            ElapsedRecord _elp = new ElapsedRecord(it.next());
-            //Error here
-            //the upper module can call book setting, but this module could not, why?
-            _elp.setEachExcess();
-            _elp.getInfo();//Todo :delete
-        }
-        Log.d(TAG, "############### end ###############");
     }
     private void setStrData(String _targetname) {
         String src = convertListTostr(_targetname);
@@ -132,7 +127,9 @@ public class ElapsedRecord {
     //public float getCutBottom10() { return cutBottom10;}
     public Book getBaseBook() { return baseBook;}
     public ArrayList getEachLaptime() { return this.eachLaptime;}
-    public ArrayList getEachAccess() { return this.eachExcess; }
+    public ArrayList getEachExcess() { return this.eachExcess; }
+    public String getStrLap() { return this.strLap;}
+    public String getStrExcess() { return this.strExcess;}
     public String getRecord() {
         if (eachLaptime.isEmpty() != true ) {
             Iterator<String> it = eachLaptime.iterator();
@@ -145,6 +142,7 @@ public class ElapsedRecord {
         Log.i(TAG, "Elp has no lap time data");
         return null;
     }
+    //cal
     public String getStrData(String _tartgetname) {
         switch (_tartgetname) {
             case "excess" : {
@@ -195,11 +193,12 @@ public class ElapsedRecord {
     public ArrayList convertStrTolist(String _str) {
         int strSize = _str.length();
         Log.d(TAG, ">> (Before) String is " + _str);
-        Log.d(TAG, ">> (Before) String size : " + strSize);
         ArrayList < String > list_rec = new ArrayList<>();
         StringTokenizer str = new StringTokenizer(_str, ":");
         for (int i = 0; str.hasMoreElements(); ) {
-            list_rec.add(str.nextToken());
+            String _element = str.nextToken();
+            Log.d(TAG, " token : " + _element);
+            list_rec.add(_element);
         }
         return list_rec;
     }
