@@ -282,7 +282,7 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
         String _curPauseTime = myOutput.getText().toString();
         long _curToTimeInMilli = recordTolong(_curPauseTime, "hms");
         excess_time = _curToTimeInMilli - total_time;
-        Log.i("Access_time", String.valueOf(excess_time));
+        Log.i("Excess_time", String.valueOf(excess_time));
     }
     class BtnOnClickListener implements Button.OnClickListener {
         final String LAP_RECORD = "elapsed_record";
@@ -323,7 +323,7 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
                     switch (cur_Status) {
                         case Run:
                             String curlap = getLabTimeout();
-                            checkEachBound(curlap);//Event access
+                            checkEachBound(curlap);//Event excess
                             String str = String.format("%d. %s\n", myCount, curlap);
                             //print colored a string every 5th.
                             if (myCount % 5 != 0) {

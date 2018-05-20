@@ -9,9 +9,11 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 public class ElapsedRecord {
-    //var
+    //def
+    private final int LAP_SIZE = 8;
     private final String TAG = "ElapsedRecord";
-    private final int[] time_unit = {3600, 60, 1};//hour, min, secon
+    private final int[] time_unit = {1, 1000, 60000};//milli:second:min
+    //var
     private Book baseBook;
     private String bookid, recordid;
     private String date;
@@ -20,7 +22,7 @@ public class ElapsedRecord {
     * eachExcess will be set when HistoryActivity is called
     *
     * */
-    private ArrayList eachExcess, eachLaptime;//save it as seconds
+    private ArrayList eachExcess, eachLaptime;//save it as milli
     private int num; //acutal size of record
     private String strExcess, strLap;
     private boolean isBookSet = false;
@@ -204,14 +206,12 @@ public class ElapsedRecord {
     }
     //Each Record date is convert to int as a second
     public int getSecond(String _laptime) {
-        Log.d(TAG, "getSeconds");
-        Log.d(TAG, "String : " + _laptime);
+        Log.d(TAG, "getSeconds - lap time is : " + _laptime);
         int second = 0;
-        StringBuffer element = new StringBuffer();
         //Extract index
         int begin = _laptime.indexOf(" ") + 1;//ex) 1. 00:06:66
         //Extract Time
-        StringTokenizer str = new StringTokenizer(_laptime.substring(begin, begin + 7), ":");//ex) 00:06:66
+        StringTokenizer str = new StringTokenizer(_laptime.substring(begin, begin + LAP_SIZE), ":");//ex) 00:06:66
         //Exception
         if (str.countTokens() < 3) {
             Log.w(TAG, "Record date has a wrong format");
@@ -219,10 +219,12 @@ public class ElapsedRecord {
         }
         //Todo : split(":"), is it more efficient?
         for (int i = 2; i >= 0; --i) {
-            second += (time_unit[i] * Integer.parseInt(str.nextToken()));//-> milli
+            String _tok = str.nextToken();
+            second += (time_unit[i] * Integer.parseInt(_tok));
         }
+        //Todo : delete because it is imposible case
         if (second < 0) {
-            Log.d(TAG, "current record has no excess time");
+            Log.d(TAG, "laptime has negative number");
             return 0;
         }
         return second;
