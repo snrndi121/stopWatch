@@ -99,17 +99,17 @@ class Book {
     //Set the number of access this book data
     public void setNumAcc(String _numAcc) { this.category[NUM_ACC] = _numAcc;}
     //Get a title for a book
-    public final String getTitle() { return category[TITLE]; }
+    public final String getTitle() { return category[TITLE]!= null? category[TITLE] : null; }
     //Get total time when whole problems are solved
-    public final String getToTime() { return category[TOTAL_TIME]; }
+    public final String getToTime() { return category[TOTAL_TIME]!= null? category[TOTAL_TIME] : null; }
     //Get max time when one problem is solved
-    public final String getEachTime() { return category[EACH_TIME]; }
+    public final String getEachTime() { return category[EACH_TIME] != null? category[EACH_TIME] : null; }
     //Get rest time between subjects
-    public final String getRestTime() { return category[REST_TIME]; }
+    public final String getRestTime() { return category[REST_TIME]!= null? category[REST_TIME] : null; }
     //Get how much a book has problems
-    public final String getNumProb() { return category[NUM_PROB]; }
+    public final String getNumProb() { return category[NUM_PROB]!= null? category[NUM_PROB] : null; }
     //Get the number of access this book data
-    public final String getNumAcc() { return category[NUM_ACC]; }
+    public final String getNumAcc() { return category[NUM_ACC]!= null? category[NUM_ACC] : null; }
     //Get current book' info
     public final String[] getBook() {
         System.out.println("Book_title " + category[TITLE]);

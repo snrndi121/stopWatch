@@ -11,7 +11,9 @@ import android.util.Log;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 
 public class bookDBHelper extends SQLiteOpenHelper {
@@ -134,7 +136,6 @@ public class bookDBHelper extends SQLiteOpenHelper {
     public long insertData(ElapsedRecord elp, String _targetTable) {
         Log.d(TAG, "###################### Start ######################");
         Log.d(TAG, " Insert into " + _targetTable);
-
         ContentValues cv = new ContentValues();
         SQLiteDatabase db = getWritableDatabase();
         try {
@@ -156,6 +157,7 @@ public class bookDBHelper extends SQLiteOpenHelper {
                 */
             } else if (_targetTable.equals(ContractDBinfo.TBL_RECORD)) {
                 cv.put(ContractDBinfo.COL_BOOKID, Integer.parseInt(elp.getBookId()));
+                cv.put(ContractDBinfo.COL_DATE, new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
                 cv.put(ContractDBinfo.COL_SOVLED, elp.getNumOfRec());
                 cv.put(ContractDBinfo.COL_STRLAP, elp.getStrData("lap"));
                 long newRowid = db.insert(ContractDBinfo.TBL_RECORD, null, cv);

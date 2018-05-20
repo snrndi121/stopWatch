@@ -68,6 +68,7 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
     public void onCreate(Bundle SavedInstancState) {
         super.onCreate(SavedInstancState);
         if (getArguments() != null) {
+            //Todo : same code is duplicated
             if (IsNewBook == true) {//case1. new Book is set
                 strCurBook = getArguments().getString(APPB);
                 Gson gson = new Gson();

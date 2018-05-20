@@ -73,7 +73,7 @@ public class HomeActivity extends AppCompatActivity implements onUpdateStateList
         onSearchInnerData();//Load a basic book setting user sets in the sharedPreferences before
         //Inflate HomeFragment
         try {
-            if (IsSharedPref = true) {
+            if (IsSharedPref == true) {
                 //convert book to gson
                 Gson gson = new GsonBuilder().create();
                 strCurBook = gson.toJson(curbook, Book.class);

@@ -80,19 +80,25 @@ public class ElapsedRecord {
             return ;
         }
         //standard time from basebook
-        int standard = Integer.parseInt(baseBook.getEachTime()) * 1000;//convert second into milli
-        Log.d(TAG, " >> Standard for (int)excess time : " + standard);
-        Iterator < String > it = eachLaptime.iterator();
-        Log.d(TAG, " >> eachLaptime size : " + eachLaptime.size());
-        while(it.hasNext()) {
-            int _excess = Integer.parseInt(it.next()) - standard;
-            Log.d(TAG, " >> CONVERTING string to (int)excess time : " + _excess);
-            if ( _excess > 0) {
-                eachExcess.add(String.valueOf(_excess));
+        try {
+            int standard = Integer.parseInt(baseBook.getEachTime()) * 1000;//convert second into milli
+            Log.d(TAG, " >> Standard for (int)excess time : " + standard);
+            Iterator<String> it = eachLaptime.iterator();
+            Log.d(TAG, " >> eachLaptime size : " + eachLaptime.size());
+            while (it.hasNext()) {
+                int _excess = Integer.parseInt(it.next()) - standard;
+                Log.d(TAG, " >> CONVERTING string to (int)excess time : " + _excess);
+                if (_excess > 0) {
+                    eachExcess.add(String.valueOf(_excess));
+                }
             }
+            Log.d(TAG, " >> RESULT : eachExcess size : " + eachExcess.size());
+        } catch(Exception e) {
+            Log.e(TAG, e.getMessage());
         }
-        Log.d(TAG, " >> RESULT : eachExcess size : " + eachExcess.size());
-        Log.d(TAG, " #### END : setEachExcess #### ");
+        finally {
+            Log.d(TAG, " #### END : setEachExcess #### ");
+        }
     }
     public void setEachLaptime(String _src) {
         this.eachLaptime = convertStrTolist(_src);

@@ -49,7 +49,7 @@ public class ContractDBinfo {
             "(" +
             COL_RECID + " INTEGER PRIMARY KEY AUTOINCREMENT" + ", " +
             COL_BOOKID + " INTEGER " + ", " +
-            COL_DATE + " TEXT DEFAULT 'DATE(now)' " + ", " +
+            COL_DATE + " TEXT NOT NULL" + ", " +
             COL_SOVLED + " INTEGER DEFALUT '0'" + ", " +
             COL_STRLAP + " VARCHAR(2048)" + ", " +
             "FOREIGN KEY("  + COL_BOOKID + ") " +
@@ -63,7 +63,7 @@ public class ContractDBinfo {
     public static final String COL_CATE4 = "out_of_time";
     public static final String SQL_CREATE_HISTORY_PIE = "CREATE TABLE IF NOT EXISTS " + TBL_HISTORY_PIE +
             "(" +
-            COL_DATE + " TEXT DEFALUT 'DATE(now)'" + ", " +
+            COL_DATE + " TEXT NOT NULL" + ", " +
             COL_CATE1 + " INTEGER DEFALUT '0'" + ", " +
             COL_CATE2 + " INTEGER DEFALUT '0'" + ", " +
             COL_CATE3 + " INTEGER DEFALUT '0'" + ", " +
@@ -77,7 +77,7 @@ public class ContractDBinfo {
     public static final String SQL_CREATE_HISTORY_LINE = "CREATE TABLE IF NOT EXISTS " + TBL_HISTORY_LINE +
             "(" +
             COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT " + ", " +
-            COL_MONTH + " TEXT DEFALUT 'DATE(now)'" + ", " +
+            COL_MONTH + " TEXT NOT NULL" + ", " +
             COL_EXCESS + " INTEGER DEFALUT '0'" + ", " +
             COL_NUM_BOOKS + " INTEGER DEFALUT '0'" + ", " +
             COL_NUM_SOLVED + " INTEGER DEFALUT '0'" +
