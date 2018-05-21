@@ -15,26 +15,25 @@ import com.google.gson.Gson;
 public class FragmentHomeMenu extends Fragment {
     //Bundle
     private static final String CURB = "current_book_info";
-    private static String strCurBook;
-    private Book curbook;
+    private String strCurBook;
 
     public FragmentHomeMenu() { };
     public static FragmentHomeMenu newInstance(String _gsonBook) {
-        strCurBook = _gsonBook;
         FragmentHomeMenu fragment = new FragmentHomeMenu();
-        Bundle args = new Bundle();
-        args.putString(CURB, _gsonBook);//key : value
-        fragment.setArguments(args);
+        if (_gsonBook != null) {
+            Bundle args = new Bundle();
+            args.putString(CURB, _gsonBook);//key : value
+            fragment.setArguments(args);
+        }
         return fragment;
     }
     @Override
     public void onCreate(Bundle SavedInstancState) {
         super.onCreate(SavedInstancState);
         if (getArguments() != null) {;
-            String strCurBook = getArguments().getString(CURB);
-            Gson gson = new Gson();
-            curbook = gson.fromJson(strCurBook, Book.class);
-            curbook.getBook();
+            strCurBook = getArguments().getString(CURB);
+        } else {
+            strCurBook = null;
         }
     }
     @Override
@@ -47,28 +46,24 @@ public class FragmentHomeMenu extends Fragment {
         Button btn_quick_start = (Button) view.findViewById(R.id.btn_quick_start);
         Button btn_setlog = (Button) view.findViewById(R.id.btn_setlog);
 
-        //feat1 : Create new dialog
+        //create new dialog
         btn_new_start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openSetDialog();
             }
         });
-        //feat2 : Start 'stopwatch' right away
+        //start 'stopwatch' right away
         btn_quick_start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                if (curbook != null) {
-                    transaction.replace(R.id.frag_home_container, FragmentLap.newInstance(strCurBook, false));
-                } else {
-                    transaction.replace(R.id.frag_home_container, new FragmentLap());
-                }
+                transaction.replace(R.id.frag_home_container, FragmentLap.newInstance(strCurBook, false));
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
         });
-        //feat3 : Set your setting and check your logs
+        //set your setting and check your logs
         btn_setlog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

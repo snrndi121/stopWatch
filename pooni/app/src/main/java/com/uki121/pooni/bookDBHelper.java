@@ -215,53 +215,14 @@ public class bookDBHelper extends SQLiteOpenHelper {
     }
     */
     //update
-    public int updateData(String _attr, String _whereArgs, String _targetTable) {
+    public int updateBook(String _attr, ContentValues _changes, String _whereArgs) {
         System.out.println("###################### Start ######################");
         System.out.println(" Update into db");
 
         SQLiteDatabase db = getWritableDatabase();
-        ContentValues cv = new ContentValues();
         try {
-            if (_targetTable.equals(ContractDBinfo.TBL_BOOK)) {
-                switch(_attr) {
-                    case ContractDBinfo.COL_TITLE :
-                        cv.put(ContractDBinfo.COL_TITLE, _whereArgs);
-                        return db.update(_targetTable, cv, ContractDBinfo.WHERE_TITLE, new String[]{_whereArgs});
-                    case ContractDBinfo.COL_TOTIME  :
-                        cv.put(ContractDBinfo.COL_TOTIME, _whereArgs);
-                        return db.update(_targetTable, cv, ContractDBinfo.WHERE_TITLE, new String[]{_whereArgs});
-                    case ContractDBinfo.COL_EATIME  :
-                        cv.put(ContractDBinfo.COL_EATIME, _whereArgs);
-                        return db.update(_targetTable, cv, ContractDBinfo.WHERE_TITLE, new String[]{_whereArgs});
-                    case ContractDBinfo.COL_RETIME  :
-                        cv.put(ContractDBinfo.COL_RETIME, _whereArgs);
-                        return db.update(_targetTable, cv, ContractDBinfo.WHERE_TITLE, new String[]{_whereArgs});
-                    case ContractDBinfo.COL_NOPROB  :
-                        cv.put(ContractDBinfo.COL_NOPROB, _whereArgs);
-                        return db.update(_targetTable, cv, ContractDBinfo.WHERE_TITLE, new String[]{_whereArgs});
-                    case ContractDBinfo.COL_NOACC  :
-                        cv.put(ContractDBinfo.COL_NOACC, _whereArgs);
-                        return db.update(_targetTable, cv, ContractDBinfo.WHERE_TITLE, new String[]{_whereArgs});
-                    default :
-                        return -1;
-                }
-            } else if (_targetTable.equals(ContractDBinfo.TBL_USER)) {
-                switch(_attr) {
-                    case ContractDBinfo.COL_EXECPROB :
-                        cv.put(ContractDBinfo.COL_EXECPROB, _whereArgs);
-                        return db.update(_targetTable, cv, ContractDBinfo.WHERE_EXECPROB, new String[]{_whereArgs});
-                    case ContractDBinfo.COL_SOLVEDPROB  :
-                        cv.put(ContractDBinfo.COL_SOLVEDPROB, _whereArgs);
-                        return db.update(_targetTable, cv, ContractDBinfo.WHERE_SOLVEDPROB, new String[]{_whereArgs});
-                    case ContractDBinfo.COL_CORRPROB  :
-                        cv.put(ContractDBinfo.COL_CORRPROB, _whereArgs);
-                        return db.update(_targetTable, cv, ContractDBinfo.WHERE_CORRPROB, new String[]{_whereArgs});
-                    default :
-                        return -1;
-                }/*
-                return getWritableDatabase().insert(ContractDBinfo.TBL_USER, null, cv);
-                */
-            }
+            String _where = _attr + "=? ";
+            return db.update(ContractDBinfo.TBL_BOOK, _changes, _where, new String[]{_whereArgs});
         } catch (SQLException e) {
             Log.e("SQL_INSERT", e.getMessage());
         } finally {

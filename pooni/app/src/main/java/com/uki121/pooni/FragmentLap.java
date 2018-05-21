@@ -31,8 +31,12 @@ import java.util.StringTokenizer;
 
 /* ToDo : separte some functions from class FragmentLap, too big */
 public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPressedListener {
+    //def
+    private final String DEFAULT_TITLE = "default_book";
+    private final int DEFAULT_EACH = 60000;
     //Bundle
-    private static final String APPB = "applied_book_info";
+    private static final String CUR_BOOK = "applied_book_info";
+    private static final String IS_NEWBOOK = "is_new_book";
     private static String strCurBook;
     private Book curBook;
     private static boolean IsNewBook = false;
@@ -55,12 +59,11 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
 
     public void FragmentLap(){ };
     public static FragmentLap newInstance(String _gsonBook, boolean _isNewBook) {
-        strCurBook = _gsonBook;
-        IsNewBook = _isNewBook;
-        System.out.println(">> new :" + strCurBook);
+        System.out.println(">> new :" + _gsonBook);
         FragmentLap fragment = new FragmentLap();
         Bundle args = new Bundle();
-        args.putString(APPB, _gsonBook);
+        args.putString(CUR_BOOK, _gsonBook);
+        args.putBoolean(IS_NEWBOOK, _isNewBook);
         fragment.setArguments(args);
         return fragment;
     }
@@ -68,17 +71,14 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
     public void onCreate(Bundle SavedInstancState) {
         super.onCreate(SavedInstancState);
         if (getArguments() != null) {
-            //Todo : same code is duplicated
-            if (IsNewBook == true) {//case1. new Book is set
-                strCurBook = getArguments().getString(APPB);
+            strCurBook = getArguments().getString(CUR_BOOK);
+            IsNewBook = getArguments().getBoolean(IS_NEWBOOK);
+            if (strCurBook != null) {
                 Gson gson = new Gson();
                 curBook = gson.fromJson(strCurBook, Book.class);
                 curBook.getBook();
-            } else {//case2. current book is set
-                strCurBook = getArguments().getString(APPB);
-                Gson gson = new Gson();
-                curBook = gson.fromJson(strCurBook, Book.class);
-                curBook.getBook();
+            } else {
+                curBook = null;
             }
         }
     }
@@ -104,17 +104,17 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
         btnDel.setOnClickListener(btnOnClickListener);
         btnEnd.setOnClickListener(btnOnClickListener);
 
-        /* [ToDo] : each time is considered as min. If not, it will cause error and bug */
-        //apply current book's setting to count time
-        if (curBook != null)
-        {
+        //set book
+        if (curBook != null) {
             each_time = Integer.parseInt(curBook.getEachTime())  * 1000; //considered this as second
-            total_time = Integer.parseInt(curBook.getToTime()) * 60000; //considered this as min
-            if (IsNewBook == false) {
-                Log.i("Book_SettingInLap", "Existing setting is applied");
-            } else {    //(IsNewBook == true)
-                Log.i("Book_SettingInLap", "New setting is applied");
-            }
+        } else { //default setting will be applied
+            each_time = DEFAULT_EACH;
+        }
+        //if new book
+        if (IsNewBook == false) {
+            Log.i("Book_SettingInLap", "Existing setting is applied");
+        } else {    //(IsNewBook == true)
+            Log.i("Book_SettingInLap", "New setting is applied");
         }
     }
     //Handler for current time
@@ -273,17 +273,25 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
         }
         Log.i("Excess_problem", String.valueOf(excess_prob));
     }
-    public String convertToRecord(Book src_book, List < String > src_lap) {
+    //Calculate a mount of excess time
+    public void checkTotalBound() {
+        //current time
+        String _curPauseTime = myOutput.getText().toString();
+        long _curTotaltime = recordTolong(_curPauseTime, "hms");
+        //set total_time
+        if (curBook != null) {
+            total_time = Integer.parseInt(curBook.getToTime()) * 60000; //considered this as min
+        } else { //default setting will be applied
+            total_time = listLap.size() * each_time;
+        }
+        //calculte excess time
+        excess_time = _curTotaltime - total_time;
+        Log.i("Excess_time", String.valueOf(excess_time));
+    }
+    public String convertElpTostr(Book src_book, List < String > src_lap) {
         ElapsedRecord userRecord = new ElapsedRecord(src_book, src_lap);//new instance of ElapsedRecord from record made
         Gson gson = new GsonBuilder().create();
         return gson.toJson(userRecord, ElapsedRecord.class);
-    }
-    //Calculate a mount of access time
-    public void checkTotalBound() {
-        String _curPauseTime = myOutput.getText().toString();
-        long _curToTimeInMilli = recordTolong(_curPauseTime, "hms");
-        excess_time = _curToTimeInMilli - total_time;
-        Log.i("Excess_time", String.valueOf(excess_time));
     }
     class BtnOnClickListener implements Button.OnClickListener {
         final String LAP_RECORD = "elapsed_record";
@@ -362,7 +370,15 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
                 }
                 case R.id.btn_end: {
                     checkTotalBound();
-                    String strElp = convertToRecord(curBook, listLap);//convert
+                    //default setting have to be instantiated
+                    if (curBook == null) {
+                        curBook = new Book();
+                        curBook.setTitle(DEFAULT_TITLE);
+                        curBook.setEachTime(String.valueOf(each_time));
+                        curBook.setToTime(String.valueOf(total_time));
+                        curBook.setNumProb(String.valueOf(listLap.size()));
+                    }
+                    String strElp = convertElpTostr(curBook, listLap);
                     System.out.println(">> Record :" + strElp);
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
                     transaction.replace(R.id.frag_home_container, FragmentSaveShare.newInstance(strElp, IsNewBook));

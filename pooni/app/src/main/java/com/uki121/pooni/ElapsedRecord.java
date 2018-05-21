@@ -13,6 +13,7 @@ public class ElapsedRecord {
     private final int LAP_SIZE = 8;
     private final String TAG = "ElapsedRecord";
     private final int[] time_unit = {1, 1000, 60000};//milli:second:min
+    private final String DEFAULT_TITLE = "default_book";
     //var
     private Book baseBook;
     private String bookid, recordid;
@@ -30,35 +31,36 @@ public class ElapsedRecord {
     //private float recordAvg;
     //method
     public ElapsedRecord() {
-        eachLaptime = new ArrayList(){};
-        eachExcess = new ArrayList(){};
+        this.eachLaptime = new ArrayList(){};
+        this.eachExcess = new ArrayList(){};
     };
     public ElapsedRecord(ElapsedRecord _elp) {
-        baseBook = _elp.getBaseBook();
-        bookid = _elp.getBookId();
-        recordid = _elp.getRecordId();
-        date = _elp.getDate();
-        eachLaptime = _elp.getEachLaptime();
-        eachExcess = _elp.getEachExcess();
+        this.baseBook = _elp.getBaseBook();
+        this.bookid = _elp.getBookId();
+        this.recordid = _elp.getRecordId();
+        this.date = _elp.getDate();
+        this.eachLaptime = _elp.getEachLaptime();
+        this.eachExcess = _elp.getEachExcess();
     }
     public ElapsedRecord(Book _bs, List < String > _records) {//used by FragmentLap
         //book setting
-        if (_bs != null) {
-            isBookSet = true;
-            baseBook = new Book(_bs);
+        this.baseBook = new Book(_bs);
+        if (this.baseBook.getTitle().equals(DEFAULT_TITLE) != true) {
+            //default book is considered as 'isBookset = false'
+            this.isBookSet = true;
         }
-        num = _records.size();
-        recordid = new String();
-        bookid = new String();
-        date = new String();
-        eachLaptime = new ArrayList < String >();
+        this.recordid = new String();
+        this.bookid = new String();
+        this.date = new String();
+        this.num = _records.size();
+        this.eachLaptime = new ArrayList < String >();
         //Set eachRecord
         Iterator < String > it = _records.iterator();
         while (it.hasNext()) {
             int _item = getSecond(it.next());
-            if (_item > 0) { eachLaptime.add(_item);}
+            if (_item > 0) { this.eachLaptime.add(_item);}
         }
-        Collections.sort(eachLaptime);
+        Collections.sort(this.eachLaptime);
         setStrData("lap");
     }
     //Set
