@@ -151,10 +151,6 @@ public class bookDBHelper extends SQLiteOpenHelper {
                 long newRowid = db.insert(ContractDBinfo.TBL_BOOK, null, cv);
                 Log.d(TAG, " >> newRowId :" + newRowid);
                 return newRowid;
-            } else if (_targetTable.equals(ContractDBinfo.TBL_USER)) {
-                /*
-                return getWritableDatabase().insert(ContractDBinfo.TBL_USER, null, cv);
-                */
             } else if (_targetTable.equals(ContractDBinfo.TBL_RECORD)) {
                 cv.put(ContractDBinfo.COL_BOOKID, Integer.parseInt(elp.getBookId()));
                 cv.put(ContractDBinfo.COL_DATE, new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
@@ -163,6 +159,10 @@ public class bookDBHelper extends SQLiteOpenHelper {
                 long newRowid = db.insert(ContractDBinfo.TBL_RECORD, null, cv);
                 Log.d(TAG, " >> newRowId :" + newRowid);
                 return newRowid;
+            } else if (_targetTable.equals(ContractDBinfo.TBL_USER)) {
+                /*
+                return getWritableDatabase().insert(ContractDBinfo.TBL_USER, null, cv);
+                */
             } else {
                 Log.d(TAG, "No such table in Db");
             }
@@ -218,7 +218,6 @@ public class bookDBHelper extends SQLiteOpenHelper {
     public int updateBook(String _attr, ContentValues _changes, String _whereArgs) {
         System.out.println("###################### Start ######################");
         System.out.println(" Update into db");
-
         SQLiteDatabase db = getWritableDatabase();
         try {
             String _where = _attr + "=? ";
@@ -300,8 +299,10 @@ public class bookDBHelper extends SQLiteOpenHelper {
                         .append("title=")
                         .append(_title);
         Cursor cursor = db.rawQuery(sql_select_where.toString(), null);
-        if (cursor.moveToNext()) {
-          return cursor.getInt(0);
+        cursor.moveToFirst();
+        if (cursor != null & cursor.getCount() > 0) {
+            Log.d(TAG, "getBookId - found element!!!");
+            return cursor.getInt(0);
         }
         return -1;
     }

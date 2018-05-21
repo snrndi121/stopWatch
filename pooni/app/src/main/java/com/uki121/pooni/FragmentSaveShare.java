@@ -20,23 +20,22 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class FragmentSaveShare extends Fragment implements HomeActivity.onKeyBackPressedListener {
     //Bundle
-    //for current book
-    private static final String APPR = "applied_record_info";
+    private static final String CUR_BOOK = "applied_book_info";
+    private static final String IS_NEWBOOK = "is_new_book";
     private static String strUserRecord;
     private onUpdateStateListener updateToHomeListener;
     private ElapsedRecord curUserRec;
-    private static boolean IsNewBook = false;
-    private static boolean IsSaved;
+    private static boolean isNewBook = false;
+    private static boolean isSaved;
     //view
     private Button btnShare, btnSave;
 
     public void FragmentSaveShare(){};
     public static FragmentSaveShare newInstance(String _gsonUser, boolean _IsNewSet) {
-        IsNewBook = _IsNewSet;
-        //strUserRecord = _gsonUser;//pair < book, list < string > > to String Todo : delete
         FragmentSaveShare fragment = new FragmentSaveShare();
         Bundle args = new Bundle();
-        args.putString(APPR, _gsonUser);
+        args.putString(CUR_BOOK, _gsonUser);
+        args.putBoolean(IS_NEWBOOK, _IsNewSet);
         fragment.setArguments(args);
         return fragment;
     }
@@ -44,7 +43,10 @@ public class FragmentSaveShare extends Fragment implements HomeActivity.onKeyBac
     public void onCreate(Bundle SavedInstancState) {
         super.onCreate(SavedInstancState);
         if (getArguments() != null) {
-            strUserRecord = getArguments().getString(APPR);
+            strUserRecord = getArguments().getString(CUR_BOOK);
+            isNewBook = getArguments().getBoolean(IS_NEWBOOK);
+            //restore elp from srUserRecord
+            //Todo : usless
             Gson gson = new Gson();
             curUserRec = gson.fromJson(strUserRecord, ElapsedRecord.class);
         }
@@ -58,12 +60,12 @@ public class FragmentSaveShare extends Fragment implements HomeActivity.onKeyBac
         return view;
     }
     void init(View view) {
-        IsSaved = false;
+        isSaved = false;
         btnShare = (Button) view.findViewById(R.id.btn_share);
         btnShare.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                updateToHomeListener.onUpdateRecord(strUserRecord, IsNewBook);
+                updateToHomeListener.onUpdateRecord(strUserRecord, isNewBook);
                 updateToHomeListener.onSharingSNS(strUserRecord);
             }
         });
@@ -79,8 +81,8 @@ public class FragmentSaveShare extends Fragment implements HomeActivity.onKeyBac
                         .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                             @Override
                             public void onClick(SweetAlertDialog sDialog) {
-                                updateToHomeListener.onUpdateRecord(strUserRecord, IsNewBook);
-                                IsSaved = true;
+                                updateToHomeListener.onUpdateRecord(strUserRecord, isNewBook);
+                                isSaved = true;
                                 sDialog.dismissWithAnimation();
                             }
                         })
@@ -111,7 +113,7 @@ public class FragmentSaveShare extends Fragment implements HomeActivity.onKeyBac
     @Override
     public void onBack() {
         System.out.println(">> SaveShare_back");
-        if (IsSaved == false) { //already saved the data
+        if (isSaved == false) { //already saved the data
             Log.i("onBack", "Not saved states");
             backDialog();
         } else { //Go back to home
@@ -140,7 +142,7 @@ public class FragmentSaveShare extends Fragment implements HomeActivity.onKeyBac
                         fragmentManager.popBackStack();
                         FragmentTransaction transaction = fragmentManager.beginTransaction();
                         if (curUserRec != null) {
-                            transaction.replace(R.id.frag_home_container, FragmentLap.newInstance(strUserRecord, IsNewBook));
+                            transaction.replace(R.id.frag_home_container, FragmentLap.newInstance(strUserRecord, isNewBook));
                         } else {
                             transaction.replace(R.id.frag_home_container, new FragmentLap());
                         }

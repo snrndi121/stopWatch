@@ -15,7 +15,7 @@ public class ElapsedRecord {
     private final int[] time_unit = {1, 1000, 60000};//milli:second:min
     private final String DEFAULT_TITLE = "default_book";
     //var
-    private Book baseBook;
+    private Book baseBook = null;
     private String bookid, recordid;
     private String date;
     /*
@@ -36,6 +36,9 @@ public class ElapsedRecord {
     };
     public ElapsedRecord(ElapsedRecord _elp) {
         this.baseBook = _elp.getBaseBook();
+        if (this.baseBook != null) {
+            isBookSet = true;
+        }
         this.bookid = _elp.getBookId();
         this.recordid = _elp.getRecordId();
         this.date = _elp.getDate();

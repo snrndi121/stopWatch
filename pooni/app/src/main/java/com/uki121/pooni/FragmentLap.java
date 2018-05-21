@@ -39,7 +39,7 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
     private static final String IS_NEWBOOK = "is_new_book";
     private static String strCurBook;
     private Book curBook;
-    private static boolean IsNewBook = false;
+    private static boolean isNewBook = false;
     //View
     private Button btnStart, btnRec, btnEnd, btnDel;
     private TextView myOutput, myRec;
@@ -72,7 +72,7 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
         super.onCreate(SavedInstancState);
         if (getArguments() != null) {
             strCurBook = getArguments().getString(CUR_BOOK);
-            IsNewBook = getArguments().getBoolean(IS_NEWBOOK);
+            isNewBook = getArguments().getBoolean(IS_NEWBOOK);
             if (strCurBook != null) {
                 Gson gson = new Gson();
                 curBook = gson.fromJson(strCurBook, Book.class);
@@ -111,7 +111,7 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
             each_time = DEFAULT_EACH;
         }
         //if new book
-        if (IsNewBook == false) {
+        if (isNewBook == false) {
             Log.i("Book_SettingInLap", "Existing setting is applied");
         } else {    //(IsNewBook == true)
             Log.i("Book_SettingInLap", "New setting is applied");
@@ -381,7 +381,7 @@ public class FragmentLap extends Fragment implements HomeActivity.onKeyBackPress
                     String strElp = convertElpTostr(curBook, listLap);
                     System.out.println(">> Record :" + strElp);
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                    transaction.replace(R.id.frag_home_container, FragmentSaveShare.newInstance(strElp, IsNewBook));
+                    transaction.replace(R.id.frag_home_container, FragmentSaveShare.newInstance(strElp, isNewBook));
                     transaction.addToBackStack(null);
                     transaction.commit();
                     break;

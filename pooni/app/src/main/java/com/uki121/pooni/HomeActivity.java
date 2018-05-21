@@ -43,6 +43,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 public class HomeActivity extends AppCompatActivity implements onUpdateStateListener {
     //def
     private final String TAG = "HomeActivity";
+    private final String DEFAULT_TITLE = "default_book";
     private final long FINISH_INTERVAL_TIME = 2000;
     //var
     private long backPressedTime = 0;
@@ -196,52 +197,43 @@ public class HomeActivity extends AppCompatActivity implements onUpdateStateList
     @Override
     public boolean onUpdateRecord(String _strUserRec, boolean _IsNewBook) {
         //Convert json format into ElapsedRecord class
-        Log.d(TAG, " onUpdateRecord start");
+        Log.d(TAG, " ##### onUpdateRecord start #####");
         Log.d(TAG, " strUserRec : " + _strUserRec);
         //restore class from strUserRec
         Gson gsonUser = new Gson();
-        ElapsedRecord elp = gsonUser.fromJson(_strUserRec, ElapsedRecord.class);
+        ElapsedRecord _elp = gsonUser.fromJson(_strUserRec, ElapsedRecord.class);
         //set book from elp
         int bid = -1;
-        Book _target = new Book(elp.getBaseBook());
-        /*
-         * 'Valid' means that the book is a new setting or already existed.
-         * if it is not, 'IsBookset() is false', the book is created by default.
-         */
-        //if book is valid
-        if (elp.IsBookSet() == true) {
-            try {
-                //Update Book info or insert new book
-                if (_IsNewBook == false) {//case1.the book have been already existed
-                    Log.i("Current Book", "Insert unnecessary,instead update its attributes");
-                    //updated data
-                    ContentValues _updatedata = new ContentValues();
-                    _updatedata.put(ContractDBinfo.COL_NOACC, _target.getNumAcc() + 1);
-                    //updateBook
-                    bid = dbhelper.updateBook(ContractDBinfo.COL_TITLE, _updatedata, _target.getTitle());//There is a only change for the number of access now
-                } else {//case2.new book is added
-                    Log.i("Current Book", "New book is inserted sucessfully");
-                    bid = (int) dbhelper.insertData(elp, ContractDBinfo.TBL_BOOK);
-                }
-                elp.setBookId(String.valueOf(bid));
-                //Save Record
-                elp.getInfo();
-                dbhelper.insertData(elp, ContractDBinfo.TBL_RECORD);
-                return true;
-            } catch (Exception e) {
-                Log.e("UpdateDB on HomeActivity", e.getMessage());
+        Book _target = new Book(_elp.getBaseBook());
+        String _title = _target.getTitle();
+        if (_title != null) {
+            Log.d(TAG, " book title : " + _title);
+            Log.d(TAG, " book valid : " + _elp.IsBookSet());
+            //exception Todo : delete
+            if (_title.equals(DEFAULT_TITLE) != true & _elp.IsBookSet() == false) {
+                Log.e(TAG, "fatal error is occured!!!");
+                return false;
             }
+            //target have been already existed in table_book
+            if (dbhelper.getBookId(_title) != -1) {
+                Log.i("Current Book", "Insert unnecessary, instead update its attributes");
+                ContentValues _updatedata = new ContentValues();
+                _updatedata.put(ContractDBinfo.COL_NOACC, _target.getNumAcc() + 1);
+                bid = dbhelper.updateBook(ContractDBinfo.COL_TITLE, _updatedata, _target.getTitle());
+            } else { //new book is added
+                Log.i(TAG,"Book is inserted sucessfully");
+                bid = (int) dbhelper.insertData(_elp, ContractDBinfo.TBL_BOOK);
+            }
+            _elp.setBookId(String.valueOf(bid));
+            //Save Record
+            _elp.getInfo();
+            dbhelper.insertData(_elp, ContractDBinfo.TBL_RECORD);
+            Log.d(TAG, "#### onUpdateRecrod end ####");
+            return true;
         } else {
-            //No Book is setting then only record data
-            Log.w(TAG, "Update_Book - Default Book is set");
-            //Already default is set
-            //updateBook()
-            //or not
-            //insertBook()
-
-            //insertRecord()
-            return false;
+            Log.w(TAG, "updateRecord - fail due to a fact that no book is set");
         }
+        Log.d(TAG, "#### onUpdateRecrod end ####");
         return false;
     };
     public void reset() {
