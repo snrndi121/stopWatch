@@ -111,21 +111,25 @@ public class History {
         }
 
     }
-    public void onUpdateByrecord(ArrayList < ElapsedRecord > _elp) {
-        if (_elp != null && _elp.size() > 0) {
-            Iterator < ElapsedRecord > it = _elp.iterator();
+    public boolean onUpdateByrecord(ArrayList < ElapsedRecord > _newrecord) {
+        if (_newrecord != null && _newrecord.size() > 0) {
+            Iterator < ElapsedRecord > it = _newrecord.iterator();
             while (it.hasNext()) {
-                ElapsedRecord item = it.next();
+                ElapsedRecord item = new ElapsedRecord(it.next());
                 try {
+                    item.getInfo();
                     total_history.setData(item);
                     month_history.setData(item);
+                    return true;
                 } catch (Exception e) {
                     Log.e(TAG, "onUpdateByrecord() - " + e.getMessage());
+                    return false;
                 }
             }
         } else {
             Log.d(TAG, "There is no update for history because record data is null");
         }
+        return false;
     }
     //get
     public DataTotal getHistoryToTal() {return total_history;}

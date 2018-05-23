@@ -23,6 +23,7 @@ public class ElapsedRecord {
     * eachExcess will be set when HistoryActivity is called
     *
     * */
+    /* Todo : eachExcess is useless because DataTotal can calculate its excess */
     private ArrayList eachExcess, eachLaptime;//save it as milli
     private int num; //acutal size of record
     private String strExcess, strLap;
@@ -31,11 +32,12 @@ public class ElapsedRecord {
     //private float recordAvg;
     //method
     public ElapsedRecord() {
+        this.baseBook = new Book();
         this.eachLaptime = new ArrayList(){};
         this.eachExcess = new ArrayList(){};
     };
     public ElapsedRecord(ElapsedRecord _elp) {
-        this.baseBook = _elp.getBaseBook();
+        this.baseBook = new Book(_elp.getBaseBook());
         if (this.baseBook != null) {
             isBookSet = true;
         }
@@ -69,7 +71,14 @@ public class ElapsedRecord {
     //Set
     public void setRecordId(String _rid) { this.recordid = _rid;}
     public void setBookId(String _bid) { this.bookid = _bid;}
-    public void setBaseBook(Book _bs) { this.baseBook = new Book(_bs);}
+    public void setBaseBook(Book _bs) {
+        if (_bs != null) {
+            isBookSet = true;
+            this.baseBook = new Book(_bs);
+        } else {
+            Log.w(TAG, "setBaseBook() received null object");
+        }
+    }
     public void setDate(String _date) { this.date = _date;}
     public void setExcessFromLap() {
         Log.d(TAG, " #### START : setEachExcess #### ");
@@ -106,7 +115,9 @@ public class ElapsedRecord {
         }
     }
     public void setEachLaptime(String _src) {
-        this.eachLaptime = convertStrTolist(_src);
+        Log.d(TAG, " #### START : setEachLaptime #### ");
+        this.eachLaptime = new ArrayList < ElapsedRecord >(convertStrTolist(_src));
+        Log.d(TAG, " #### END : setEachLaptime #### ");
     }
     private void setStrData(String _targetname) {
         String src = convertListTostr(_targetname);
@@ -173,12 +184,16 @@ public class ElapsedRecord {
         }
     }
     public void getInfo(){
-        System.out.println("date : " + date);
-        System.out.println("Record id : " + recordid);
-        System.out.println("isBookSet : " + isBookSet);
-        System.out.println("Book : " + baseBook.getTitle());
-        System.out.println("strLap : " + strLap);
-        System.out.println("strExcess : " + strExcess);
+        try {
+            System.out.println("date : " + date);
+            System.out.println("Record id : " + recordid);
+            System.out.println("isBookSet : " + isBookSet);
+            System.out.println("Book : " + baseBook.getTitle());
+            System.out.println("strLap : " + strLap);
+            System.out.println("strExcess : " + strExcess);
+        } catch(Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
     }
 
     //Calculate

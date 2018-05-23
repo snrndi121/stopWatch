@@ -20,8 +20,8 @@ public class DataMonth
         months = new Month[MONTH_NUM];
     }
     public DataMonth(int _num) {
+        months = new Month[MONTH_NUM];
         this.num = _num;
-        months = new Month[_num];
     }
     public DataMonth(Month[] _month) {
         if (_month != null) {
@@ -34,7 +34,6 @@ public class DataMonth
         try {
             if (sz > 0) {
                 this.num = sz;
-                this.months = new Month[sz];
                 for (int i = 0; i < sz; ++i) {
                     months[i] = _month.get(i);
                 }
@@ -52,14 +51,10 @@ public class DataMonth
         //set new month
         Month _month = new Month(_src);
         int _pos = _month.getKey();//find index of month
-
         //size check
         if (months == null) {
             this.num = _pos + 1;
-            months = new Month[this.num];
-        }
-        if (months.length < _pos + 1) {
-            Log.e(TAG, "setData() has fatal error");
+            months = new Month[MONTH_NUM];
         }
         //accumulate it into an origin
         months[_pos].accumMonth(_month);
