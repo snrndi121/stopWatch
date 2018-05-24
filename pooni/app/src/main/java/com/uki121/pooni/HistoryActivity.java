@@ -155,25 +155,32 @@ public class HistoryActivity extends AppCompatActivity {
         super.onStop();
         onClearSyncDate();
     }
+    //18.05.24 기록
+    // 조건문 강화하고
+    // 한번 히스토리에 업로드 된 레코드 자료는 삭제하도록 동작
     //Save Synchronized data for HistoryActivity
-    private void onUpdateSyncDate(boolean _switch) {
+    private void onUpdateSyncDate(boolean _isupdate) {
+        Log.d(TAG, " >> onUpdateSyncDate");
+        Log.d(TAG, " _switch : " + _isupdate);
         SharedPreferences spf = getSharedPreferences(SYNC_POINT, 0);
         SharedPreferences.Editor editor = spf.edit();
-        //check
-        int sz = newRecord.size();
-        //Todo : check that newrecord has to be sorted
-        String _curStr_rid = newRecord.get(sz - 1).getRecordId();
-        if (_curStr_rid != null ) {
-            Log.i(TAG, " synchronized point will be updated");
-            sync_point = _curStr_rid;
-        } else if (dbhelper.getNumOfrecord() < Integer.parseInt(_curStr_rid)) {
-            Log.w(TAG, " synchronized point will be reset because the size of recordTable is lower than sync_point");
-            sync_point = "-1";
-        } else {
-            Log.i(TAG, " it is currently up-to-date");
+        //if the update of history was completed successfully
+        if (_isupdate != false) {
+            //Todo : check that newrecord has to be sorted
+            int sz = newRecord.size();
+            String _curStr_rid = newRecord.get(sz - 1).getRecordId();
+            if (_curStr_rid != null) {
+                Log.i(TAG, " synchronized point will be updated");
+                sync_point = _curStr_rid;
+            } else if (dbhelper.getNumOfrecord() < Integer.parseInt(_curStr_rid)) {
+                Log.w(TAG, " synchronized point will be reset because the size of recordTable is lower than sync_point");
+                sync_point = "-1";
+            } else {
+                Log.i(TAG, " it is currently up-to-date");
+            }
+            editor.putString(SYNC_POINT, sync_point);
+            editor.commit();
         }
-        editor.putString(SYNC_POINT, sync_point);
-        editor.commit();
     }
     private void onClearSyncDate() {
         SharedPreferences pref = getSharedPreferences(SYNC_POINT, 0);
