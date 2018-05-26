@@ -329,7 +329,7 @@ public class bookDBHelper extends SQLiteOpenHelper {
         return null;
     }
     //load record and set elp class
-    public ArrayList < ElapsedRecord > getElapsedRecord(StringBuffer _whereQuery, boolean _switch) {
+    public ArrayList < ElapsedRecord > getElapsedRecord(String _whereQuery, boolean _switch) {
         Log.d(TAG, " #### START : getElapsedRercord #### ");
         try {
             if (_switch != false) {
@@ -339,7 +339,7 @@ public class bookDBHelper extends SQLiteOpenHelper {
                 //set where_query
                 if (_whereQuery != null) {
                     sql_select_record.append(" where ")
-                            .append(_whereQuery.toString());
+                            .append(_whereQuery);
                 }
                 //execute cursor(where_query)
                 Cursor cursor = db.rawQuery(sql_select_record.toString(), null);
@@ -367,6 +367,8 @@ public class bookDBHelper extends SQLiteOpenHelper {
                         elplist.add(elp);
                     } while (cursor.moveToNext());
                     return elplist;
+                } else {
+                    Log.d(TAG, " > no such data for this whereQuery");
                 }
             }
         } catch (SQLException e_sql) {

@@ -19,9 +19,11 @@ public class DataMonth
     public DataMonth(){
         months = new Month[MONTH_NUM];
     }
-    public DataMonth(int _num) {
-        months = new Month[MONTH_NUM];
-        this.num = _num;
+    public DataMonth(String _json) {
+        DataMonth month = ToClass(_json);
+        months = new Month[MONTH_NUM];//Todo : is need?
+        this.setData(month);
+
     }
     public DataMonth(Month[] _month) {
         if (_month != null) {

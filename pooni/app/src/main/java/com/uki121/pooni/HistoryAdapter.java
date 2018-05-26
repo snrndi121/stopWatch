@@ -15,9 +15,9 @@ public class HistoryAdapter extends FragmentPagerAdapter {
     //var
     private static final String TAG = "HistoryAdapter";
     private final int FRAG_NUM = 2;
-    private ArrayList < ElapsedRecord > curElp;//Todo : delete
     private History history;
-
+    //private ArrayList < ElapsedRecord > curElp;
+    /*
     public HistoryAdapter(FragmentManager fragmentmanager, ArrayList < ElapsedRecord > _elp) {
         super(fragmentmanager);
         Log.d(TAG, "constructor(1) is active");
@@ -31,17 +31,15 @@ public class HistoryAdapter extends FragmentPagerAdapter {
             history = null;
         }
     }
+    */
     public HistoryAdapter(FragmentManager fragmentmanager, History _history) {
         super(fragmentmanager);
-        Log.d(TAG, "constructor(2) is active");
         if (_history != null) {
-            Log.d(TAG, "constructor(2)_History is set");
+            Log.d(TAG, "constructor - History is set");
             history = new History(_history);
-            //curElp = null;
         } else {
-            Log.d(TAG, "constructor(2)_History is empty");
+            Log.w(TAG, "constructor - History is empty");
             history = null;
-            //curElp = null;
         }
     }
     @Override
@@ -49,15 +47,14 @@ public class HistoryAdapter extends FragmentPagerAdapter {
         switch(position) {
             case 0:
                 Log.d(TAG, "TotalHistory");
-                //Todo : if condition
-                if (history !=null && history.IsTotalHistory() == true) {
+                if (history !=null) {
                     return FragmentTotalHistory.newInstance(history.getHistoryToTal().ToString());
                 } else {
                     return FragmentTotalHistory.newInstance(null);
                 }
             case 1:
                 Log.d(TAG, "MonthHistory");
-                if (history !=null && history.IsMonthHistory() == true) {
+                if (history !=null) {
                     return FragmentMonthHistory.newInstance(history.getHistoryMonth().ToString());
                 } else {
                     return FragmentMonthHistory.newInstance(null);

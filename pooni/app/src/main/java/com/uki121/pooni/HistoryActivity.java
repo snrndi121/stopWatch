@@ -28,7 +28,6 @@ public class HistoryActivity extends AppCompatActivity {
     private final String SYNC_POINT = "sync_point";
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     private String sync_point;
-    private boolean IsNeedSync = false; //to define whether a synchronization is needed
     //Tab-Fragment
     private HistoryAdapter hisAdapter;
     private ViewPager viewpager;
@@ -55,7 +54,10 @@ public class HistoryActivity extends AppCompatActivity {
         onLoadHistory();//read history table
         onLoadRecord(); //read record table
         //set adapter
-        hisAdapter = new HistoryAdapter(getSupportFragmentManager(), history);
+        if (history.IsSet() == true)
+            hisAdapter = new HistoryAdapter(getSupportFragmentManager(), history);
+        else
+            hisAdapter = new HistoryAdapter(getSupportFragmentManager(), null);
         //set up viewpager and tab_layout
         viewpager = (ViewPager) findViewById(R.id.viewpager_history);
         viewpager.setAdapter(hisAdapter);
@@ -67,29 +69,6 @@ public class HistoryActivity extends AppCompatActivity {
     public void finish() {
         super.finish();
         this.overridePendingTransition(R.anim.end_enter, R.anim.end_exit);
-    }
-    //Load elapsed record from db
-    public void onLoadRecord() {
-        Log.d(TAG, " >> onLoadRecord");
-        //where Query
-        StringBuffer _where_reindx = new StringBuffer();
-        _where_reindx.append(ContractDBinfo.COL_RECID)
-                     .append(">\"")
-                     .append(sync_point)
-                     .append("\"");
-        //find record from record_table
-        newRecord = new ArrayList<>(dbhelper.getElapsedRecord(_where_reindx, true));
-        //Todo : delete
-        Iterator <ElapsedRecord> it = newRecord.iterator();
-        System.out.println(" >> newRecord size is " + newRecord.size());
-        while (it.hasNext()) {
-            ElapsedRecord _elp = it.next();
-            _elp.getBaseBook().getBook();
-        }
-        //update history by updated record
-        boolean isUpdate = history.onUpdateByrecord(newRecord);
-        //update sync date
-        onUpdateSyncDate(isUpdate);
     }
     //Load synchronized date from sharedPrefereces
     private void onLoadSyncInfo() {
@@ -106,10 +85,36 @@ public class HistoryActivity extends AppCompatActivity {
             Log.d(TAG, "onLoadSyncinfo - no synchronized history is found");
         }
     }
+    //Load history from db
     public void onLoadHistory() {
         history.setHistory(LoadHistory(ContractDBinfo.TBL_HISTORY_PIE, ContractDBinfo.SQL_SELECT_HISTORY_PIE));//history total setting
         history.setHistory(LoadHistory(ContractDBinfo.TBL_HISTORY_LINE, ContractDBinfo.SQL_SELECT_HISTORY_LINE));//history month setting
 
+    }
+    //Load elapsed record from db
+    public void onLoadRecord() {
+        Log.d(TAG, " >> onLoadRecord");
+        //where Query
+        StringBuffer _where_reindx = new StringBuffer();
+        _where_reindx.append(ContractDBinfo.COL_RECID)
+                     .append(">\"")
+                     .append(sync_point)
+                     .append("\"");
+        //find record from record_table
+        newRecord = dbhelper.getElapsedRecord(_where_reindx.toString(), true);
+        //Todo : delete
+        if (newRecord != null) {
+            Iterator<ElapsedRecord> it = newRecord.iterator();
+            System.out.println(" >> newRecord size is " + newRecord.size());
+            while (it.hasNext()) {
+                ElapsedRecord _elp = it.next();
+                _elp.getBaseBook().getBook();
+            }
+        }
+        //update history by updated record
+        boolean isUpdate = history.onUpdateByrecord(newRecord);
+        //update sync date
+        onUpdateSyncDate(isUpdate);
     }
     private History LoadHistory(String _table, String _query) {
         Cursor cursor = dbhelper.selectFromTable(_table, _query);
@@ -142,7 +147,6 @@ public class HistoryActivity extends AppCompatActivity {
         }
         return null;
     }
-
     /*Todo : get rid of it
     @Override
     public void onResume() {
@@ -153,11 +157,9 @@ public class HistoryActivity extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
+        Log.d(TAG, "on Stop");
         onClearSyncDate();
     }
-    //18.05.24 기록
-    // 조건문 강화하고
-    // 한번 히스토리에 업로드 된 레코드 자료는 삭제하도록 동작
     //Save Synchronized data for HistoryActivity
     private void onUpdateSyncDate(boolean _isupdate) {
         Log.d(TAG, " >> onUpdateSyncDate");
@@ -171,8 +173,6 @@ public class HistoryActivity extends AppCompatActivity {
             String _curStr_rid = newRecord.get(sz - 1).getRecordId();
             Log.i(TAG, " synchronized point will be updated");
             sync_point = _curStr_rid;
-            editor.putString(SYNC_POINT, sync_point);
-            editor.commit();
         } else {
             //syn_point is unvalid or the number of record is lack than sync_point
             if (dbhelper.getNumOfrecord() <= Integer.parseInt(sync_point) + 1) {
@@ -182,6 +182,8 @@ public class HistoryActivity extends AppCompatActivity {
                 Log.i(TAG, " it is currently up-to-date");
             }
         }
+        editor.putString(SYNC_POINT, sync_point);
+        editor.commit();
     }
     private void onClearSyncDate() {
         SharedPreferences pref = getSharedPreferences(SYNC_POINT, 0);

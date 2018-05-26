@@ -14,11 +14,14 @@ public class History {
     private final String TOTAL_HISOTRY = "total_history";
     private final String MONTH_HISTORY = "month_history";
    //var
-    private DataTotal total_history = null;
-    private DataMonth month_history = null;
+    private DataTotal total_history;
+    private DataMonth month_history;
     private boolean isDataTotal = false , isDataMonth = false;
     //Constructor
-    public History() {}
+    public History() {
+        this.total_history = new DataTotal();
+        this.month_history = new DataMonth();
+    }
     public History(History history) {
         this.total_history = history.getHistoryToTal();
         this.month_history = history.getHistoryMonth();
@@ -132,8 +135,9 @@ public class History {
         return false;
     }
     //get
-    public DataTotal getHistoryToTal() {return total_history;}
-    public DataMonth getHistoryMonth() {return month_history;}
+    public DataTotal getHistoryToTal() {return isDataTotal == true? total_history : null;}
+    public DataMonth getHistoryMonth() {return isDataMonth == true? month_history : null;}
     public boolean IsTotalHistory() { return isDataTotal;}
     public boolean IsMonthHistory() { return isDataMonth;}
+    public boolean IsSet(){ return isDataMonth & isDataTotal;}
 }

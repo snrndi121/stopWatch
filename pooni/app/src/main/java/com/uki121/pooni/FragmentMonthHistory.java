@@ -35,17 +35,16 @@ public class FragmentMonthHistory extends Fragment {
     //def
     private final String TAG = "FragmentMonthHistory";
     private static final String ARG = "month_history";
-    //var
-    private DataMonth monthhistory;
-    private boolean isMonthhistory = false;
-    //chart
-    private CombinedChart combinedchart;
-    private final int itemcount = 12;
-    private ArrayList< Entry > lineEntries;
-    private ArrayList< BarEntry > barEntries;
+    private final int NUM_MONTH = 12;
     protected String[] mMonths = new String[] {
             "Jan", "Feb", "Mar", "Apr", "May", "June", "July","Aug", "Sep", "Oct", "Nov", "Dec"
     };
+    //var
+    private DataMonth monthhistory;
+    private boolean isMonthhistory = false;
+    private CombinedChart combinedchart;
+    private ArrayList< Entry > lineEntries;
+    private ArrayList< BarEntry > barEntries;
 
     public FragmentMonthHistory() {};
     public static FragmentMonthHistory newInstance(String _monthHistory) {
@@ -64,7 +63,7 @@ public class FragmentMonthHistory extends Fragment {
             Log.d(TAG, "onCreate : argument is get");
             String str = getArguments().getString(ARG);
             isMonthhistory = str != null? true : false;
-            monthhistory = new DataMonth().ToClass(str);
+            monthhistory = isMonthhistory != false? new DataMonth(str) : null;
         } else {
             Log.d(TAG, "onCreate : argument is null");
             isMonthhistory = false;
@@ -107,7 +106,6 @@ public class FragmentMonthHistory extends Fragment {
         combinedchart.setDrawGridBackground(false);
         combinedchart.setDrawBarShadow(false);
         combinedchart.setHighlightFullBarEnabled(false);
-
         // draw bars behind lines
         combinedchart.setDrawOrder(new CombinedChart.DrawOrder[]{
                 DrawOrder.BAR, DrawOrder.LINE
@@ -150,9 +148,9 @@ public class FragmentMonthHistory extends Fragment {
     private LineData generateLineData() {
         LineData d = new LineData();
         lineEntries = new ArrayList<Entry>();
-        //initialize entry set
+        //init entries
         lineEntries = getLineEntriesData(lineEntries);
-
+        //init line data set based on entris
         LineDataSet set = new LineDataSet(lineEntries, "Line DataSet");
         set.setColor(Color.rgb(213, 45, 23));
         set.setLineWidth(2.5f);
@@ -188,11 +186,13 @@ public class FragmentMonthHistory extends Fragment {
     //initialize chart data : line chart
     private ArrayList<Entry> getLineEntriesData(ArrayList<Entry> entries) {
         if (isMonthhistory == false) {//default-mode
-            for (int index = 0; index < itemcount; index++) {
+            Log.w(TAG, "Default line data is set");
+            for (int index = 0; index < NUM_MONTH; ++index) {
                 entries.add(new Entry(index, getRandom(15, 5)));
             }
         } else {//history data-set
-            for (int index = 0; index < itemcount; index++) {
+            Log.d(TAG, "custom line data is set");
+            for (int index = 0; index < NUM_MONTH; ++index) {
                 float _avgByprob = monthhistory.getMonth(index).getAvgByprob();
                 entries.add(new Entry(index, _avgByprob));
             }
@@ -202,13 +202,13 @@ public class FragmentMonthHistory extends Fragment {
     //initialize chart data : bar chart
     private ArrayList<BarEntry> getBarEnteries(ArrayList<BarEntry> entries) {
         if (isMonthhistory == false) {//default-mode
-            Log.w(TAG, "Default data mode active");
-            for (int index = 0; index < itemcount; index++) {
+            Log.w(TAG, "Default bar data is set");
+            for (int index = 0; index < NUM_MONTH; index++) {
                 entries.add(new BarEntry(index, getRandom(25, 25)));
             }
         } else {//history data-set
-            Log.d(TAG, "Valid data mode active");
-            for (int index = 0; index < itemcount; index++) {
+            Log.d(TAG, "custom data is set");
+            for (int index = 0; index < NUM_MONTH; index++) {
                 int _totalexcess = monthhistory.getMonth(index).getTotalExcess();
                 entries.add(new BarEntry(index, _totalexcess));
             }
