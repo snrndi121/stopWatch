@@ -169,17 +169,18 @@ public class HistoryActivity extends AppCompatActivity {
             //Todo : check that newrecord has to be sorted
             int sz = newRecord.size();
             String _curStr_rid = newRecord.get(sz - 1).getRecordId();
-            if (_curStr_rid != null) {
-                Log.i(TAG, " synchronized point will be updated");
-                sync_point = _curStr_rid;
-            } else if (dbhelper.getNumOfrecord() < Integer.parseInt(_curStr_rid)) {
+            Log.i(TAG, " synchronized point will be updated");
+            sync_point = _curStr_rid;
+            editor.putString(SYNC_POINT, sync_point);
+            editor.commit();
+        } else {
+            //syn_point is unvalid or the number of record is lack than sync_point
+            if (dbhelper.getNumOfrecord() <= Integer.parseInt(sync_point) + 1) {
                 Log.w(TAG, " synchronized point will be reset because the size of recordTable is lower than sync_point");
                 sync_point = "-1";
             } else {
                 Log.i(TAG, " it is currently up-to-date");
             }
-            editor.putString(SYNC_POINT, sync_point);
-            editor.commit();
         }
     }
     private void onClearSyncDate() {
