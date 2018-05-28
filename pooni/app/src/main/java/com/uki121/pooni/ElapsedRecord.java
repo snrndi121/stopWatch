@@ -15,7 +15,7 @@ public class ElapsedRecord {
     private final int[] time_unit = {1, 1000, 60000};//milli:second:min
     private final String DEFAULT_TITLE = "default_book";
     //var
-    private Book baseBook = null;
+    private Book baseBook;
     private String bookid, recordid;
     private String date;
     /*
@@ -24,8 +24,8 @@ public class ElapsedRecord {
     *
     * */
     /* Todo : eachExcess is useless because DataTotal can calculate its excess */
-    private ArrayList eachExcess, eachLaptime;//save it as milli
-    private int num; //acutal size of record
+    private ArrayList eachLaptime;//save it as milli
+    private int num = 0; //acutal size of record
     private String strExcess, strLap;
     private boolean isBookSet = false;
     //private float cutTop10, cutBottom10;
@@ -34,7 +34,6 @@ public class ElapsedRecord {
     public ElapsedRecord() {
         this.baseBook = new Book();
         this.eachLaptime = new ArrayList(){};
-        this.eachExcess = new ArrayList(){};
     };
     public ElapsedRecord(ElapsedRecord _elp) {
         this.baseBook = new Book(_elp.getBaseBook());
@@ -45,7 +44,7 @@ public class ElapsedRecord {
         this.recordid = _elp.getRecordId();
         this.date = _elp.getDate();
         this.eachLaptime = _elp.getEachLaptime();
-        this.eachExcess = _elp.getEachExcess();
+        this.num = eachLaptime.size();
     }
     public ElapsedRecord(Book _bs, List < String > _records) {//used by FragmentLap
         //book setting
@@ -80,6 +79,7 @@ public class ElapsedRecord {
         }
     }
     public void setDate(String _date) { this.date = _date;}
+    /*
     public void setExcessFromLap() {
         Log.d(TAG, " #### START : setEachExcess #### ");
         //eachLaptime -> eachExcess
@@ -114,9 +114,11 @@ public class ElapsedRecord {
             Log.d(TAG, " #### END : setEachExcess #### ");
         }
     }
+    */
     public void setEachLaptime(String _src) {
         Log.d(TAG, " #### START : setEachLaptime #### ");
         this.eachLaptime = new ArrayList < ElapsedRecord >(convertStrTolist(_src));
+        this.num = eachLaptime.size();
         Log.d(TAG, " #### END : setEachLaptime #### ");
     }
     private void setStrData(String _targetname) {
@@ -151,9 +153,48 @@ public class ElapsedRecord {
     //public float getCutBottom10() { return cutBottom10;}
     public Book getBaseBook() { return baseBook;}
     public ArrayList getEachLaptime() { return this.eachLaptime;}
-    public ArrayList getEachExcess() { return this.eachExcess; }
-    public String getStrLap() { return this.strLap;}
-    public String getStrExcess() { return this.strExcess;}
+    public ArrayList getEachExcess() {
+        Log.d(TAG, " ### getEachExess");
+        if (baseBook == null) {
+            Log.w(TAG, "There is no book setting in Elp");
+            Log.d(TAG, " #### END : setEachExcess #### ");
+            return null;
+        }
+        if (eachLaptime == null && eachLaptime.size() < 0) {
+            Log.w(TAG, "There is no eachLapTime in Elp");
+            Log.d(TAG, " #### END : setEachExcess #### ");
+            return null;
+        }
+        ArrayList < String > eachExcess = new ArrayList<>();
+        try {
+            //standard time from basebook
+            int standard = Integer.parseInt(baseBook.getEachTime()) * 1000;//convert second into milli
+            Iterator < String > it = eachLaptime.iterator();
+            Log.d(TAG, " >> Standard for (int)excess time : " + standard);
+            Log.d(TAG, " >> eachLaptime size : " + eachLaptime.size());
+            while (it.hasNext()) {
+                int _excess = Integer.parseInt(it.next()) - standard;
+                Log.d(TAG, " >> CONVERTING string to (int)excess time : " + _excess);
+                if (_excess > 0) {
+                    eachExcess.add(String.valueOf(_excess));
+                }
+            }
+            Log.d(TAG, " >> RESULT : eachExcess size : " + eachExcess.size());
+            if (eachExcess.size() > 0)
+                return eachExcess;
+            else {
+                Log.d(TAG, " > this record has no excess");
+            }
+        } catch(Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
+        finally {
+            Log.d(TAG, " #### END : setEachExcess #### ");
+        }
+        return null;
+    }
+    //public String getStrLap() { return this.strLap;}
+    //public String getStrExcess() { return this.strExcess;}
     public String getRecord() {
         if (eachLaptime.isEmpty() != true ) {
             Iterator<String> it = eachLaptime.iterator();
@@ -202,9 +243,7 @@ public class ElapsedRecord {
         //The basic string format is like "1. 00:00:00", and it would be cut out, 000000.
         StringBuffer res = new StringBuffer();
         Iterator < String > it;
-        if (_listname.equals("excess")) {
-            it = eachExcess.iterator();
-        } else if (_listname.equals("lap")) {//lap
+        if (_listname.equals("lap")) {//lap
             it = eachLaptime.iterator();
         } else {
             Log.e(TAG, "convertListToStr has fatal error");
@@ -225,7 +264,7 @@ public class ElapsedRecord {
         StringTokenizer str = new StringTokenizer(_str, ":");
         for (int i = 0; str.hasMoreElements(); ) {
             String _element = str.nextToken();
-            Log.d(TAG, " token : " + _element);
+            //Log.d(TAG, " token : " + _element);
             list_rec.add(_element);
         }
         return list_rec;

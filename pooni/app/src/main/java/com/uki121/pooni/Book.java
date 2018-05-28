@@ -116,7 +116,6 @@ class Book {
         for (int i = 1; i < MAX_CATEGORY - 1; ++i) {
             System.out.println("book_info : " + category[i]);
         }
-        System.out.println("\n\n");
         return category;
     }
 };

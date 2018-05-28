@@ -106,10 +106,12 @@ public class HistoryActivity extends AppCompatActivity {
         if (newRecord != null) {
             Iterator<ElapsedRecord> it = newRecord.iterator();
             System.out.println(" >> newRecord size is " + newRecord.size());
+            /*
             while (it.hasNext()) {
                 ElapsedRecord _elp = it.next();
                 _elp.getBaseBook().getBook();
             }
+            */
         }
         //update history by updated record
         boolean isUpdate = history.onUpdateByrecord(newRecord);

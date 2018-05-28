@@ -10,6 +10,7 @@ import java.util.Iterator;
 public class Month {
     //def
     private final String TAG = "Month";
+    private final int TOKEN_MONTH = 2;
     //var
     private String name;//month
     private int totalExcess = 0;//total amount of access in this month
@@ -19,8 +20,8 @@ public class Month {
             "Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
     //constructort
-    public Month() {
-        this.name = new String("");
+    public Month(int _pos) {
+        this.name = new String(mMonths[_pos]);
     }
     public Month(String _name, int[] _val) {
         this.name = _name;
@@ -31,23 +32,30 @@ public class Month {
         }
     }
     public Month(ElapsedRecord _elp) {
+        Log.d(TAG, " ## month constructor ");
         int _pos = _elp.getDate().indexOf("-") + 1;
-        int _key = Integer.parseInt(_elp.getDate().substring(_pos, _pos + 1));
+        //Log.d(TAG, " > elp date : " + _elp.getDate());
+        //Log.d(TAG, " > date pos : " + _pos);
+        Log.d(TAG, " > substring of date : " + _elp.getDate().substring(_pos, _pos + TOKEN_MONTH));
+        int _key = Integer.parseInt(_elp.getDate().substring(_pos, _pos + TOKEN_MONTH)) - 1;
+        Log.d(TAG, " > data key : " + _key);
         this.name = new String(mMonths[_key]);
-        Iterator<String> it = _elp.getEachExcess().iterator();
+        //get each amount of excess from laptme in elp
+        Iterator < String > it = _elp.getEachExcess().iterator();
         while (it.hasNext()) {
             int _oneExcess = Integer.parseInt(it.next());
+            //if excess is positive, it means 'excess'
             if (_oneExcess > 0) {
                 this.totalExcess += _oneExcess;
             }
         }
-        this.numOfprob += Integer.valueOf(_elp.getEachExcess().size());
-        this.numOfbook = 1;
+        this.numOfprob += _elp.getNumOfRec();//Todo : Check this point
+        this.numOfbook = 1;//ToDo : this is wrong assigning
     }
     //set
     private float setAvg(String _by) {
         //exception
-        if (this.numOfbook == 0 || this.numOfprob == 0) {
+        if (numOfbook == 0 || numOfprob == 0) { //ToDo : now it failed here
             throw new NullPointerException();
         }
         try {
@@ -74,7 +82,7 @@ public class Month {
     public String getName() { return this.name;}
     public int getKey() {
         for (int i = 0; i < mMonths.length; ++i) {
-            if (this.name.equals(mMonths[i])) { return i;}
+            if (name.equals(mMonths[i])) { return i;}
         }
         return -1;
     }

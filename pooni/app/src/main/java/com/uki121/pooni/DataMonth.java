@@ -13,11 +13,14 @@ public class DataMonth
     private final String TAG = "Data Month";
     private final int MONTH_NUM = 12;
     //var
-    private int num; //the number of month
+    private int num = 0; //the number of month
     private Month[] months;
 
     public DataMonth(){
         months = new Month[MONTH_NUM];
+        for(int i = 0; i < MONTH_NUM; ++i) {
+            months[i] = new Month(i);
+        }
     }
     public DataMonth(String _json) {
         DataMonth month = ToClass(_json);
@@ -45,21 +48,42 @@ public class DataMonth
         }
     }
     //set
-    public void setData(DataMonth _src) {
-        this.num = _src.getNum();
-        this.months = _src.getMonth();
-    }
-    public void setData(ElapsedRecord _src) {
-        //set new month
-        Month _month = new Month(_src);
-        int _pos = _month.getKey();//find index of month
-        //size check
-        if (months == null) {
-            this.num = _pos + 1;
-            months = new Month[MONTH_NUM];
+    public boolean setData(DataMonth _src) {
+        try {
+            num = _src.getNum();
+            months = _src.getMonth();
+            if (months != null)
+                return true;
+        } catch(Exception e) {
+            Log.d(TAG, e.getMessage());
         }
-        //accumulate it into an origin
-        months[_pos].accumMonth(_month);
+        return false;
+    }
+    public boolean setData(ElapsedRecord _src) {
+        Log.d(TAG, "setData");
+        //set new month
+        try {
+            Month _month = new Month(_src);
+            int _pos = _month.getKey();//find index of month
+            if (_pos < 0) {
+                Log.d(TAG, " > elp date has an error, pos is lower than 0");
+                return false;
+            }
+            Log.d(TAG, " > month : " + (_pos + 1));
+            //size check
+            if (months == null) {
+                num = num < _pos + 1? _pos + 1 : num;
+                months = new Month[MONTH_NUM];
+                for (int i = 0; i< MONTH_NUM; ++i)
+                    months[i] = new Month(i);
+            }
+            //accumulate it into an origin
+            months[_pos].accumMonth(_month);
+            return true;
+        } catch(Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
+        return false;
     }
     //get
     public Month getMonth(int _index) {
@@ -69,8 +93,8 @@ public class DataMonth
         }
         return months[_index];
     }
-    public Month[] getMonth() { return this.months;}
-    public int getNum() { return this.num;}
+    public Month[] getMonth() { return months != null? months : null;}
+    public int getNum() { return num;}
     public String ToString() {
         Gson gson = new GsonBuilder().create();
         return gson.toJson(this, DataMonth.class);

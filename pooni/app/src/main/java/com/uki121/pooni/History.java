@@ -36,8 +36,10 @@ public class History {
     public History(DataTotal _datatotal, DataMonth _datamonth) {
         try {
             //selective assignment
-            this.total_history = _datatotal != null ? _datatotal : null;
-            this.month_history = _datamonth != null ? _datamonth : null;
+            isDataTotal = _datatotal != null? true : false;
+            isDataMonth = _datamonth != null? true : false;
+            this.total_history = isDataTotal != false ? _datatotal : null;
+            this.month_history = isDataMonth != false ? _datamonth : null;
         } catch(Exception e) {
             Log.e(TAG, e.getMessage());
         }
@@ -46,51 +48,60 @@ public class History {
     //set History by History class
     public void setHistory(History _history) {
         if (_history != null) {
-            if (_history.getHistoryToTal() != null) {
+            if (_history.IsTotalHistory() != false) {
                 Log.d(TAG, "setHistory() has Total data");
-                this.total_history = _history.getHistoryToTal();
+                total_history = _history.getHistoryToTal();
                 isDataTotal = true;
             } else {
                 Log.d(TAG, "setHistory() has no Data");
             }
-            if (_history.getHistoryMonth() != null) {
+            if (_history.IsTotalHistory() != false) {
                 Log.d(TAG, "setHistory() has Month data");
-                this.month_history = _history.getHistoryMonth();
+                month_history = _history.getHistoryMonth();
                 isDataMonth = true;
             } else {
                 Log.d(TAG, "setHistory() has no Month data");
             }
         } else {
             Log.d(TAG, "setHistory() has null history now");
+            Log.d(TAG, " > no change in this history");
         }
     }
     //set History by ElapsedRecord class
     public void setHistory(ArrayList < ElapsedRecord > _elpList) {
-        setTotal_history(_elpList);
-        setMonth_history(_elpList);
+        isDataTotal = setTotal_history(_elpList);
+        isDataMonth = setMonth_history(_elpList);
     }
     //set TotalHistory
-    private void setTotal_history(ArrayList < ElapsedRecord > _elpList){
+    private boolean setTotal_history(ArrayList < ElapsedRecord > _elpList){
         if (_elpList.isEmpty()) {
             Log.w(TAG, "setTotal_history() has 0 size list");
-            return;
+            return false;
         }
-        isDataTotal = true;
         Iterator < ElapsedRecord > it = _elpList.iterator();
         while(it.hasNext()) {
-            total_history.setData(it.next());
+            boolean _flag = total_history.setData(it.next());
+            if (_flag == false )
+                return false;
         }
+        return true;
     }
     //set MonthHistory
-    private void setMonth_history(ArrayList < ElapsedRecord> _elpList) {
+    private boolean setMonth_history(ArrayList < ElapsedRecord> _elpList) {
+        if (_elpList.size() < 0) {
+            Log.w(TAG, "setMonth_history() has 0 size list");
+            return false;
+        }
         try {
             //part1.create Month
             Map < Integer, Month > _mMap = new HashMap<>();
             Iterator < ElapsedRecord > it = _elpList.iterator();
             while(it.hasNext()) {
                 ElapsedRecord _elp = it.next();
+                /*
                 //step1.check a infomation of elp elements
                 _elp.getInfo();
+                */
                 //step2.classify their month
                 //step2.1.find target as month "05" and extract (int)5 from (string)05
                 String[] _src = _elp.getDate().split("-");//ex) 2018, 05, 11, 05 is a target.
@@ -108,11 +119,11 @@ public class History {
             //part2.create DataMonth based on Month
             Map < Integer, Month > _months = new TreeMap<>(_mMap);
             Month[] arg_months = (Month[])_months.values().toArray();
-            this.month_history.setData(new DataMonth(arg_months));
+            return month_history.setData(new DataMonth(arg_months));
         } catch (Exception e) {
             Log.w(TAG, "constructor of Month class : " + e.getMessage());
         }
-
+        return false;
     }
     public boolean onUpdateByrecord(ArrayList < ElapsedRecord > _newrecord) {
         if (_newrecord != null && _newrecord.size() > 0) {
@@ -121,8 +132,8 @@ public class History {
                 ElapsedRecord item = new ElapsedRecord(it.next());
                 try {
                     item.getInfo();
-                    total_history.setData(item);
-                    month_history.setData(item);
+                    isDataTotal = total_history.setData(item);
+                    isDataMonth = month_history.setData(item);
                     return true;
                 } catch (Exception e) {
                     Log.e(TAG, "onUpdateByrecord() - " + e.getMessage());
