@@ -14,6 +14,7 @@ public class ElapsedRecord {
     private final String TAG = "ElapsedRecord";
     private final int[] time_unit = {1, 1000, 60000};//milli:second:min
     private final String DEFAULT_TITLE = "default_book";
+    private final int DEFAULT_STANDARD = 60000;//1 min to milli
     //var
     private Book baseBook;
     private String bookid, recordid;
@@ -157,8 +158,6 @@ public class ElapsedRecord {
         Log.d(TAG, " ### getEachExess");
         if (baseBook == null) {
             Log.w(TAG, "There is no book setting in Elp");
-            Log.d(TAG, " #### END : setEachExcess #### ");
-            return null;
         }
         if (eachLaptime == null && eachLaptime.size() < 0) {
             Log.w(TAG, "There is no eachLapTime in Elp");
@@ -168,18 +167,16 @@ public class ElapsedRecord {
         ArrayList < String > eachExcess = new ArrayList<>();
         try {
             //standard time from basebook
-            int standard = Integer.parseInt(baseBook.getEachTime()) * 1000;//convert second into milli
+            int standard = baseBook != null? Integer.parseInt(baseBook.getEachTime()) * 1000 : DEFAULT_STANDARD;//convert second into milli
             Iterator < String > it = eachLaptime.iterator();
             Log.d(TAG, " >> Standard for (int)excess time : " + standard);
-            Log.d(TAG, " >> eachLaptime size : " + eachLaptime.size());
+            //Log.d(TAG, " >> eachLaptime size : " + eachLaptime.size());
             while (it.hasNext()) {
                 int _excess = Integer.parseInt(it.next()) - standard;
                 Log.d(TAG, " >> CONVERTING string to (int)excess time : " + _excess);
-                if (_excess > 0) {
-                    eachExcess.add(String.valueOf(_excess));
-                }
+                eachExcess.add(String.valueOf(_excess));
             }
-            Log.d(TAG, " >> RESULT : eachExcess size : " + eachExcess.size());
+            //Log.d(TAG, " >> RESULT : eachExcess size : " + eachExcess.size());
             if (eachExcess.size() > 0)
                 return eachExcess;
             else {

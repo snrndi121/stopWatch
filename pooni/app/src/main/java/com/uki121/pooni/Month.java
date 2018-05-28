@@ -32,13 +32,13 @@ public class Month {
         }
     }
     public Month(ElapsedRecord _elp) {
-        Log.d(TAG, " ## month constructor ");
+        //Log.d(TAG, " ## month constructor ");
         int _pos = _elp.getDate().indexOf("-") + 1;
         //Log.d(TAG, " > elp date : " + _elp.getDate());
         //Log.d(TAG, " > date pos : " + _pos);
-        Log.d(TAG, " > substring of date : " + _elp.getDate().substring(_pos, _pos + TOKEN_MONTH));
+        //Log.d(TAG, " > substring of date : " + _elp.getDate().substring(_pos, _pos + TOKEN_MONTH));
         int _key = Integer.parseInt(_elp.getDate().substring(_pos, _pos + TOKEN_MONTH)) - 1;
-        Log.d(TAG, " > data key : " + _key);
+        //Log.d(TAG, " > data key : " + _key);
         this.name = new String(mMonths[_key]);
         //get each amount of excess from laptme in elp
         Iterator < String > it = _elp.getEachExcess().iterator();
@@ -49,21 +49,24 @@ public class Month {
                 this.totalExcess += _oneExcess;
             }
         }
-        this.numOfprob += _elp.getNumOfRec();//Todo : Check this point
-        this.numOfbook = 1;//ToDo : this is wrong assigning
+        numOfprob += _elp.getNumOfRec();
+        Log.d(TAG, " ## num of prob : " + numOfprob);
+        numOfbook = 1;//ToDo : this is wrong assigning
     }
     //set
     private float setAvg(String _by) {
         //exception
-        if (numOfbook == 0 || numOfprob == 0) { //ToDo : now it failed here
-            throw new NullPointerException();
+        if (numOfbook <= 0 || numOfprob <= 0) {
+            Log.w(TAG, name + ", this month has no data");
+            return 0;
         }
         try {
+            Log.d(TAG, name + ", this month has data");
             switch (_by) {
                 case "prob":
-                    return this.totalExcess / this.numOfprob;
+                    return this.totalExcess / this.numOfprob;//mill by num
                 case "book":
-                    return this.totalExcess / this.numOfbook;
+                    return this.totalExcess / this.numOfbook;//mill by num
                 default:
                     Log.e(TAG, "In setAvg() in error");
                     break;
@@ -71,7 +74,7 @@ public class Month {
         } catch(Exception e) {
             Log.e(TAG, e.getMessage());
         }
-        return -1;
+        return 0;
     }
     public void accumMonth(Month _month) {
         this.totalExcess += _month.getTotalExcess();

@@ -60,7 +60,6 @@ public class FragmentMonthHistory extends Fragment {
     public void onCreate(Bundle SavedInstancState) {
         super.onCreate(SavedInstancState);
         if (getArguments() != null) {
-            Log.d(TAG, "onCreate : argument is get");
             String str = getArguments().getString(ARG);
             isMonthhistory = str != null? true : false;
             monthhistory = isMonthhistory != false? new DataMonth(str) : null;
@@ -180,7 +179,6 @@ public class FragmentMonthHistory extends Fragment {
         float barWidth = 0.45f; // x2 dataset
         BarData d = new BarData(set1);
         d.setBarWidth(barWidth);
-
         return d;
     }
     //initialize chart data : line chart
@@ -193,7 +191,8 @@ public class FragmentMonthHistory extends Fragment {
         } else {//history data-set
             Log.d(TAG, "custom line data is set");
             for (int index = 0; index < NUM_MONTH; ++index) {
-                float _avgByprob = monthhistory.getMonth(index).getAvgByprob();
+                float _avgByprob = (float)(Math.round(monthhistory.getMonth(index).getAvgByprob())/1000.0); //milli - > sec
+                Log.d(TAG, " > avgProb : " + _avgByprob);
                 entries.add(new Entry(index, _avgByprob));
             }
         }
@@ -209,7 +208,8 @@ public class FragmentMonthHistory extends Fragment {
         } else {//history data-set
             Log.d(TAG, "custom data is set");
             for (int index = 0; index < NUM_MONTH; index++) {
-                int _totalexcess = monthhistory.getMonth(index).getTotalExcess();
+                float _totalexcess = (float) (Math.round(monthhistory.getMonth(index).getTotalExcess())/1000.0);
+                Log.d(TAG, " > total excess : " + _totalexcess);
                 entries.add(new BarEntry(index, _totalexcess));
             }
         }

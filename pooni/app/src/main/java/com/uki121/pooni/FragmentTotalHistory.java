@@ -23,12 +23,13 @@ public class FragmentTotalHistory extends Fragment {
     private String TAG = "FragmentTotalHistory";
     private static final String ARG = "total_history";
     private final String HISTORY_PIE = "총 풀이 기록";
-    private final int NUM_CATEGORY = 4;
-    private final String[] pie_category = {"통과", "1분 미만", "2분 미만", "4분 초과"};
+    private final int NUM_CATEGORY = 5;
+    private final String[] pie_category = {"통과", "1분 미만 초과 ", "2분 미만", "4분 미만", "기타"};
     //var
     private PieChart chartTotalHistory;
     private DataTotal totalhistory;
-    private float[] pie_raw_value = new float[]{1.0f, 2.0f, 93.0f, 4.0f};//defalut
+    private int[] pie_raw_value = new int[]{1, 2 ,86, 4, 7};//defalut
+    private float[] pie_value = new float[]{1.0f, 2.0f, 86.0f, 4.0f, 7.0f};//defalut
     private boolean isSetHistory = false;
 
     public FragmentTotalHistory (){};
@@ -63,8 +64,8 @@ public class FragmentTotalHistory extends Fragment {
         return view;
     }
     public void init(View view) {
-        Log.d(TAG, "onCreate: starting to create chart");
         chartTotalHistory = (PieChart) view.findViewById(R.id.piechart_total_history);
+        //char attribute
         //chartTotalHistory.setDescription("Sales by employee (In Thousands $");
         chartTotalHistory.setRotationEnabled(true);
         //pieChart.setUsePercentValues(true);
@@ -74,8 +75,11 @@ public class FragmentTotalHistory extends Fragment {
         chartTotalHistory.setTransparentCircleAlpha(0);
         chartTotalHistory.setCenterText(HISTORY_PIE);
         chartTotalHistory.setCenterTextSize(10);
+        //Entry attribute
         //pieChart.setDrawEntryLabels(true);
+        chartTotalHistory.setDrawEntryLabels(false);
         //pieChart.setEntryLabelTextSize(20);
+        chartTotalHistory.setEntryLabelColor(Color.WHITE);
         //More options just check out the documentation!
         setDataSet();
         addDataSet();
@@ -88,13 +92,8 @@ public class FragmentTotalHistory extends Fragment {
                 Log.d(TAG, "onValueSelected: " + h.toString());
                 int pos = (int) h.getX();
                 //If history is set, then show the number of value of each category and its percent
-                if (isSetHistory == true) {
-                    Toast.makeText(getActivity(), "카테고리:" + pie_category[pos] + "\n" + "수치: " + pie_raw_value[pos] + "% (" + pie_raw_value[pos] + "개)", Toast.LENGTH_LONG).show();
-                }
-                //If a default history is set, then show its percent
-                else {
-                    Toast.makeText(getActivity(), "카테고리:" + pie_category[pos] + "\n" + "수치: " + pie_raw_value[pos] + "%", Toast.LENGTH_LONG).show();
-                }
+                Toast.makeText(getActivity(), "카테고리 : " + pie_category[pos] + "\n" + "수치 : " + pie_value[pos] + "% (" + pie_raw_value[pos] + "개)", Toast.LENGTH_LONG).show();
+
             }
             @Override
             public void onNothingSelected() {
@@ -104,11 +103,12 @@ public class FragmentTotalHistory extends Fragment {
     public void setDataSet() {
         if (isSetHistory != false) {
             Log.d(TAG, "SetDataSet - custom data");
-            int total = totalhistory.getSize();
-            int[] val = totalhistory.getData();
             try {
+                int total = totalhistory.getSize();
+                int[] val = totalhistory.getData();
                 for (int i = 0; i < NUM_CATEGORY; ++i) {
-                    pie_raw_value[i] = val[i] / total;
+                    pie_raw_value[i] = val[i];
+                    pie_value[i] = (val[i] * 100)/total; //percentage
                 }
             } catch (Exception e) {
                 Log.e(TAG, e.getMessage());
@@ -118,15 +118,16 @@ public class FragmentTotalHistory extends Fragment {
         }
     }
     public void addDataSet() {
-        ArrayList < PieEntry > pie_value = new ArrayList<>();
+        ArrayList < PieEntry > pie_data = new ArrayList<>();
         ArrayList < String > pie_name = new ArrayList<>();
         //set pie data on chart
         for (int i = 0; i < NUM_CATEGORY; ++i) {
-            pie_name.add(pie_category[i]);
-            pie_value.add(new PieEntry(pie_raw_value[i] , pie_name.get(i)));
+            //pie_name.add(pie_category[i]);
+            //pie_value.add(new PieEntry(pie_raw_value[i] , pie_name.get(i)));
+            pie_data.add(new PieEntry(pie_value[i] , pie_category[i]));
         }
         //create data set based on pie data
-        PieDataSet pieDataSet = new PieDataSet(pie_value, "전체 기록");
+        PieDataSet pieDataSet = new PieDataSet(pie_data, "전체 기록");
         pieDataSet.setSliceSpace(2);
         pieDataSet.setValueTextSize(12);
         //add colors to data set

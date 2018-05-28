@@ -164,8 +164,7 @@ public class HistoryActivity extends AppCompatActivity {
     }
     //Save Synchronized data for HistoryActivity
     private void onUpdateSyncDate(boolean _isupdate) {
-        Log.d(TAG, " >> onUpdateSyncDate");
-        Log.d(TAG, " _switch : " + _isupdate);
+        Log.d(TAG, " >> onUpdateSyncDate - switch on: " + _isupdate);
         SharedPreferences spf = getSharedPreferences(SYNC_POINT, 0);
         SharedPreferences.Editor editor = spf.edit();
         //if the update of history was completed successfully
