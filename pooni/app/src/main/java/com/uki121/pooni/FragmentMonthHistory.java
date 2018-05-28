@@ -87,7 +87,7 @@ public class FragmentMonthHistory extends Fragment {
                 if (isMonthhistory != false) { //history data-set
                     int pos = (int) h.getX();
                     int numOfprob = monthhistory.getMonth(pos).getNumOfprob();
-                    Toast.makeText(getActivity(), "이달 푼 문제수 :" + numOfprob + "\n" + "총 초과량 : " + barEntries.get(pos) + "초\n 평균 초과량 : " + lineEntries.get(pos) + "분", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "이달 푼 문제수 :" + numOfprob + "\n" + "총 초과량 : " + barEntries.get(pos).getY() + "초\n 평균 초과량 : " + lineEntries.get(pos).getY() + "분", Toast.LENGTH_LONG).show();
                 } else { //default data-mode
                     Toast.makeText(getActivity(), "This is default mode.\nNo data found ", Toast.LENGTH_LONG).show();
                 }

@@ -104,7 +104,7 @@ public class bookDBHelper extends SQLiteOpenHelper {
         return null;
     }
     //insert
-    public long insertData(History history, String _targetTable) {
+    public long insertHistory(History history, String _targetTable) {
         Log.d(TAG, "###################### Start ######################");
         Log.d(TAG, " Insert into history of db");
         ContentValues cv = new ContentValues();
@@ -117,6 +117,7 @@ public class bookDBHelper extends SQLiteOpenHelper {
                     cv.put(ContractDBinfo.COL_CATE2, c[1]);
                     cv.put(ContractDBinfo.COL_CATE3, c[2]);
                     cv.put(ContractDBinfo.COL_CATE4, c[3]);
+                    cv.put(ContractDBinfo.COL_CATE4, c[4]);
                     long newRowid = db.insert(ContractDBinfo.TBL_HISTORY_PIE, null, cv);
                     return newRowid;
                 case ContractDBinfo.TBL_HISTORY_LINE:

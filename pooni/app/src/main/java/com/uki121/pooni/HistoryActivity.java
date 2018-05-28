@@ -192,10 +192,19 @@ public class HistoryActivity extends AppCompatActivity {
         editor.clear();
         editor.commit();
     }
+    //Todo : 레코드 데이터를 히스토리로 전환하는 것을 완료
+    //이제 히스토리를 디비에 저장하는 과정을 살펴봐야함
+    //ContractDBinfo에 함수 살펴볼것
+    private void onUpdateHistory(boolean _isupdate) {
+        dbhelper.insertHistory(history, ContractDBinfo.TBL_HISTORY_PIE);
+        dbhelper.insertHistory(history, ContractDBinfo.TBL_HISTORY_LINE);
+    }
+    /*
     private String getTime() {//YYYY:MM:DD
         long now = System.currentTimeMillis();
         Date date = new Date(now);
         String ydmTime = sdf.format(date);
         return ydmTime;
     }
+    */
 }

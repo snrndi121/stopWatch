@@ -89,9 +89,9 @@ public class Month {
         }
         return -1;
     }
-    public int getTotalExcess() { return this.totalExcess;}
-    public int getNumOfprob() { return this.numOfprob;}
-    public int getNumOfbook() {return this.numOfbook;}
+    public int getTotalExcess() { return totalExcess;}
+    public int getNumOfprob() { return numOfprob;}
+    public int getNumOfbook() {return numOfbook;}
     public float getAvgByprob() { return setAvg("prob");}
     public float getAvgBybook() { return setAvg("book");}
 

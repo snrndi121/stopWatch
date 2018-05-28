@@ -95,6 +95,8 @@ public class DataMonth
         Gson gson = new GsonBuilder().create();
         return gson.toJson(this, DataMonth.class);
     }
+    public int getExcess(int _pos) { return months[_pos] != null? months[_pos].getTotalExcess() : -1;}
+    public float getAvg(int _pos) { return months[_pos] != null? months[_pos].getAvgByprob() : -1;}
     public static DataMonth ToClass(String _str) {
         Gson gson = new Gson();
         return gson.fromJson(_str, DataMonth.class);

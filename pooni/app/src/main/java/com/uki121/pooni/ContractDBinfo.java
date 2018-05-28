@@ -57,6 +57,7 @@ public class ContractDBinfo {
             " ON DELETE CASCADE" +
             ")" ;
     public static final String TBL_HISTORY_PIE = "TABLE_HISTORY_PIE";
+    public static final String COL_CATE0 = "passed";
     public static final String COL_CATE1 = "in_1_minutes";
     public static final String COL_CATE2 = "in_2_minutes";
     public static final String COL_CATE3 = "in_4_minutes";
@@ -64,6 +65,7 @@ public class ContractDBinfo {
     public static final String SQL_CREATE_HISTORY_PIE = "CREATE TABLE IF NOT EXISTS " + TBL_HISTORY_PIE +
             "(" +
             COL_DATE + " TEXT NOT NULL" + ", " +
+            COL_CATE0 + " INTEGER DEFALUT '0'" + ", " +
             COL_CATE1 + " INTEGER DEFALUT '0'" + ", " +
             COL_CATE2 + " INTEGER DEFALUT '0'" + ", " +
             COL_CATE3 + " INTEGER DEFALUT '0'" + ", " +
