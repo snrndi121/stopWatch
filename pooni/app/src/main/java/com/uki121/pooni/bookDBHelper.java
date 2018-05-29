@@ -121,6 +121,15 @@ public class bookDBHelper extends SQLiteOpenHelper {
                     long newRowid = db.insert(ContractDBinfo.TBL_HISTORY_PIE, null, cv);
                     return newRowid;
                 case ContractDBinfo.TBL_HISTORY_LINE:
+                    Month[] _months = history.getHistoryMonth().getMonth();
+                    db.beginTransaction();
+                    for (int i = 0; i < 12; ++i) {
+                        cv.put(ContractDBinfo.COL_MONTH, _months[i].getName());
+                        cv.put(ContractDBinfo.COL_EXCESS, _months[i].getTotalExcess());
+                        cv.put(ContractDBinfo.COL_NUM_BOOKS, _months[i].getNumOfbook());
+                        cv.put(ContractDBinfo.COL_NUM_SOLVED, _months[i].getNumOfprob());
+                    }
+                    db.setTransactionSuccessful();
                     break;
                 default:
                     Log.w(TAG, "There is no such table");
@@ -223,6 +232,32 @@ public class bookDBHelper extends SQLiteOpenHelper {
         try {
             String _where = _attr + "=? ";
             return db.update(ContractDBinfo.TBL_BOOK, _changes, _where, new String[]{_whereArgs});
+        } catch (SQLException e) {
+            Log.e("SQL_INSERT", e.getMessage());
+        } finally {
+            System.out.println("####################### End #######################");
+        }
+        return -1;
+    }
+    //조정중
+    //history 상태에 따라서 insert와 update 동작하도록
+    public int updateHistory(History _history, String _table) {
+        System.out.println("###################### Start ######################");
+        System.out.println(" Update into db");
+        SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
+        Iterator <ContentValues> it_changes = _changes.iterator();
+        try {
+            if (_table.equals(ContractDBinfo.TBL_HISTORY_PIE)) {
+                String _where = _attr + "=? ";
+                return db.update(ContractDBinfo.TBL_BOOK, it_changes.next(), _where, new String[]{_whereArgs[0]});
+            } else if (_table.equals(ContractDBinfo.TBL_HISTORY_LINE)) {
+                int i = 0;
+                while(it_changes.hasNext()) {
+                    String _where = _attr + "=? ";
+                    db.update(ContractDBinfo.TBL_BOOK, it_changes.next(), _where, new String[]{_whereArgs[i++]});
+                }
+            }
         } catch (SQLException e) {
             Log.e("SQL_INSERT", e.getMessage());
         } finally {

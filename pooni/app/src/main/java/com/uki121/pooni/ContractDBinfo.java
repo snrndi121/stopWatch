@@ -106,20 +106,4 @@ public class ContractDBinfo {
     public static final String SQL_INSERT_HISTORY_LINE = "INSERT OR REPLACE INTO " + TBL_HISTORY_LINE + " VALUES ";
     public static final String SQL_DELETE = "DELETE FROM ";
     //Update
-    public static final String WHERE_TITLE = "title=?";    //Book
-    public static final String WHERE_TOTIME = "total_time=?";
-    public static final String WHERE_EATIME = "each_time=?";
-    public static final String WHERE_RETIME = "rest_time=?";
-    public static final String WHERE_NOPROB = "prob_num=?";
-    public static final String WHERE_NOACC = "access_num=?";
-    public static final String WHERE_RECID = "rid=?";    //User
-    public static final String WHERE_BOOKID = "bid=?";
-    public static final String WHERE_EXECPROB = "prob_excess=?";
-    public static final String WHERE_SOLVEDPROB = "prob_solved=?";
-    public static final String WHERE_CORRPROB = "prob_corrected=?";
-    public static final String WHERE_RECAVG = "avg=?";    //Record
-    public static final String WHERE_RECTOP= "cut_top10=?";
-    public static final String WHERE_RECBOT = "cut_bottom10=?";
-    public static final String WHERE_STRACC = "string_access=?";
-    public static final String WHERE_DATE = "where " + COL_DATE + " between ";
 }

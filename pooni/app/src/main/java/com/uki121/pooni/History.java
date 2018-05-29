@@ -46,12 +46,13 @@ public class History {
     }
     //set
     //set History by History class
-    public void setHistory(History _history) {
+    public boolean setHistory(History _history) {
         if (_history != null) {
             if (_history.IsTotalHistory() != false) {
                 Log.d(TAG, "setHistory() has Total data");
                 total_history = _history.getHistoryToTal();
                 isDataTotal = true;
+                return true;
             } else {
                 Log.d(TAG, "setHistory() has no Data");
             }
@@ -59,6 +60,7 @@ public class History {
                 Log.d(TAG, "setHistory() has Month data");
                 month_history = _history.getHistoryMonth();
                 isDataMonth = true;
+                return true;
             } else {
                 Log.d(TAG, "setHistory() has no Month data");
             }
@@ -66,6 +68,7 @@ public class History {
             Log.d(TAG, "setHistory() has null history now");
             Log.d(TAG, " > no change in this history");
         }
+        return false;
     }
     //set History by ElapsedRecord class
     public void setHistory(ArrayList < ElapsedRecord > _elpList) {
