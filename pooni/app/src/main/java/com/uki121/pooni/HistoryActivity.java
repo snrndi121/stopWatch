@@ -143,9 +143,7 @@ public class HistoryActivity extends AppCompatActivity {
                     _month.add(new Month(_name, _contents));//add to Arraylist
                 }
                 return new History(null, new DataMonth(_month));
-            } else {
-                ;
-            }
+            } else {;}
         } else {
             Log.w(TAG, "onLoadHistory - " + _table + " table is empty");
         }
@@ -198,26 +196,19 @@ public class HistoryActivity extends AppCompatActivity {
     //이제 히스토리를 디비에 저장하는 과정을 살펴봐야함
     //ContractDBinfo에 함수 살펴볼것
     private void onUpdateHistory(boolean _isupdate) {
-        ArrayList < ContentValues > contents = new ArrayList<>();
         if (isTotalHist != true) {
             //insert
             dbhelper.insertHistory(history, ContractDBinfo.TBL_HISTORY_PIE);
         } else {
             //update
-            ContentValues changes = new ContentValues();
-            int[] data = history.getHistoryToTal().getData();
-            changes.put(ContractDBinfo.COL_CATE0, data[0]);
-            changes.put(ContractDBinfo.COL_CATE0, data[1]);
-            changes.put(ContractDBinfo.COL_CATE0, data[2]);
-            changes.put(ContractDBinfo.COL_CATE0, data[3]);
-            contents.add(changes);
-            dbhelper.updateHistory(ContractDBinfo.COL_MONTH, contents,  ,ContractDBinfo.TBL_HISTORY_PIE);
+            dbhelper.updateHistory(history, ContractDBinfo.COL_DATE, ContractDBinfo.TBL_HISTORY_PIE);
         }
         if (isMonthHist != true) {
             //insert
             dbhelper.insertHistory(history, ContractDBinfo.TBL_HISTORY_LINE);
         } else {
             //update
+            dbhelper.updateHistory(history, ContractDBinfo.COL_MONTH, ContractDBinfo.TBL_HISTORY_LINE);
         }
     }
     /*

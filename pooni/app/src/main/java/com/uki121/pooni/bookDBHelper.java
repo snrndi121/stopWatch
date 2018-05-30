@@ -241,23 +241,46 @@ public class bookDBHelper extends SQLiteOpenHelper {
     }
     //조정중
     //history 상태에 따라서 insert와 update 동작하도록
-    public int updateHistory(History _history, String _table) {
+    public int updateHistory(History _history, String _where, String _table) {
         System.out.println("###################### Start ######################");
         System.out.println(" Update into db");
         SQLiteDatabase db = getWritableDatabase();
         db.beginTransaction();
-        Iterator <ContentValues> it_changes = _changes.iterator();
         try {
+            ArrayList < ContentValues > contents = new ArrayList<>();
+            Iterator < ContentValues > it_contents = contents.iterator();
+            String where = _where + "=? ";
             if (_table.equals(ContractDBinfo.TBL_HISTORY_PIE)) {
-                String _where = _attr + "=? ";
-                return db.update(ContractDBinfo.TBL_BOOK, it_changes.next(), _where, new String[]{_whereArgs[0]});
+                int[] data = _history.getHistoryToTal().getData();
+                ContentValues changes = new ContentValues();
+                changes.put(ContractDBinfo.COL_CATE0, data[0]);
+                changes.put(ContractDBinfo.COL_CATE0, data[1]);
+                changes.put(ContractDBinfo.COL_CATE0, data[2]);
+                changes.put(ContractDBinfo.COL_CATE0, data[3]);
+                contents.add(changes);
+                return db.update(_table, it_contents.next(), where, new String[]{_whereArgs});
             } else if (_table.equals(ContractDBinfo.TBL_HISTORY_LINE)) {
-                int i = 0;
-                while(it_changes.hasNext()) {
-                    String _where = _attr + "=? ";
-                    db.update(ContractDBinfo.TBL_BOOK, it_changes.next(), _where, new String[]{_whereArgs[i++]});
+                int i;
+                Month[] _linemonths = _history.getHistoryMonth().getMonth();
+                //set wherequery
+                ArrayList < String > whereArgs = new ArrayList<>();
+                //add content from history
+                for (i = 0; i < 12; ++i) {
+                    ContentValues changes = new ContentValues();//contentvalues
+                    changes.put(ContractDBinfo.COL_MONTH, _linemonths[i].getName());
+                    changes.put(ContractDBinfo.COL_EXCESS, _linemonths[i].getTotalExcess());
+                    changes.put(ContractDBinfo.COL_NUM_BOOKS, _linemonths[i].getNumOfbook());
+                    changes.put(ContractDBinfo.COL_NUM_SOLVED, _linemonths[i].getNumOfprob());
+                    contents.add(changes);
+                    whereArgs.add(_linemonths[i].getName());//for whereQuery
+                }
+                //insert into db
+                i = 0;
+                while(it_contents.hasNext()) {
+                    db.update(_table, it_contents.next(), where, new String[]{whereArgs.get(i)});
                 }
             }
+            db.setTransactionSuccessful();
         } catch (SQLException e) {
             Log.e("SQL_INSERT", e.getMessage());
         } finally {
