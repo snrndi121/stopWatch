@@ -51,9 +51,9 @@ public class bookDBHelper extends SQLiteOpenHelper {
         Log.d(TAG, "###################### Start ######################");
         Log.d(TAG, "  Initialize Tables");
         try {
-            createTable(ContractDBinfo.TBL_BOOK);
-            createTable(ContractDBinfo.TBL_RECORD);
-            createTable(ContractDBinfo.TBL_USER);
+            createTable(ContractDBinfo.TBL_BOOK, db);
+            createTable(ContractDBinfo.TBL_RECORD, db);
+            //createTable(ContractDBinfo.TBL_USER, db);
         } catch(SQLException e) {
             Log.d("SQL_onCreate", e.getMessage());
         } finally {
@@ -61,8 +61,10 @@ public class bookDBHelper extends SQLiteOpenHelper {
         }
     }
     //create
-    public void createTable(String _tablename) {
-        SQLiteDatabase db = getWritableDatabase();
+    public void createTable(String _tablename, SQLiteDatabase db) {
+        if (db == null) {
+            db = getWritableDatabase();
+        }
         switch(_tablename) {
             case ContractDBinfo.TBL_BOOK :
                 Log.d(TAG, "create table Book");
@@ -241,7 +243,7 @@ public class bookDBHelper extends SQLiteOpenHelper {
     }
     //조정중
     //history 상태에 따라서 insert와 update 동작하도록
-    public int updateHistory(History _history, String _where, String _table) {
+    public int updateHistory(History _history, String _where, String _whereArgs, String _table) {
         System.out.println("###################### Start ######################");
         System.out.println(" Update into db");
         SQLiteDatabase db = getWritableDatabase();

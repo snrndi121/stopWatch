@@ -48,8 +48,8 @@ public class HistoryActivity extends AppCompatActivity {
     public void init() {
         //db create and open
         dbhelper = new bookDBHelper(HistoryActivity.this);
-        dbhelper.createTable(ContractDBinfo.TBL_HISTORY_PIE);
-        dbhelper.createTable(ContractDBinfo.TBL_HISTORY_LINE);
+        dbhelper.createTable(ContractDBinfo.TBL_HISTORY_PIE, null);
+        dbhelper.createTable(ContractDBinfo.TBL_HISTORY_LINE, null);
         //assignment
         history = new History();
         //load
@@ -201,14 +201,14 @@ public class HistoryActivity extends AppCompatActivity {
             dbhelper.insertHistory(history, ContractDBinfo.TBL_HISTORY_PIE);
         } else {
             //update
-            dbhelper.updateHistory(history, ContractDBinfo.COL_DATE, ContractDBinfo.TBL_HISTORY_PIE);
+            dbhelper.updateHistory(history, ContractDBinfo.COL_DATE, sync_point, ContractDBinfo.TBL_HISTORY_PIE);
         }
         if (isMonthHist != true) {
             //insert
             dbhelper.insertHistory(history, ContractDBinfo.TBL_HISTORY_LINE);
         } else {
             //update
-            dbhelper.updateHistory(history, ContractDBinfo.COL_MONTH, ContractDBinfo.TBL_HISTORY_LINE);
+            dbhelper.updateHistory(history, ContractDBinfo.COL_MONTH, null, ContractDBinfo.TBL_HISTORY_LINE);
         }
     }
     /*

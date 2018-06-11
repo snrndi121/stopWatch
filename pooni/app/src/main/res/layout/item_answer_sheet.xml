@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/ans_number"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:background="@android:color/black"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="00"
+            android:textColor="@android:color/white"
+            android:textSize="25px" />
+
+        <RadioGroup
+            android:id="@+id/ans_radio_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintLeft_toRightOf="@+id/and_number">
+
+            <RadioButton
+                android:id="@+id/ans_option1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="①" />
+
+            <RadioButton
+                android:id="@+id/ans_option2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="②" />
+
+            <RadioButton
+                android:id="@+id/ans_option3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="③" />
+
+            <RadioButton
+                android:id="@+id/ans_option4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="④" />
+
+            <RadioButton
+                android:id="@+id/ans_option5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="⑤" />
+        </RadioGroup>
+
+    </android.support.constraint.ConstraintLayout>
+
+</LinearLayout>
