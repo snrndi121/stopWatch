@@ -1,13 +1,14 @@
 package com.uki121.pooni;
 
 public class SheetItem {
-    public static int number = 1;
-    private int answer;
+    public static int number = 1;//what index of this problem is
+    private int mIndex;
+    private int mAnswer;//which one is marked
     public SheetItem() {
-        answer = -1;
-        number++;
+        mAnswer = -1;
+        mIndex = number++;
     }
-    public void setAnswer(int _ans) { answer = _ans;}
+    public void setAnswer(int _ans) { mAnswer = _ans;}
     public int getNumber() {return number;}
-    public int getAnswer() { return answer;}
+    public int getAnswer() { return mAnswer;}
 }
